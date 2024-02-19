@@ -64,6 +64,8 @@ namespace App.Forms.Forms
             cboContaPagarTipoConta = new ComboBox();
             tbpContaPagarCartaoCredito = new TabPage();
             tbpEfetuarPagamento = new TabPage();
+            cboApenasNaoPagos = new CheckBox();
+            btnExcluir = new Button();
             lblEfetuarPagamentoItensSelecionadosDataGridView = new Label();
             lblGridViewTotalPago = new Label();
             lblGridViewCartaoCreditoNaira = new Label();
@@ -415,6 +417,8 @@ namespace App.Forms.Forms
             // 
             // tbpEfetuarPagamento
             // 
+            tbpEfetuarPagamento.Controls.Add(cboApenasNaoPagos);
+            tbpEfetuarPagamento.Controls.Add(btnExcluir);
             tbpEfetuarPagamento.Controls.Add(lblEfetuarPagamentoItensSelecionadosDataGridView);
             tbpEfetuarPagamento.Controls.Add(lblGridViewTotalPago);
             tbpEfetuarPagamento.Controls.Add(lblGridViewCartaoCreditoNaira);
@@ -434,6 +438,35 @@ namespace App.Forms.Forms
             tbpEfetuarPagamento.TabIndex = 2;
             tbpEfetuarPagamento.Text = "Pagamento";
             tbpEfetuarPagamento.UseVisualStyleBackColor = true;
+            // 
+            // cboApenasNaoPagos
+            // 
+            cboApenasNaoPagos.AutoSize = true;
+            cboApenasNaoPagos.BackColor = Color.IndianRed;
+            cboApenasNaoPagos.Checked = true;
+            cboApenasNaoPagos.CheckState = CheckState.Checked;
+            cboApenasNaoPagos.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            cboApenasNaoPagos.ForeColor = SystemColors.ButtonFace;
+            cboApenasNaoPagos.Location = new Point(856, 11);
+            cboApenasNaoPagos.Margin = new Padding(15);
+            cboApenasNaoPagos.Name = "cboApenasNaoPagos";
+            cboApenasNaoPagos.Size = new Size(147, 21);
+            cboApenasNaoPagos.TabIndex = 17;
+            cboApenasNaoPagos.Text = "Apenas NÃO pagos!";
+            cboApenasNaoPagos.UseVisualStyleBackColor = false;
+            // 
+            // btnExcluir
+            // 
+            btnExcluir.BackColor = Color.IndianRed;
+            btnExcluir.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnExcluir.ForeColor = SystemColors.ButtonFace;
+            btnExcluir.Location = new Point(1006, 6);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(75, 30);
+            btnExcluir.TabIndex = 16;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = false;
+            btnExcluir.Click += BtnExcluir_Click;
             // 
             // lblEfetuarPagamentoItensSelecionadosDataGridView
             // 
@@ -582,12 +615,12 @@ namespace App.Forms.Forms
             dgvEfetuarPagamentoListagem.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvEfetuarPagamentoListagem.Size = new Size(1193, 373);
             dgvEfetuarPagamentoListagem.TabIndex = 0;
-            dgvEfetuarPagamentoListagem.MultiSelectChanged += dgvEfetuarPagamentoListagem_MultiSelectChanged;
+            dgvEfetuarPagamentoListagem.MultiSelectChanged += DgvEfetuarPagamentoListagem_MultiSelectChanged;
             dgvEfetuarPagamentoListagem.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
-            dgvEfetuarPagamentoListagem.CellMouseClick += dgvEfetuarPagamentoListagem_CellMouseClick;
+            dgvEfetuarPagamentoListagem.CellMouseClick += DgvEfetuarPagamentoListagem_CellMouseClick;
             dgvEfetuarPagamentoListagem.CellMouseDown += DgvEfetuarPagamentoListagem_CellMouseDown;
             dgvEfetuarPagamentoListagem.RowsAdded += DgvEfetuarPagamentoListagem_RowsAdded;
-            dgvEfetuarPagamentoListagem.SelectionChanged += dgvEfetuarPagamentoListagem_SelectionChanged;
+            dgvEfetuarPagamentoListagem.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
             // 
             // lblVersion
             // 
@@ -734,5 +767,7 @@ namespace App.Forms.Forms
         private RadioButton rdbAmbienteProducao;
         private Label lblEfetuarPagamentoLinhasSelecionadasDataGridView;
         private Label lblEfetuarPagamentoItensSelecionadosDataGridView;
+        private Button btnExcluir;
+        private CheckBox cboApenasNaoPagos;
     }
 }

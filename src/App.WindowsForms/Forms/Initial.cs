@@ -6,6 +6,8 @@ using App.Forms.Forms.Pay;
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.Forms.ExcluirDetalhes;
+using App.WindowsForms.ViewModel;
 using Domain.Entities;
 using Domain.Utils;
 using Newtonsoft.Json;
@@ -975,17 +977,17 @@ namespace App.Forms.Forms
             PreencheAmbienteCorretamente();
         }
 
-        private void dgvEfetuarPagamentoListagem_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void DgvEfetuarPagamentoListagem_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
 
         }
 
-        private void dgvEfetuarPagamentoListagem_MultiSelectChanged(object sender, EventArgs e)
+        private void DgvEfetuarPagamentoListagem_MultiSelectChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void dgvEfetuarPagamentoListagem_SelectionChanged(object sender, EventArgs e)
+        private void DgvEfetuarPagamentoListagem_SelectionChanged(object sender, EventArgs e)
         {
             decimal valorTotalItensSelecionados = 0;
             int quantidadeTotalItensSelecionados = dgvEfetuarPagamentoListagem.SelectedRows.Count;
@@ -999,6 +1001,40 @@ namespace App.Forms.Forms
 
             lblEfetuarPagamentoItensSelecionadosDataGridView.Text = string
                 .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
+        }
+
+        private void BtnExcluir_Click(object sender, EventArgs e)
+        {
+
+            List<Guid> idsBillsToPay = new();
+            List<int> idsFixedInvoices = new();
+            var deleteBillToPayViewModel = new DeleteBillToPayViewModel();
+            var searchBillToPayViewModel = new SearchBillToPayViewModel();
+
+            foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
+            {
+                _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid id);
+                _ = int.TryParse(row.Cells[1].Value.ToString(), out int idFixedInvoice);
+
+                idsBillsToPay.Add(id);
+                idsFixedInvoices.Add(idFixedInvoice);
+            }
+
+            deleteBillToPayViewModel.Id = idsBillsToPay.ToArray();
+            deleteBillToPayViewModel.IdFixedInvoices = idsFixedInvoices.ToArray();
+            deleteBillToPayViewModel.JustUnpaid = cboApenasNaoPagos.Checked;
+
+            searchBillToPayViewModel.Id = idsBillsToPay.ToArray();
+            searchBillToPayViewModel.IdFixedInvoices = idsFixedInvoices.ToArray();
+
+            FrmExcluirDetalhes frmExcluirDetalhes = new()
+            {
+                DeleteBillToPayViewModel = deleteBillToPayViewModel,
+                SearchBillToPayViewModel = searchBillToPayViewModel,
+                Environment = Environment
+            };
+
+            frmExcluirDetalhes.ShowDialog();
         }
     }
 }
