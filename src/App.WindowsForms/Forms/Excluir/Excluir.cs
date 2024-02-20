@@ -8,13 +8,14 @@ using Newtonsoft.Json;
 
 namespace App.WindowsForms.Forms.ExcluirDetalhes
 {
-    public partial class FrmExcluirDetalhes : Form
+    public partial class FrmExibirDetalhes : Form
     {
+        private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
         public DeleteBillToPayViewModel DeleteBillToPayViewModel { get; set; } = new DeleteBillToPayViewModel();
         public SearchBillToPayViewModel SearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
         public string? Environment { get; set; }
 
-        public FrmExcluirDetalhes()
+        public FrmExibirDetalhes()
         {
             InitializeComponent();
         }
@@ -26,15 +27,12 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async Task PreencherCampos()
         {
-            var resultSearch = await SearchBillToPay(SearchBillToPayViewModel);
+            var resultSearch = await BillToPayServices.SearchBillToPay(SearchBillToPayViewModel);
 
             var dataSource = MapSearchResultToDataSource(resultSearch);
 
             var dataSourceOrderBy = dataSource
-                .OrderBy(hasPay => hasPay.HasPay)
-                .ThenBy(creditCard => creditCard.Account == Account.CARTAO_CREDITO)
-                .ThenBy(dueDate => dueDate.DueDate)
-                .ThenByDescending(purchase => purchase.PurchaseDate)
+                .OrderBy(dueDate => dueDate.DueDate)
                 .ToList();
 
             PreecherDataGridViewExcluirDetalhes(dataSourceOrderBy);
@@ -91,11 +89,70 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             return dgvEfetuarPagamentoListagemDataSources;
         }
 
-        private async Task<SearchBillToPayOutput> SearchBillToPay(SearchBillToPayViewModel searchBillToPayViewModel)
+        private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            var result = await BillToPayServices.SearchBillToPay(searchBillToPayViewModel);
+            foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells[12].Value))
+                {
+                    SetColorRows(row, Color.DarkGreen, Color.White);
+                }
 
-            return result;
+                if (row.Cells[2].Value.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row.Cells[12].Value))
+                {
+                    SetColorRows(row, Color.DarkOrange, Color.Black);
+                }
+
+                if (!string.IsNullOrWhiteSpace(row.Cells[13].Value?.ToString())
+                    && row.Cells[13].Value.ToString()!.StartsWith(EH_CARTAO_CREDITO_NAIRA))
+                {
+                    SetColorRows(row, Color.DimGray, Color.White);
+                }
+            }
+        }
+
+        private static void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)
+        {
+            var columnsCount = row.Cells.Count;
+
+            for (int i = 0; i < columnsCount; i++)
+            {
+                row.Cells[i].Style.BackColor = backColor;
+                row.Cells[i].Style.ForeColor = foreColor;
+            }
+        }
+
+        private void DgvExcluirDetalhes_SelectionChanged(object sender, EventArgs e)
+        {
+            decimal valorTotalItensSelecionados = 0;
+            int quantidadeTotalItensSelecionados = dgvExcluirDetalhes.SelectedRows.Count;
+
+            foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
+            {
+                bool isOk = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal valor);
+
+                valorTotalItensSelecionados += isOk ? valor : 0;
+            }
+
+            lblExcluirDetalhesItensSelecionadosDataGridView.Text = string
+                .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
+        }
+
+        private void BtnExcluir_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox
+                .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
+                {
+                    bool isOk = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid id);
+
+                    
+                }
+            }
         }
     }
 }

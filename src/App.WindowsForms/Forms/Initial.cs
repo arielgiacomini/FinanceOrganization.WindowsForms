@@ -1003,12 +1003,11 @@ namespace App.Forms.Forms
                 .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
         }
 
-        private void BtnExcluir_Click(object sender, EventArgs e)
+        private void BtnDetalhesContas_Click(object sender, EventArgs e)
         {
 
             List<Guid> idsBillsToPay = new();
             List<int> idsFixedInvoices = new();
-            var deleteBillToPayViewModel = new DeleteBillToPayViewModel();
             var searchBillToPayViewModel = new SearchBillToPayViewModel();
 
             foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
@@ -1020,16 +1019,10 @@ namespace App.Forms.Forms
                 idsFixedInvoices.Add(idFixedInvoice);
             }
 
-            deleteBillToPayViewModel.Id = idsBillsToPay.ToArray();
-            deleteBillToPayViewModel.IdFixedInvoices = idsFixedInvoices.ToArray();
-            deleteBillToPayViewModel.JustUnpaid = cboApenasNaoPagos.Checked;
-
-            searchBillToPayViewModel.Id = idsBillsToPay.ToArray();
             searchBillToPayViewModel.IdFixedInvoices = idsFixedInvoices.ToArray();
 
-            FrmExcluirDetalhes frmExcluirDetalhes = new()
+            FrmExibirDetalhes frmExcluirDetalhes = new()
             {
-                DeleteBillToPayViewModel = deleteBillToPayViewModel,
                 SearchBillToPayViewModel = searchBillToPayViewModel,
                 Environment = Environment
             };

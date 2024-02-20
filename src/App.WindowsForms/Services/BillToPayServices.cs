@@ -2,6 +2,7 @@
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Text;
 
 namespace App.Forms.Services
@@ -81,5 +82,7 @@ namespace App.Forms.Services
 
             return JsonConvert.DeserializeObject<EditBillToPayOutput>(response) ?? new EditBillToPayOutput();
         }
+
+        public static async Task<Delete>
     }
 }

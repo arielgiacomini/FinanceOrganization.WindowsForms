@@ -64,8 +64,7 @@ namespace App.Forms.Forms
             cboContaPagarTipoConta = new ComboBox();
             tbpContaPagarCartaoCredito = new TabPage();
             tbpEfetuarPagamento = new TabPage();
-            cboApenasNaoPagos = new CheckBox();
-            btnExcluir = new Button();
+            btnExibirDetalhes = new Button();
             lblEfetuarPagamentoItensSelecionadosDataGridView = new Label();
             lblGridViewTotalPago = new Label();
             lblGridViewCartaoCreditoNaira = new Label();
@@ -417,8 +416,7 @@ namespace App.Forms.Forms
             // 
             // tbpEfetuarPagamento
             // 
-            tbpEfetuarPagamento.Controls.Add(cboApenasNaoPagos);
-            tbpEfetuarPagamento.Controls.Add(btnExcluir);
+            tbpEfetuarPagamento.Controls.Add(btnExibirDetalhes);
             tbpEfetuarPagamento.Controls.Add(lblEfetuarPagamentoItensSelecionadosDataGridView);
             tbpEfetuarPagamento.Controls.Add(lblGridViewTotalPago);
             tbpEfetuarPagamento.Controls.Add(lblGridViewCartaoCreditoNaira);
@@ -439,34 +437,19 @@ namespace App.Forms.Forms
             tbpEfetuarPagamento.Text = "Pagamento";
             tbpEfetuarPagamento.UseVisualStyleBackColor = true;
             // 
-            // cboApenasNaoPagos
+            // btnExibirDetalhes
             // 
-            cboApenasNaoPagos.AutoSize = true;
-            cboApenasNaoPagos.BackColor = Color.IndianRed;
-            cboApenasNaoPagos.Checked = true;
-            cboApenasNaoPagos.CheckState = CheckState.Checked;
-            cboApenasNaoPagos.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            cboApenasNaoPagos.ForeColor = SystemColors.ButtonFace;
-            cboApenasNaoPagos.Location = new Point(856, 11);
-            cboApenasNaoPagos.Margin = new Padding(15);
-            cboApenasNaoPagos.Name = "cboApenasNaoPagos";
-            cboApenasNaoPagos.Size = new Size(147, 21);
-            cboApenasNaoPagos.TabIndex = 17;
-            cboApenasNaoPagos.Text = "Apenas NÃO pagos!";
-            cboApenasNaoPagos.UseVisualStyleBackColor = false;
-            // 
-            // btnExcluir
-            // 
-            btnExcluir.BackColor = Color.IndianRed;
-            btnExcluir.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            btnExcluir.ForeColor = SystemColors.ButtonFace;
-            btnExcluir.Location = new Point(1006, 6);
-            btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(75, 30);
-            btnExcluir.TabIndex = 16;
-            btnExcluir.Text = "Excluir";
-            btnExcluir.UseVisualStyleBackColor = false;
-            btnExcluir.Click += BtnExcluir_Click;
+            btnExibirDetalhes.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnExibirDetalhes.BackColor = Color.IndianRed;
+            btnExibirDetalhes.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnExibirDetalhes.ForeColor = SystemColors.ButtonFace;
+            btnExibirDetalhes.Location = new Point(913, 6);
+            btnExibirDetalhes.Name = "btnExibirDetalhes";
+            btnExibirDetalhes.Size = new Size(172, 38);
+            btnExibirDetalhes.TabIndex = 16;
+            btnExibirDetalhes.Text = "Exibir Todas as Contas";
+            btnExibirDetalhes.UseVisualStyleBackColor = false;
+            btnExibirDetalhes.Click += BtnDetalhesContas_Click;
             // 
             // lblEfetuarPagamentoItensSelecionadosDataGridView
             // 
@@ -769,5 +752,6 @@ namespace App.Forms.Forms
         private Label lblEfetuarPagamentoItensSelecionadosDataGridView;
         private Button btnExcluir;
         private CheckBox cboApenasNaoPagos;
+        private Button btnExibirDetalhes;
     }
 }
