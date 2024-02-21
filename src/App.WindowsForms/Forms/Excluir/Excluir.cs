@@ -2,6 +2,7 @@
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
 using Domain.Entities;
 using Newtonsoft.Json;
@@ -13,6 +14,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
         public DeleteBillToPayViewModel DeleteBillToPayViewModel { get; set; } = new DeleteBillToPayViewModel();
         public SearchBillToPayViewModel SearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
+        private readonly Dictionary<int, DeleteBillToPayViewModel> _deleteBillToPayViewModels = new();
         public string? Environment { get; set; }
 
         public FrmExibirDetalhes()
@@ -138,7 +140,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
         }
 
-        private void BtnExcluir_Click(object sender, EventArgs e)
+        private async void BtnExcluir_Click(object sender, EventArgs e)
         {
             var result = MessageBox
                 .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
@@ -146,12 +148,62 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             if (result == DialogResult.Yes)
             {
+                List<Guid> guidIds = new();
+
                 foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
                 {
-                    bool isOk = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid id);
+                    bool isOk = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid guidId);
 
-                    
+                    guidIds.Add(guidId);
                 }
+
+                BillToPayServices.Environment = Environment;
+                var output = await BillToPayServices.DeleteBillToPay(MapDeleteViewModel(guidIds));
+
+                TratamentoOutput(output);
+            }
+        }
+
+        public static DeleteBillToPayViewModel MapDeleteViewModel(List<Guid> guidIds)
+        {
+            return new DeleteBillToPayViewModel()
+            {
+                Id = guidIds.ToArray()
+            };
+        }
+
+        private async void TratamentoOutput(DeleteBillToPayOutput result)
+        {
+            if (result.Output.Status == OutputStatus.Success)
+            {
+                MessageBox.Show(result.Output.Message,
+                    "Exclusão de registro realizado com sucesso.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                await PreencherCampos();
+            }
+            else
+            {
+                await PreencherCampos();
+
+                var information = string.Empty;
+
+                var errors = result.Output.Errors;
+                var validations = result.Output.Validations;
+
+                foreach (var error in errors)
+                {
+                    information = string
+                        .Concat(information, error.Key, " - ", error.Value, " | ");
+                }
+
+                foreach (var validation in validations)
+                {
+                    information = string
+                        .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                }
+
+                MessageBox.Show(information, "Erro ao tentar cadastrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

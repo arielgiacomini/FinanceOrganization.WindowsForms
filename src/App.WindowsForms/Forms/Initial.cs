@@ -22,7 +22,7 @@ namespace App.Forms.Forms
         private const string TAB_PAGE_PAGAMENTO = "tbpEfetuarPagamento";
         private const string DESCRICAO_GROUP_BOX = "Cadastro de Conta a Pagar";
         private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
-        private readonly Dictionary<int, CreateBillToPayViewModel> _createBillToPayViewModels = new Dictionary<int, CreateBillToPayViewModel>();
+        private readonly Dictionary<int, CreateBillToPayViewModel> _createBillToPayViewModels = new();
         private IList<DgvEfetuarPagamentoListagemDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvEfetuarPagamentoListagemDataSource>();
         public static int CurrentIndex { get; set; } = 0;
         public decimal ValorContaPagarDigitadoTextBox { get; set; } = 0;
@@ -1005,7 +1005,6 @@ namespace App.Forms.Forms
 
         private void BtnDetalhesContas_Click(object sender, EventArgs e)
         {
-
             List<Guid> idsBillsToPay = new();
             List<int> idsFixedInvoices = new();
             var searchBillToPayViewModel = new SearchBillToPayViewModel();

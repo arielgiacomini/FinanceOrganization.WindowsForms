@@ -1,8 +1,9 @@
 ﻿using App.Forms.Config;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.Services.Output;
+using App.WindowsForms.ViewModel;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Text;
 
 namespace App.Forms.Services
@@ -83,6 +84,25 @@ namespace App.Forms.Services
             return JsonConvert.DeserializeObject<EditBillToPayOutput>(response) ?? new EditBillToPayOutput();
         }
 
-        public static async Task<Delete>
+        public static async Task<DeleteBillToPayOutput> DeleteBillToPay(DeleteBillToPayViewModel deleteBillToPayViewModel)
+        {
+            using var client = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/bills-to-pay/delete")
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(deleteBillToPayViewModel), Encoding.UTF8, "application/json")
+            };
+
+            var result = await client.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                return new DeleteBillToPayOutput();
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<DeleteBillToPayOutput>(response) ?? new DeleteBillToPayOutput();
+        }
     }
 }
