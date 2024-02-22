@@ -169,7 +169,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             return new DeleteBillToPayViewModel()
             {
                 Id = guidIds.ToArray(),
-                JustUnpaid = true
+                JustUnpaid = true,
+                DisableFixedInvoice = false
             };
         }
 
