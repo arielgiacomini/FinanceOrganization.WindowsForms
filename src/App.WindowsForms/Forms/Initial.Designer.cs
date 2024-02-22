@@ -440,7 +440,7 @@ namespace App.Forms.Forms
             // btnExibirDetalhes
             // 
             btnExibirDetalhes.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnExibirDetalhes.BackColor = Color.IndianRed;
+            btnExibirDetalhes.BackColor = Color.Teal;
             btnExibirDetalhes.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnExibirDetalhes.ForeColor = SystemColors.ButtonFace;
             btnExibirDetalhes.Location = new Point(913, 6);

@@ -4,6 +4,6 @@ namespace App.WindowsForms.Services.Output
 {
     public class DeleteBillToPayOutput
     {
-        public OutputDetails Output { get; set; }
+        public OutputDetails Output { get; set; } = new OutputDetails();
     }
 }
