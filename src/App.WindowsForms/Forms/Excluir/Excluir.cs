@@ -168,7 +168,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         {
             return new DeleteBillToPayViewModel()
             {
-                Id = guidIds.ToArray()
+                Id = guidIds.ToArray(),
+                JustUnpaid = true
             };
         }
 
