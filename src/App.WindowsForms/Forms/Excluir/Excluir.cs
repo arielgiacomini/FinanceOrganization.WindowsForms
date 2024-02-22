@@ -175,7 +175,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async void TratamentoOutput(DeleteBillToPayOutput result)
         {
-            if (result.Output.Status == OutputStatus.Success)
+            if (result.Output?.Status == OutputStatus.Success)
             {
                 MessageBox.Show(result.Output.Message,
                     "Exclusão de registro realizado com sucesso.",
@@ -189,19 +189,25 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
                 var information = string.Empty;
 
-                var errors = result.Output.Errors;
-                var validations = result.Output.Validations;
+                var errors = result.Output?.Errors;
+                var validations = result.Output?.Validations;
 
-                foreach (var error in errors)
+                if (errors != null)
                 {
-                    information = string
-                        .Concat(information, error.Key, " - ", error.Value, " | ");
+                    foreach (var error in errors)
+                    {
+                        information = string
+                            .Concat(information, error.Key, " - ", error.Value, " | ");
+                    }
                 }
 
-                foreach (var validation in validations)
+                if (validations != null)
                 {
-                    information = string
-                        .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                    foreach (var validation in validations)
+                    {
+                        information = string
+                            .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                    }
                 }
 
                 MessageBox.Show(information, "Erro ao tentar cadastrar", MessageBoxButtons.OK, MessageBoxIcon.Error);

@@ -97,7 +97,12 @@ namespace App.Forms.Services
 
             if (!result.IsSuccessStatusCode)
             {
-                return new DeleteBillToPayOutput();
+                var output = new DeleteBillToPayOutput();
+
+                output.Output.Status = OutputStatus.HasInternalError;
+                output.Output.Data = result.Content;
+
+                return output;
             }
 
             var response = await result.Content.ReadAsStringAsync();
