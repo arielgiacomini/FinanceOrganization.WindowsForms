@@ -35,6 +35,8 @@ namespace App.Forms.Forms
             tbcInitial = new TabControl();
             tbpContaPagarLivre = new TabPage();
             grbTemplateContaPagar = new GroupBox();
+            cboHabilitarDataCompra = new CheckBox();
+            cboNaoEnviarMesAnoFinal = new CheckBox();
             btnContaPagarCadastrar = new Button();
             dgvContaPagar = new DataGridView();
             grbContaPagarHistorico = new GroupBox();
@@ -118,6 +120,8 @@ namespace App.Forms.Forms
             // grbTemplateContaPagar
             // 
             grbTemplateContaPagar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            grbTemplateContaPagar.Controls.Add(cboHabilitarDataCompra);
+            grbTemplateContaPagar.Controls.Add(cboNaoEnviarMesAnoFinal);
             grbTemplateContaPagar.Controls.Add(btnContaPagarCadastrar);
             grbTemplateContaPagar.Controls.Add(dgvContaPagar);
             grbTemplateContaPagar.Controls.Add(grbContaPagarHistorico);
@@ -151,6 +155,31 @@ namespace App.Forms.Forms
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
             grbTemplateContaPagar.Text = "Cadastro de Conta a Pagar - Livre";
+            // 
+            // cboHabilitarDataCompra
+            // 
+            cboHabilitarDataCompra.AutoSize = true;
+            cboHabilitarDataCompra.Checked = true;
+            cboHabilitarDataCompra.CheckState = CheckState.Checked;
+            cboHabilitarDataCompra.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            cboHabilitarDataCompra.Location = new Point(728, 60);
+            cboHabilitarDataCompra.Name = "cboHabilitarDataCompra";
+            cboHabilitarDataCompra.Size = new Size(161, 17);
+            cboHabilitarDataCompra.TabIndex = 37;
+            cboHabilitarDataCompra.Text = "Habilitar Data de Compra?";
+            cboHabilitarDataCompra.UseVisualStyleBackColor = true;
+            cboHabilitarDataCompra.CheckedChanged += CboHabilitarDataCompra_CheckedChanged;
+            // 
+            // cboNaoEnviarMesAnoFinal
+            // 
+            cboNaoEnviarMesAnoFinal.AutoSize = true;
+            cboNaoEnviarMesAnoFinal.Location = new Point(283, 199);
+            cboNaoEnviarMesAnoFinal.Name = "cboNaoEnviarMesAnoFinal";
+            cboNaoEnviarMesAnoFinal.Size = new Size(166, 19);
+            cboNaoEnviarMesAnoFinal.TabIndex = 30;
+            cboNaoEnviarMesAnoFinal.Text = "Não Enviar Ano/Mês Final!";
+            cboNaoEnviarMesAnoFinal.UseVisualStyleBackColor = true;
+            cboNaoEnviarMesAnoFinal.CheckedChanged += CboNaoEnviarMesAnoFinal_CheckedChanged;
             // 
             // btnContaPagarCadastrar
             // 
@@ -217,7 +246,7 @@ namespace App.Forms.Forms
             // cboContaPagarTipoCadastro
             // 
             cboContaPagarTipoCadastro.FormattingEnabled = true;
-            cboContaPagarTipoCadastro.Location = new Point(652, 187);
+            cboContaPagarTipoCadastro.Location = new Point(652, 195);
             cboContaPagarTipoCadastro.Name = "cboContaPagarTipoCadastro";
             cboContaPagarTipoCadastro.Size = new Size(204, 23);
             cboContaPagarTipoCadastro.TabIndex = 23;
@@ -225,7 +254,7 @@ namespace App.Forms.Forms
             // lblContaPagarTipoCadastro
             // 
             lblContaPagarTipoCadastro.AutoSize = true;
-            lblContaPagarTipoCadastro.Location = new Point(547, 190);
+            lblContaPagarTipoCadastro.Location = new Point(547, 198);
             lblContaPagarTipoCadastro.Name = "lblContaPagarTipoCadastro";
             lblContaPagarTipoCadastro.Size = new Size(99, 15);
             lblContaPagarTipoCadastro.TabIndex = 22;
@@ -234,7 +263,7 @@ namespace App.Forms.Forms
             // cboContaPagarFrequencia
             // 
             cboContaPagarFrequencia.FormattingEnabled = true;
-            cboContaPagarFrequencia.Location = new Point(652, 149);
+            cboContaPagarFrequencia.Location = new Point(652, 157);
             cboContaPagarFrequencia.Name = "cboContaPagarFrequencia";
             cboContaPagarFrequencia.Size = new Size(161, 23);
             cboContaPagarFrequencia.TabIndex = 21;
@@ -242,7 +271,7 @@ namespace App.Forms.Forms
             // lblContaPagarFrequencia
             // 
             lblContaPagarFrequencia.AutoSize = true;
-            lblContaPagarFrequencia.Location = new Point(578, 152);
+            lblContaPagarFrequencia.Location = new Point(578, 160);
             lblContaPagarFrequencia.Name = "lblContaPagarFrequencia";
             lblContaPagarFrequencia.Size = new Size(68, 15);
             lblContaPagarFrequencia.TabIndex = 20;
@@ -254,7 +283,7 @@ namespace App.Forms.Forms
             cboContaPagarMelhorDiaPagamento.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
             cboContaPagarMelhorDiaPagamento.FormatString = "N0";
             cboContaPagarMelhorDiaPagamento.FormattingEnabled = true;
-            cboContaPagarMelhorDiaPagamento.Location = new Point(652, 111);
+            cboContaPagarMelhorDiaPagamento.Location = new Point(652, 119);
             cboContaPagarMelhorDiaPagamento.Name = "cboContaPagarMelhorDiaPagamento";
             cboContaPagarMelhorDiaPagamento.Size = new Size(62, 27);
             cboContaPagarMelhorDiaPagamento.TabIndex = 19;
@@ -262,7 +291,7 @@ namespace App.Forms.Forms
             // lblContaPagarMelhorDiaPagamento
             // 
             lblContaPagarMelhorDiaPagamento.AutoSize = true;
-            lblContaPagarMelhorDiaPagamento.Location = new Point(499, 114);
+            lblContaPagarMelhorDiaPagamento.Location = new Point(499, 122);
             lblContaPagarMelhorDiaPagamento.Name = "lblContaPagarMelhorDiaPagamento";
             lblContaPagarMelhorDiaPagamento.Size = new Size(147, 15);
             lblContaPagarMelhorDiaPagamento.TabIndex = 18;
@@ -270,7 +299,7 @@ namespace App.Forms.Forms
             // 
             // dtpContaPagarDataCompra
             // 
-            dtpContaPagarDataCompra.Location = new Point(652, 71);
+            dtpContaPagarDataCompra.Location = new Point(652, 83);
             dtpContaPagarDataCompra.Name = "dtpContaPagarDataCompra";
             dtpContaPagarDataCompra.Size = new Size(237, 23);
             dtpContaPagarDataCompra.TabIndex = 17;
@@ -278,7 +307,7 @@ namespace App.Forms.Forms
             // lblContaPagarDataCompra
             // 
             lblContaPagarDataCompra.AutoSize = true;
-            lblContaPagarDataCompra.Location = new Point(553, 77);
+            lblContaPagarDataCompra.Location = new Point(553, 89);
             lblContaPagarDataCompra.Name = "lblContaPagarDataCompra";
             lblContaPagarDataCompra.Size = new Size(96, 15);
             lblContaPagarDataCompra.TabIndex = 16;
@@ -602,6 +631,7 @@ namespace App.Forms.Forms
             dgvEfetuarPagamentoListagem.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
             dgvEfetuarPagamentoListagem.CellMouseClick += DgvEfetuarPagamentoListagem_CellMouseClick;
             dgvEfetuarPagamentoListagem.CellMouseDown += DgvEfetuarPagamentoListagem_CellMouseDown;
+            dgvEfetuarPagamentoListagem.ColumnSortModeChanged += DgvEfetuarPagamentoListagem_ColumnSortModeChanged;
             dgvEfetuarPagamentoListagem.RowsAdded += DgvEfetuarPagamentoListagem_RowsAdded;
             dgvEfetuarPagamentoListagem.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
             // 
@@ -753,5 +783,7 @@ namespace App.Forms.Forms
         private Button btnExcluir;
         private CheckBox cboApenasNaoPagos;
         private Button btnExibirDetalhes;
+        private CheckBox cboNaoEnviarMesAnoFinal;
+        private CheckBox cboHabilitarDataCompra;
     }
 }

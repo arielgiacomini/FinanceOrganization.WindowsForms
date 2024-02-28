@@ -7,7 +7,6 @@ using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using App.WindowsForms.Forms.ExcluirDetalhes;
-using App.WindowsForms.ViewModel;
 using Domain.Entities;
 using Domain.Utils;
 using Newtonsoft.Json;
@@ -128,10 +127,10 @@ namespace App.Forms.Forms
                 Frequence = cboContaPagarFrequencia.Text,
                 RegistrationType = cboContaPagarTipoCadastro.Text,
                 InitialMonthYear = cboContaPagarAnoMesInicial.Text,
-                FynallyMonthYear = cboContaPagarAnoMesFinal.Text,
+                FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboContaPagarAnoMesFinal.Text : null,
                 Category = cboContaPagarCategory.Text,
                 Value = Convert.ToDecimal(txtContaPagarValor.Text.Replace("R$ ", "")),
-                PurchaseDate = Convert.ToDateTime(dtpContaPagarDataCompra.Text),
+                PurchaseDate = cboHabilitarDataCompra.Checked ? DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataCompra.Text) : null,
                 BestPayDay = Convert.ToInt32(cboContaPagarMelhorDiaPagamento.Text),
                 AdditionalMessage = rtbContaPagarMensagemAdicional.Text,
                 CreationDate = DateTime.Now,
@@ -363,14 +362,27 @@ namespace App.Forms.Forms
             var yearMonthsArray = yearMonths.Values.ToArray();
 
             cboContaPagarAnoMesInicial.Items.AddRange(yearMonthsArray);
-            cboContaPagarAnoMesFinal.Items.AddRange(yearMonthsArray);
             cboEfetuarPagamentoAnoMes.Items.AddRange(yearMonthsArray);
 
-            _ = yearMonths.TryGetValue(3, out string? currentYearMont);
+            _ = yearMonths.TryGetValue(3, out string? currentYearMonth);
 
-            cboContaPagarAnoMesInicial.SelectedItem = currentYearMont;
-            cboContaPagarAnoMesFinal.SelectedItem = currentYearMont;
-            cboEfetuarPagamentoAnoMes.SelectedItem = currentYearMont;
+            cboContaPagarAnoMesInicial.SelectedItem = currentYearMonth;
+            cboEfetuarPagamentoAnoMes.SelectedItem = currentYearMonth;
+
+            PreencherComboBoxcboContaPagarAnoMesFinal();
+        }
+
+        private void PreencherComboBoxcboContaPagarAnoMesFinal()
+        {
+            var yearMonths = DateServiceUtils.GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter();
+
+            var yearMonthsArray = yearMonths.Values.ToArray();
+
+            cboContaPagarAnoMesFinal.Items.AddRange(yearMonthsArray);
+
+            _ = yearMonths.TryGetValue(3, out string? currentYearMonth);
+
+            cboContaPagarAnoMesFinal.SelectedItem = currentYearMonth;
         }
 
         private void PreencherContaPagarMelhorDiaPagamento()
@@ -460,6 +472,20 @@ namespace App.Forms.Forms
         {
             if (ckbContaPagarConsideraMesmoMes.Checked)
             {
+                if (cboNaoEnviarMesAnoFinal.Checked)
+                {
+                    var result = MessageBox
+                        .Show("Você enviará o Mês/Ano Final exatamente igual o inicial?",
+                        "E aí cara?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        cboContaPagarAnoMesFinal.SelectedItem = cboContaPagarAnoMesInicial.SelectedItem;
+                        cboContaPagarAnoMesFinal.Enabled = false;
+                        cboNaoEnviarMesAnoFinal.Checked = false;
+                    }
+                }
+
                 cboContaPagarAnoMesFinal.SelectedItem = cboContaPagarAnoMesInicial.SelectedItem;
                 cboContaPagarAnoMesFinal.Enabled = false;
             }
@@ -1027,6 +1053,53 @@ namespace App.Forms.Forms
             };
 
             frmExcluirDetalhes.ShowDialog();
+        }
+
+        private void DgvEfetuarPagamentoListagem_ColumnSortModeChanged(object sender, DataGridViewColumnEventArgs e)
+        {
+
+        }
+
+        private void CboHabilitarDataCompra_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cboHabilitarDataCompra.Checked)
+            {
+                dtpContaPagarDataCompra.Enabled = true;
+            }
+            else
+            {
+                dtpContaPagarDataCompra.Text = string.Empty;
+                dtpContaPagarDataCompra.Enabled = false;
+            }
+        }
+
+        private void CboNaoEnviarMesAnoFinal_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cboNaoEnviarMesAnoFinal.Checked)
+            {
+                if (ckbContaPagarConsideraMesmoMes.Checked)
+                {
+                    var result = MessageBox
+                                        .Show("Você quer considerar o mesmo Mês/Ano inicial e final?",
+                                        "E aí cara?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        cboContaPagarAnoMesFinal.SelectedItem = cboContaPagarAnoMesInicial.SelectedItem;
+                        cboContaPagarAnoMesFinal.Enabled = false;
+                        ckbContaPagarConsideraMesmoMes.Checked = false;
+
+                    }
+                }
+
+                cboContaPagarAnoMesFinal.Enabled = false;
+                cboContaPagarAnoMesFinal.Text = null;
+            }
+            else
+            {
+                cboContaPagarAnoMesFinal.Enabled = true;
+                PreencherComboBoxcboContaPagarAnoMesFinal();
+            }
         }
     }
 }

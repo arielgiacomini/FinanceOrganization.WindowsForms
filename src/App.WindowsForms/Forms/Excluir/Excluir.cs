@@ -95,20 +95,30 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         {
             foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
             {
+                bool someCondition = false;
+
                 if (Convert.ToBoolean(row.Cells[12].Value))
                 {
+                    someCondition = true;
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
 
                 if (row.Cells[2].Value.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row.Cells[12].Value))
                 {
+                    someCondition = true;
                     SetColorRows(row, Color.DarkOrange, Color.Black);
                 }
 
                 if (!string.IsNullOrWhiteSpace(row.Cells[13].Value?.ToString())
                     && row.Cells[13].Value.ToString()!.StartsWith(EH_CARTAO_CREDITO_NAIRA))
                 {
+                    someCondition = true;
                     SetColorRows(row, Color.DimGray, Color.White);
+                }
+
+                if (!someCondition)
+                {
+                    SetColorRows(row, Color.Transparent, Color.Black);
                 }
             }
         }
