@@ -790,7 +790,11 @@ namespace App.Forms.Forms
 
         private void BtnPagamentoAvulso_Click(object sender, EventArgs e)
         {
-            FrmPagamento frmPagamento = new();
+            FrmPagamento frmPagamento = new()
+            {
+                Environment = Environment
+            };
+
             frmPagamento.ShowDialog();
         }
 
