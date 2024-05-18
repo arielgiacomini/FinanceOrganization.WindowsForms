@@ -93,34 +93,39 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
+            SetColor();
+        }
+
+        private void SetColor()
+        {
             foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
             {
-                bool someCondition = false;
-
-                if (Convert.ToBoolean(row.Cells[12].Value))
+                Console.WriteLine($"Está na linha de indice [{row.Index}] com o valor de Mes/Ano [{row.Cells[8].Value}]");
+                if (IsPaid(row))
                 {
-                    someCondition = true;
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
-
-                if (row.Cells[2].Value.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row.Cells[12].Value))
-                {
-                    someCondition = true;
-                    SetColorRows(row, Color.DarkOrange, Color.Black);
-                }
-
-                if (!string.IsNullOrWhiteSpace(row.Cells[13].Value?.ToString())
-                    && row.Cells[13].Value.ToString()!.StartsWith(EH_CARTAO_CREDITO_NAIRA))
-                {
-                    someCondition = true;
-                    SetColorRows(row, Color.DimGray, Color.White);
-                }
-
-                if (!someCondition)
+                else
                 {
                     SetColorRows(row, Color.Transparent, Color.Black);
                 }
             }
+        }
+
+        private static bool IsCreditCardNaira(DataGridViewRow row)
+        {
+            return !string.IsNullOrWhiteSpace(row.Cells[13].Value?.ToString())
+                                && row.Cells[13].Value.ToString()!.StartsWith(EH_CARTAO_CREDITO_NAIRA);
+        }
+
+        private static bool IsPaid(DataGridViewRow row)
+        {
+            return Convert.ToBoolean(row.Cells[12].Value);
+        }
+
+        private static bool IsCreditCardNotPaid(DataGridViewRow row)
+        {
+            return row.Cells[2].Value.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row.Cells[12].Value);
         }
 
         private static void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)

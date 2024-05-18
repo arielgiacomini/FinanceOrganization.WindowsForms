@@ -938,22 +938,22 @@ namespace App.Forms.Forms
         {
             foreach (DataGridViewRow row in dgvContaPagar.Rows)
             {
-                if (row.Cells[11].Value == RegistrationStatus.AwaitRequestAPI.ToString())
+                if (row.Cells[11].Value.ToString() == RegistrationStatus.AwaitRequestAPI.ToString())
                 {
                     SetColorRows(row, Color.Yellow, Color.Black);
                 }
 
-                if (row.Cells[11].Value == RegistrationStatus.AwaitResponseAPI.ToString())
+                if (row.Cells[11].Value.ToString() == RegistrationStatus.AwaitResponseAPI.ToString())
                 {
                     SetColorRows(row, Color.DarkOrange, Color.Black);
                 }
 
-                if (row.Cells[11].Value == RegistrationStatus.Created.ToString())
+                if (row.Cells[11].Value.ToString() == RegistrationStatus.Created.ToString())
                 {
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
 
-                if (row.Cells[11].Value == RegistrationStatus.RegistrationError.ToString())
+                if (row.Cells[11].Value.ToString() == RegistrationStatus.RegistrationError.ToString())
                 {
                     SetColorRows(row, Color.DarkRed, Color.White);
                 }
