@@ -35,6 +35,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes = new DataGridView();
             lblExcluirDetalhesItensSelecionadosDataGridView = new Label();
             btnExcluir = new Button();
+            btnShowDetails = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).BeginInit();
             SuspendLayout();
             // 
@@ -91,11 +92,25 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             btnExcluir.UseVisualStyleBackColor = false;
             btnExcluir.Click += BtnExcluir_Click;
             // 
+            // btnShowDetails
+            // 
+            btnShowDetails.BackColor = Color.MediumBlue;
+            btnShowDetails.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            btnShowDetails.ForeColor = SystemColors.ButtonFace;
+            btnShowDetails.Location = new Point(168, 12);
+            btnShowDetails.Name = "btnShowDetails";
+            btnShowDetails.Size = new Size(150, 31);
+            btnShowDetails.TabIndex = 18;
+            btnShowDetails.Text = "Detalhes Registro(s)";
+            btnShowDetails.UseVisualStyleBackColor = false;
+            btnShowDetails.Click += BtnShowDetails_Click;
+            // 
             // FrmExibirDetalhes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1281, 514);
+            Controls.Add(btnShowDetails);
             Controls.Add(btnExcluir);
             Controls.Add(lblExcluirDetalhesItensSelecionadosDataGridView);
             Controls.Add(dgvExcluirDetalhes);
@@ -114,5 +129,6 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private DataGridView dgvExcluirDetalhes;
         private Label lblExcluirDetalhesItensSelecionadosDataGridView;
         private Button btnExcluir;
+        private Button btnShowDetails;
     }
 }

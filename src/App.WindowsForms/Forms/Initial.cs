@@ -243,46 +243,84 @@ namespace App.Forms.Forms
         {
             Dictionary<int, string> categoriasContaPagar = new()
             {
-                { 0, "Nenhum" },
-                { 1, "Alimentação:Açougue" },
-                { 2, "Alimentação:Almoço" },
-                { 3, "Alimentação:Besteiras" },
-                { 4, "Alimentação:Café da Manhã" },
-                { 5, "Alimentação:Café da Tarde" },
-                { 6, "Alimentação:Feira" },
-                { 7, "Alimentação:Jantar" },
-                { 8, "Alimentação:Mercado" },
-                { 9, "Automóvel:Combustível" },
-                { 10, "Automóvel:Documentação" },
-                { 11, "Automóvel:Estacionamento" },
-                { 12, "Automóvel:Garagem" },
-                { 13, "Automóvel:Limpeza" },
-                { 14, "Automóvel:Manutenção" },
-                { 15, "Automóvel:Seguro" },
-                { 16, "Cabeleleiro:Ariel" },
-                { 17, "Casa:Essencial" },
-                { 18, "Casa:Financiamento" },
-                { 19, "Casa:Internet" },
-                { 20, "Casa:Segurança" },
-                { 21, "Curso:Inglês:Ariel" },
-                { 22, "Dizimo" },
-                { 23, "Esporte:Helena" },
-                { 24, "Esporte:TaxaMatricula" },
-                { 25, "Estética:Naíra" },
-                { 26, "Farmacia:Remédio" },
-                { 27, "Filhos:Helena" },
-                { 28, "Filhos:Leo" },
-                { 29, "Gasto de Terceiros" },
-                { 30, "Higiêne:Naira" },
-                { 31, "Jogos:Bingo" },
-                { 32, "Jogos:RifaOnline" },
-                { 33, "SeguroVida:Naira" },
-                { 34, "Serviço:Cloud" },
-                { 35, "Serviço:Produtividade" },
-                { 36, "Serviço:Streaming" },
-                { 37, "Transporte:Escolar" },
-                { 38, "Vestuário:Leo" },
-                { 39, "Viagem" }
+                    { 0, "Nenhum" },
+                    { 1, "Alimentação:Açougue" },
+                    { 2, "Alimentação:Almoço" },
+                    { 3, "Alimentação:Besteiras" },
+                    { 4, "Alimentação:Café da Manhã" },
+                    { 5, "Alimentação:Café da Tarde" },
+                    { 6, "Alimentação:Comemoração" },
+                    { 7, "Alimentação:Feira" },
+                    { 8, "Alimentação:Jantar" },
+                    { 9, "Alimentação:Mercado" },
+                    { 10, "Automóvel:Combustível" },
+                    { 11, "Automóvel:Documentação" },
+                    { 12, "Automóvel:Estacionamento" },
+                    { 13, "Automóvel:Garagem" },
+                    { 14, "Automóvel:Limpeza" },
+                    { 15, "Automóvel:Manutenção" },
+                    { 16, "Automóvel:Seguro" },
+                    { 17, "Automóvel:Uber" },
+                    { 18, "Cabeleleiro:Ariel" },
+                    { 19, "Cabeleleiro:Leo" },
+                    { 20, "Cartão de Crédito:Pontos" },
+                    { 21, "Casa:Água" },
+                    { 22, "Casa:Amortização Financiamento" },
+                    { 23, "Casa:Eletrodoméstico" },
+                    { 24, "Casa:Energia" },
+                    { 25, "Casa:Financiamento" },
+                    { 26, "Casa:Gás" },
+                    { 27, "Casa:IPTU" },
+                    { 28, "Casa:Manutenção" },
+                    { 29, "Casa:Segurança" },
+                    { 30, "Casa:TV" },
+                    { 31, "Casa:Utensilios" },
+                    { 32, "Casa:Utensílios" },
+                    { 33, "Casa:Utensílios:Cobertor" },
+                    { 34, "Celular:Internet" },
+                    { 35, "Celular:Pelicula" },
+                    { 36, "Curso:Inglês:Ariel" },
+                    { 37, "Curso:Programação:Ariel" },
+                    { 38, "Dizimo" },
+                    { 39, "Documentos:Ariel" },
+                    { 40, "Documentos:Naira" },
+                    { 41, "Esporte:Ariel" },
+                    { 42, "Esporte:Helena" },
+                    { 43, "Esporte:Naíra" },
+                    { 44, "Esporte:TaxaMatricula" },
+                    { 45, "Estética:Naíra" },
+                    { 46, "Farmacia:Remédio" },
+                    { 47, "Filhos:Helena" },
+                    { 48, "Filhos:Leo" },
+                    { 49, "Gasto de Terceiros:Junior" },
+                    { 50, "Gasto de Terceiros:Mãe" },
+                    { 51, "Higiêne:Ariel" },
+                    { 52, "Higiêne:Naira" },
+                    { 53, "Internet:Fixa Casa TIM" },
+                    { 54, "Internet:Fixa Casa VIP" },
+                    { 55, "Internet:Fixa Escritório VIP" },
+                    { 56, "Internet:Móvel Naíra" },
+                    { 57, "Jogos:Bingo" },
+                    { 58, "Jogos:Estadio" },
+                    { 59, "Jogos:RifaOnline" },
+                    { 60, "Jogos:SorteioDrone" },
+                    { 61, "Livros" },
+                    { 62, "Passeio:Bar" },
+                    { 63, "Passeio:Circo" },
+                    { 64, "Perfumaria" },
+                    { 65, "Presente:Arthur" },
+                    { 66, "Presente:Naira" },
+                    { 67, "Presente:Naíra" },
+                    { 68, "SeguroVida:Naira" },
+                    { 69, "Serviço:Cloud" },
+                    { 70, "Serviço:Produtividade" },
+                    { 71, "Serviço:Streaming" },
+                    { 72, "Transporte:Escolar" },
+                    { 73, "Vestuário:Ariel" },
+                    { 74, "Vestuário:Helena" },
+                    { 75, "Vestuário:Leo" },
+                    { 76, "Vestuário:Presente" },
+                    { 77, "Viagem" }
             };
 
             var categoriasContaPagarOrderBy = categoriasContaPagar
@@ -608,22 +646,35 @@ namespace App.Forms.Forms
             dgvEfetuarPagamentoListagem.Columns[2].HeaderText = "Conta";
             dgvEfetuarPagamentoListagem.Columns[3].HeaderText = "Descrição";
             dgvEfetuarPagamentoListagem.Columns[4].HeaderText = "Categoria";
-            dgvEfetuarPagamentoListagem.Columns[5].HeaderText = "Valor";
+
+            dgvEfetuarPagamentoListagem.Columns[5].HeaderText = "R$ Restante";
             dgvEfetuarPagamentoListagem.Columns[5].DefaultCellStyle.Format = "C2";
             dgvEfetuarPagamentoListagem.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvEfetuarPagamentoListagem.Columns[6].HeaderText = "Data de Compra";
-            dgvEfetuarPagamentoListagem.Columns[7].HeaderText = "Vencimento";
-            dgvEfetuarPagamentoListagem.Columns[8].HeaderText = "Mês/Ano";
-            dgvEfetuarPagamentoListagem.Columns[9].HeaderText = "Frequência";
-            dgvEfetuarPagamentoListagem.Columns[10].HeaderText = "Tipo";
-            dgvEfetuarPagamentoListagem.Columns[11].HeaderText = "Data de Pagamento";
-            dgvEfetuarPagamentoListagem.Columns[12].HeaderText = "Pago?";
-            dgvEfetuarPagamentoListagem.Columns[13].HeaderText = "Mensagem";
-            dgvEfetuarPagamentoListagem.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvEfetuarPagamentoListagem.Columns[14].HeaderText = "Data de Criação";
-            dgvEfetuarPagamentoListagem.Columns[14].Visible = false;
-            dgvEfetuarPagamentoListagem.Columns[15].HeaderText = "Data de Alteração";
-            dgvEfetuarPagamentoListagem.Columns[15].Visible = false;
+
+            dgvEfetuarPagamentoListagem.Columns[6].HeaderText = "R$ Realizado";
+            dgvEfetuarPagamentoListagem.Columns[6].DefaultCellStyle.Format = "C2";
+            dgvEfetuarPagamentoListagem.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvEfetuarPagamentoListagem.Columns[7].HeaderText = "R$ Total";
+            dgvEfetuarPagamentoListagem.Columns[7].DefaultCellStyle.Format = "C2";
+            dgvEfetuarPagamentoListagem.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvEfetuarPagamentoListagem.Columns[8].HeaderText = "Qtd Compras";
+            dgvEfetuarPagamentoListagem.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
+            dgvEfetuarPagamentoListagem.Columns[9].HeaderText = "Data de Compra";
+            dgvEfetuarPagamentoListagem.Columns[10].HeaderText = "Vencimento";
+            dgvEfetuarPagamentoListagem.Columns[11].HeaderText = "Mês/Ano";
+            dgvEfetuarPagamentoListagem.Columns[12].HeaderText = "Frequência";
+            dgvEfetuarPagamentoListagem.Columns[13].HeaderText = "Tipo";
+            dgvEfetuarPagamentoListagem.Columns[14].HeaderText = "Data de Pagamento";
+            dgvEfetuarPagamentoListagem.Columns[15].HeaderText = "Pago?";
+            dgvEfetuarPagamentoListagem.Columns[16].HeaderText = "Mensagem";
+            dgvEfetuarPagamentoListagem.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvEfetuarPagamentoListagem.Columns[17].HeaderText = "Data de Criação";
+            dgvEfetuarPagamentoListagem.Columns[17].Visible = false;
+            dgvEfetuarPagamentoListagem.Columns[18].HeaderText = "Data de Alteração";
+            dgvEfetuarPagamentoListagem.Columns[18].Visible = false;
+            dgvEfetuarPagamentoListagem.Columns[19].Visible = false;
         }
 
         private void Consolidate(IList<DgvEfetuarPagamentoListagemDataSource> dataSourceOrderBy)
@@ -848,14 +899,14 @@ namespace App.Forms.Forms
                     Name = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                     Category = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[4].Value?.ToString(),
                     Value = Convert.ToDecimal(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
-                    PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[6].Value?.ToString()),
-                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[7].Value?.ToString())!.Value,
-                    YearMonth = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[8].Value?.ToString(),
-                    Frequence = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[9].Value?.ToString(),
-                    RegistrationType = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[10].Value?.ToString(),
-                    PayDay = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[11].Value?.ToString(),
-                    HasPay = Convert.ToBoolean(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[12].Value?.ToString()),
-                    AdditionalMessage = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                    PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
+                    YearMonth = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                    Frequence = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[12].Value?.ToString(),
+                    RegistrationType = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                    PayDay = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[14].Value?.ToString(),
+                    HasPay = Convert.ToBoolean(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[15].Value?.ToString()),
+                    AdditionalMessage = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[16].Value?.ToString(),
                     LastChangeDate = DateTime.Now
                 };
 
@@ -867,38 +918,6 @@ namespace App.Forms.Forms
 
                 frmPagamento.ShowDialog();
             }
-        }
-
-        private static bool ContaPagarVencida(DataGridViewRow row)
-        {
-            bool result = false;
-            var dataVencimento = Convert.ToDateTime(row.Cells[7].Value);
-            var hasPay = Convert.ToBoolean(row.Cells[12].Value);
-            var now = DateTime.Now;
-
-            if (dataVencimento < now && !hasPay)
-            {
-                result = true;
-            }
-
-            return result;
-        }
-
-        private static bool ContaPagarVencimentoProximo(DataGridViewRow row)
-        {
-            bool vencimentoProximo = false;
-            var now = DateTime.Now;
-            var nowMoreFiveDays = now.AddDays(5);
-            var dataVencimento = Convert.ToDateTime(row.Cells[7].Value?.ToString());
-            var descricao = row.Cells[3].Value?.ToString();
-            var index = row.Index;
-
-            if (dataVencimento >= now && dataVencimento <= nowMoreFiveDays)
-            {
-                vencimentoProximo = true;
-            }
-
-            return vencimentoProximo;
         }
 
         private static void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)
@@ -916,18 +935,18 @@ namespace App.Forms.Forms
         {
             foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.Rows)
             {
-                if (Convert.ToBoolean(row.Cells[12].Value))
+                if (Convert.ToBoolean(row.Cells[15].Value))
                 {
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
 
-                if (row.Cells[2].Value.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row.Cells[12].Value))
+                if (row?.Cells[2]?.Value?.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
                 {
                     SetColorRows(row, Color.DarkOrange, Color.Black);
                 }
 
-                if (!string.IsNullOrWhiteSpace(row.Cells[13].Value?.ToString())
-                    && row.Cells[13].Value.ToString()!.StartsWith(EH_CARTAO_CREDITO_NAIRA))
+                if (!string.IsNullOrWhiteSpace(row?.Cells[16]?.Value?.ToString())
+                    && (bool)(row?.Cells[16]?.Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
                 {
                     SetColorRows(row, Color.DimGray, Color.White);
                 }
@@ -1052,7 +1071,7 @@ namespace App.Forms.Forms
 
             FrmExibirDetalhes frmExcluirDetalhes = new()
             {
-                SearchBillToPayViewModel = searchBillToPayViewModel,
+                PostSearchBillToPayViewModel = searchBillToPayViewModel,
                 Environment = Environment
             };
 

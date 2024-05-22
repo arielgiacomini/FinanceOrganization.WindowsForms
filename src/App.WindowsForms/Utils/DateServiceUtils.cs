@@ -239,7 +239,7 @@
 
         public static Dictionary<int, string> GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter()
         {
-            var dateTimeCorteInitial = DateTime.Now.AddMonths(-3);
+            var dateTimeCorteInitial = new DateTime(2023, 12, 01);
 
             DateTime firstDate = new(dateTimeCorteInitial.Year, dateTimeCorteInitial.Month, 1, 0, 0, 0, DateTimeKind.Local);
 
