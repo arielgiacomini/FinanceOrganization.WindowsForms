@@ -33,8 +33,10 @@ namespace App.Forms.Forms
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Initial));
             tbcInitial = new TabControl();
-            tbpContaPagarLivre = new TabPage();
+            tbpCadastroContaPagar = new TabPage();
             grbTemplateContaPagar = new GroupBox();
+            cboHabilitarDataCompra = new CheckBox();
+            cboNaoEnviarMesAnoFinal = new CheckBox();
             btnContaPagarCadastrar = new Button();
             dgvContaPagar = new DataGridView();
             grbContaPagarHistorico = new GroupBox();
@@ -62,8 +64,7 @@ namespace App.Forms.Forms
             lblContaPagarTipoConta = new Label();
             lblContaPagarAnoMesInicial = new Label();
             cboContaPagarTipoConta = new ComboBox();
-            tbpContaPagarCartaoCredito = new TabPage();
-            tbpEfetuarPagamento = new TabPage();
+            tbpListarContaPagar = new TabPage();
             btnExibirDetalhes = new Button();
             lblEfetuarPagamentoItensSelecionadosDataGridView = new Label();
             lblGridViewTotalPago = new Label();
@@ -84,19 +85,18 @@ namespace App.Forms.Forms
             rdbAmbienteHomologacao = new RadioButton();
             rdbAmbienteProducao = new RadioButton();
             tbcInitial.SuspendLayout();
-            tbpContaPagarLivre.SuspendLayout();
+            tbpCadastroContaPagar.SuspendLayout();
             grbTemplateContaPagar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContaPagar).BeginInit();
-            tbpEfetuarPagamento.SuspendLayout();
+            tbpListarContaPagar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).BeginInit();
             SuspendLayout();
             // 
             // tbcInitial
             // 
             tbcInitial.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tbcInitial.Controls.Add(tbpContaPagarLivre);
-            tbcInitial.Controls.Add(tbpContaPagarCartaoCredito);
-            tbcInitial.Controls.Add(tbpEfetuarPagamento);
+            tbcInitial.Controls.Add(tbpCadastroContaPagar);
+            tbcInitial.Controls.Add(tbpListarContaPagar);
             tbcInitial.Location = new Point(0, 21);
             tbcInitial.Name = "tbcInitial";
             tbcInitial.SelectedIndex = 0;
@@ -104,20 +104,22 @@ namespace App.Forms.Forms
             tbcInitial.TabIndex = 14;
             tbcInitial.SelectedIndexChanged += TbcInitial_SelectedIndexChanged;
             // 
-            // tbpContaPagarLivre
+            // tbpCadastroContaPagar
             // 
-            tbpContaPagarLivre.Controls.Add(grbTemplateContaPagar);
-            tbpContaPagarLivre.Location = new Point(4, 24);
-            tbpContaPagarLivre.Name = "tbpContaPagarLivre";
-            tbpContaPagarLivre.Padding = new Padding(3);
-            tbpContaPagarLivre.Size = new Size(1208, 461);
-            tbpContaPagarLivre.TabIndex = 0;
-            tbpContaPagarLivre.Text = "Conta a Pagar - Livre";
-            tbpContaPagarLivre.UseVisualStyleBackColor = true;
+            tbpCadastroContaPagar.Controls.Add(grbTemplateContaPagar);
+            tbpCadastroContaPagar.Location = new Point(4, 24);
+            tbpCadastroContaPagar.Name = "tbpCadastroContaPagar";
+            tbpCadastroContaPagar.Padding = new Padding(3);
+            tbpCadastroContaPagar.Size = new Size(1208, 461);
+            tbpCadastroContaPagar.TabIndex = 0;
+            tbpCadastroContaPagar.Text = "Conta a Pagar - Cadastro";
+            tbpCadastroContaPagar.UseVisualStyleBackColor = true;
             // 
             // grbTemplateContaPagar
             // 
             grbTemplateContaPagar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            grbTemplateContaPagar.Controls.Add(cboHabilitarDataCompra);
+            grbTemplateContaPagar.Controls.Add(cboNaoEnviarMesAnoFinal);
             grbTemplateContaPagar.Controls.Add(btnContaPagarCadastrar);
             grbTemplateContaPagar.Controls.Add(dgvContaPagar);
             grbTemplateContaPagar.Controls.Add(grbContaPagarHistorico);
@@ -151,6 +153,31 @@ namespace App.Forms.Forms
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
             grbTemplateContaPagar.Text = "Cadastro de Conta a Pagar - Livre";
+            // 
+            // cboHabilitarDataCompra
+            // 
+            cboHabilitarDataCompra.AutoSize = true;
+            cboHabilitarDataCompra.Checked = true;
+            cboHabilitarDataCompra.CheckState = CheckState.Checked;
+            cboHabilitarDataCompra.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            cboHabilitarDataCompra.Location = new Point(728, 60);
+            cboHabilitarDataCompra.Name = "cboHabilitarDataCompra";
+            cboHabilitarDataCompra.Size = new Size(161, 17);
+            cboHabilitarDataCompra.TabIndex = 37;
+            cboHabilitarDataCompra.Text = "Habilitar Data de Compra?";
+            cboHabilitarDataCompra.UseVisualStyleBackColor = true;
+            cboHabilitarDataCompra.CheckedChanged += CboHabilitarDataCompra_CheckedChanged;
+            // 
+            // cboNaoEnviarMesAnoFinal
+            // 
+            cboNaoEnviarMesAnoFinal.AutoSize = true;
+            cboNaoEnviarMesAnoFinal.Location = new Point(283, 199);
+            cboNaoEnviarMesAnoFinal.Name = "cboNaoEnviarMesAnoFinal";
+            cboNaoEnviarMesAnoFinal.Size = new Size(166, 19);
+            cboNaoEnviarMesAnoFinal.TabIndex = 30;
+            cboNaoEnviarMesAnoFinal.Text = "Não Enviar Ano/Mês Final!";
+            cboNaoEnviarMesAnoFinal.UseVisualStyleBackColor = true;
+            cboNaoEnviarMesAnoFinal.CheckedChanged += CboNaoEnviarMesAnoFinal_CheckedChanged;
             // 
             // btnContaPagarCadastrar
             // 
@@ -217,7 +244,7 @@ namespace App.Forms.Forms
             // cboContaPagarTipoCadastro
             // 
             cboContaPagarTipoCadastro.FormattingEnabled = true;
-            cboContaPagarTipoCadastro.Location = new Point(652, 187);
+            cboContaPagarTipoCadastro.Location = new Point(652, 195);
             cboContaPagarTipoCadastro.Name = "cboContaPagarTipoCadastro";
             cboContaPagarTipoCadastro.Size = new Size(204, 23);
             cboContaPagarTipoCadastro.TabIndex = 23;
@@ -225,7 +252,7 @@ namespace App.Forms.Forms
             // lblContaPagarTipoCadastro
             // 
             lblContaPagarTipoCadastro.AutoSize = true;
-            lblContaPagarTipoCadastro.Location = new Point(547, 190);
+            lblContaPagarTipoCadastro.Location = new Point(547, 198);
             lblContaPagarTipoCadastro.Name = "lblContaPagarTipoCadastro";
             lblContaPagarTipoCadastro.Size = new Size(99, 15);
             lblContaPagarTipoCadastro.TabIndex = 22;
@@ -234,7 +261,7 @@ namespace App.Forms.Forms
             // cboContaPagarFrequencia
             // 
             cboContaPagarFrequencia.FormattingEnabled = true;
-            cboContaPagarFrequencia.Location = new Point(652, 149);
+            cboContaPagarFrequencia.Location = new Point(652, 157);
             cboContaPagarFrequencia.Name = "cboContaPagarFrequencia";
             cboContaPagarFrequencia.Size = new Size(161, 23);
             cboContaPagarFrequencia.TabIndex = 21;
@@ -242,7 +269,7 @@ namespace App.Forms.Forms
             // lblContaPagarFrequencia
             // 
             lblContaPagarFrequencia.AutoSize = true;
-            lblContaPagarFrequencia.Location = new Point(578, 152);
+            lblContaPagarFrequencia.Location = new Point(578, 160);
             lblContaPagarFrequencia.Name = "lblContaPagarFrequencia";
             lblContaPagarFrequencia.Size = new Size(68, 15);
             lblContaPagarFrequencia.TabIndex = 20;
@@ -254,7 +281,7 @@ namespace App.Forms.Forms
             cboContaPagarMelhorDiaPagamento.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
             cboContaPagarMelhorDiaPagamento.FormatString = "N0";
             cboContaPagarMelhorDiaPagamento.FormattingEnabled = true;
-            cboContaPagarMelhorDiaPagamento.Location = new Point(652, 111);
+            cboContaPagarMelhorDiaPagamento.Location = new Point(652, 119);
             cboContaPagarMelhorDiaPagamento.Name = "cboContaPagarMelhorDiaPagamento";
             cboContaPagarMelhorDiaPagamento.Size = new Size(62, 27);
             cboContaPagarMelhorDiaPagamento.TabIndex = 19;
@@ -262,7 +289,7 @@ namespace App.Forms.Forms
             // lblContaPagarMelhorDiaPagamento
             // 
             lblContaPagarMelhorDiaPagamento.AutoSize = true;
-            lblContaPagarMelhorDiaPagamento.Location = new Point(499, 114);
+            lblContaPagarMelhorDiaPagamento.Location = new Point(499, 122);
             lblContaPagarMelhorDiaPagamento.Name = "lblContaPagarMelhorDiaPagamento";
             lblContaPagarMelhorDiaPagamento.Size = new Size(147, 15);
             lblContaPagarMelhorDiaPagamento.TabIndex = 18;
@@ -270,7 +297,7 @@ namespace App.Forms.Forms
             // 
             // dtpContaPagarDataCompra
             // 
-            dtpContaPagarDataCompra.Location = new Point(652, 71);
+            dtpContaPagarDataCompra.Location = new Point(652, 83);
             dtpContaPagarDataCompra.Name = "dtpContaPagarDataCompra";
             dtpContaPagarDataCompra.Size = new Size(237, 23);
             dtpContaPagarDataCompra.TabIndex = 17;
@@ -278,7 +305,7 @@ namespace App.Forms.Forms
             // lblContaPagarDataCompra
             // 
             lblContaPagarDataCompra.AutoSize = true;
-            lblContaPagarDataCompra.Location = new Point(553, 77);
+            lblContaPagarDataCompra.Location = new Point(553, 89);
             lblContaPagarDataCompra.Name = "lblContaPagarDataCompra";
             lblContaPagarDataCompra.Size = new Size(96, 15);
             lblContaPagarDataCompra.TabIndex = 16;
@@ -404,38 +431,28 @@ namespace App.Forms.Forms
             cboContaPagarTipoConta.Size = new Size(167, 23);
             cboContaPagarTipoConta.TabIndex = 5;
             // 
-            // tbpContaPagarCartaoCredito
+            // tbpListarContaPagar
             // 
-            tbpContaPagarCartaoCredito.Location = new Point(4, 24);
-            tbpContaPagarCartaoCredito.Name = "tbpContaPagarCartaoCredito";
-            tbpContaPagarCartaoCredito.Padding = new Padding(3);
-            tbpContaPagarCartaoCredito.Size = new Size(1208, 461);
-            tbpContaPagarCartaoCredito.TabIndex = 1;
-            tbpContaPagarCartaoCredito.Text = "Lançar no Cartão de Crédito";
-            tbpContaPagarCartaoCredito.UseVisualStyleBackColor = true;
-            // 
-            // tbpEfetuarPagamento
-            // 
-            tbpEfetuarPagamento.Controls.Add(btnExibirDetalhes);
-            tbpEfetuarPagamento.Controls.Add(lblEfetuarPagamentoItensSelecionadosDataGridView);
-            tbpEfetuarPagamento.Controls.Add(lblGridViewTotalPago);
-            tbpEfetuarPagamento.Controls.Add(lblGridViewCartaoCreditoNaira);
-            tbpEfetuarPagamento.Controls.Add(lblGridViewCartaoCreditoFamilia);
-            tbpEfetuarPagamento.Controls.Add(lblGridViewTotais);
-            tbpEfetuarPagamento.Controls.Add(lblEfetuarPagamentoCategoria);
-            tbpEfetuarPagamento.Controls.Add(cboEfetuarPagamentoCategoria);
-            tbpEfetuarPagamento.Controls.Add(lblEfetuarPagamentoInformativoDuploCliqueGrid);
-            tbpEfetuarPagamento.Controls.Add(btnPagamentoAvulso);
-            tbpEfetuarPagamento.Controls.Add(btnEfetuarPagamentoBuscar);
-            tbpEfetuarPagamento.Controls.Add(lblEfetuarPagamentoAnoMes);
-            tbpEfetuarPagamento.Controls.Add(cboEfetuarPagamentoAnoMes);
-            tbpEfetuarPagamento.Controls.Add(dgvEfetuarPagamentoListagem);
-            tbpEfetuarPagamento.Location = new Point(4, 24);
-            tbpEfetuarPagamento.Name = "tbpEfetuarPagamento";
-            tbpEfetuarPagamento.Size = new Size(1208, 461);
-            tbpEfetuarPagamento.TabIndex = 2;
-            tbpEfetuarPagamento.Text = "Pagamento";
-            tbpEfetuarPagamento.UseVisualStyleBackColor = true;
+            tbpListarContaPagar.Controls.Add(btnExibirDetalhes);
+            tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoItensSelecionadosDataGridView);
+            tbpListarContaPagar.Controls.Add(lblGridViewTotalPago);
+            tbpListarContaPagar.Controls.Add(lblGridViewCartaoCreditoNaira);
+            tbpListarContaPagar.Controls.Add(lblGridViewCartaoCreditoFamilia);
+            tbpListarContaPagar.Controls.Add(lblGridViewTotais);
+            tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoCategoria);
+            tbpListarContaPagar.Controls.Add(cboEfetuarPagamentoCategoria);
+            tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoInformativoDuploCliqueGrid);
+            tbpListarContaPagar.Controls.Add(btnPagamentoAvulso);
+            tbpListarContaPagar.Controls.Add(btnEfetuarPagamentoBuscar);
+            tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoAnoMes);
+            tbpListarContaPagar.Controls.Add(cboEfetuarPagamentoAnoMes);
+            tbpListarContaPagar.Controls.Add(dgvEfetuarPagamentoListagem);
+            tbpListarContaPagar.Location = new Point(4, 24);
+            tbpListarContaPagar.Name = "tbpListarContaPagar";
+            tbpListarContaPagar.Size = new Size(1208, 461);
+            tbpListarContaPagar.TabIndex = 2;
+            tbpListarContaPagar.Text = "Conta a Pagar - Listar";
+            tbpListarContaPagar.UseVisualStyleBackColor = true;
             // 
             // btnExibirDetalhes
             // 
@@ -602,6 +619,7 @@ namespace App.Forms.Forms
             dgvEfetuarPagamentoListagem.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
             dgvEfetuarPagamentoListagem.CellMouseClick += DgvEfetuarPagamentoListagem_CellMouseClick;
             dgvEfetuarPagamentoListagem.CellMouseDown += DgvEfetuarPagamentoListagem_CellMouseDown;
+            dgvEfetuarPagamentoListagem.ColumnSortModeChanged += DgvEfetuarPagamentoListagem_ColumnSortModeChanged;
             dgvEfetuarPagamentoListagem.RowsAdded += DgvEfetuarPagamentoListagem_RowsAdded;
             dgvEfetuarPagamentoListagem.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
             // 
@@ -688,20 +706,19 @@ namespace App.Forms.Forms
             Text = "Tela inicial - Organização Financeira";
             Load += Initial_Load;
             tbcInitial.ResumeLayout(false);
-            tbpContaPagarLivre.ResumeLayout(false);
+            tbpCadastroContaPagar.ResumeLayout(false);
             grbTemplateContaPagar.ResumeLayout(false);
             grbTemplateContaPagar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContaPagar).EndInit();
-            tbpEfetuarPagamento.ResumeLayout(false);
-            tbpEfetuarPagamento.PerformLayout();
+            tbpListarContaPagar.ResumeLayout(false);
+            tbpListarContaPagar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
         private TabControl tbcInitial;
-        private TabPage tbpContaPagarLivre;
-        private TabPage tbpContaPagarCartaoCredito;
+        private TabPage tbpCadastroContaPagar;
         private GroupBox grbTemplateContaPagar;
         private TextBox txtContaPagarValor;
         private Label lblContaPagarValor;
@@ -730,7 +747,7 @@ namespace App.Forms.Forms
         private Label lblContaPagarDataCriacao;
         private GroupBox grbContaPagarHistorico;
         private Button btnContaPagarCadastrar;
-        private TabPage tbpEfetuarPagamento;
+        private TabPage tbpListarContaPagar;
         private DataGridView dgvEfetuarPagamentoListagem;
         private Label lblEfetuarPagamentoAnoMes;
         private ComboBox cboEfetuarPagamentoAnoMes;
@@ -753,5 +770,7 @@ namespace App.Forms.Forms
         private Button btnExcluir;
         private CheckBox cboApenasNaoPagos;
         private Button btnExibirDetalhes;
+        private CheckBox cboNaoEnviarMesAnoFinal;
+        private CheckBox cboHabilitarDataCompra;
     }
 }

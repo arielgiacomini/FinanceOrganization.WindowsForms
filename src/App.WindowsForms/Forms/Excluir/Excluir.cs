@@ -2,9 +2,10 @@
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.Forms.Excluir;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
-using Domain.Entities;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 
 namespace App.WindowsForms.Forms.ExcluirDetalhes
@@ -13,7 +14,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
     {
         private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
         public DeleteBillToPayViewModel DeleteBillToPayViewModel { get; set; } = new DeleteBillToPayViewModel();
-        public SearchBillToPayViewModel SearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
+        public SearchBillToPayViewModel PostSearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
+        public Dictionary<string, IList<DgvEfetuarPagamentoListagemDataSource>> LastSearch = new();
         private readonly Dictionary<int, DeleteBillToPayViewModel> _deleteBillToPayViewModels = new();
         public string? Environment { get; set; }
 
@@ -29,9 +31,13 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async Task PreencherCampos()
         {
-            var resultSearch = await BillToPayServices.SearchBillToPay(SearchBillToPayViewModel);
+            LastSearch.Clear();
+
+            var resultSearch = await BillToPayServices.SearchBillToPay(PostSearchBillToPayViewModel);
 
             var dataSource = MapSearchResultToDataSource(resultSearch);
+
+            LastSearch.Add(DateTime.Now.ToString(), dataSource);
 
             var dataSourceOrderBy = dataSource
                 .OrderBy(dueDate => dueDate.DueDate)
@@ -50,22 +56,31 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.Columns[2].HeaderText = "Conta";
             dgvExcluirDetalhes.Columns[3].HeaderText = "Descrição";
             dgvExcluirDetalhes.Columns[4].HeaderText = "Categoria";
-            dgvExcluirDetalhes.Columns[5].HeaderText = "Valor";
+            dgvExcluirDetalhes.Columns[5].HeaderText = "R$ Restante";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[6].HeaderText = "Data de Compra";
-            dgvExcluirDetalhes.Columns[7].HeaderText = "Vencimento";
-            dgvExcluirDetalhes.Columns[8].HeaderText = "Mês/Ano";
-            dgvExcluirDetalhes.Columns[9].HeaderText = "Frequência";
-            dgvExcluirDetalhes.Columns[10].HeaderText = "Tipo";
-            dgvExcluirDetalhes.Columns[11].HeaderText = "Data de Pagamento";
-            dgvExcluirDetalhes.Columns[12].HeaderText = "Pago?";
-            dgvExcluirDetalhes.Columns[13].HeaderText = "Mensagem";
-            dgvExcluirDetalhes.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvExcluirDetalhes.Columns[14].HeaderText = "Data de Criação";
-            dgvExcluirDetalhes.Columns[14].Visible = false;
-            dgvExcluirDetalhes.Columns[15].HeaderText = "Data de Alteração";
-            dgvExcluirDetalhes.Columns[15].Visible = false;
+            dgvExcluirDetalhes.Columns[6].HeaderText = "R$ Realizado";
+            dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Format = "C2";
+            dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvExcluirDetalhes.Columns[7].HeaderText = "R$ Total";
+            dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Format = "C2";
+            dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvExcluirDetalhes.Columns[8].HeaderText = "Qtd Compras";
+            dgvExcluirDetalhes.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
+            dgvExcluirDetalhes.Columns[9].HeaderText = "Data de Compra";
+            dgvExcluirDetalhes.Columns[10].HeaderText = "Vencimento";
+            dgvExcluirDetalhes.Columns[11].HeaderText = "Mês/Ano";
+            dgvExcluirDetalhes.Columns[12].HeaderText = "Frequência";
+            dgvExcluirDetalhes.Columns[13].HeaderText = "Tipo";
+            dgvExcluirDetalhes.Columns[14].HeaderText = "Data de Pagamento";
+            dgvExcluirDetalhes.Columns[15].HeaderText = "Pago?";
+            dgvExcluirDetalhes.Columns[16].HeaderText = "Mensagem";
+            dgvExcluirDetalhes.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvExcluirDetalhes.Columns[17].HeaderText = "Data de Criação";
+            dgvExcluirDetalhes.Columns[17].Visible = false;
+            dgvExcluirDetalhes.Columns[18].HeaderText = "Data de Alteração";
+            dgvExcluirDetalhes.Columns[18].Visible = false;
+            dgvExcluirDetalhes.Columns[19].Visible = false;
         }
 
         private static IList<DgvEfetuarPagamentoListagemDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
@@ -93,24 +108,28 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
+            SetColor();
+        }
+
+        private void SetColor()
+        {
             foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
             {
-                if (Convert.ToBoolean(row.Cells[12].Value))
+                Console.WriteLine($"Está na linha de indice [{row.Index}] com o valor de Mes/Ano [{row.Cells[8].Value}]");
+                if (IsPaid(row))
                 {
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
-
-                if (row.Cells[2].Value.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row.Cells[12].Value))
+                else
                 {
-                    SetColorRows(row, Color.DarkOrange, Color.Black);
-                }
-
-                if (!string.IsNullOrWhiteSpace(row.Cells[13].Value?.ToString())
-                    && row.Cells[13].Value.ToString()!.StartsWith(EH_CARTAO_CREDITO_NAIRA))
-                {
-                    SetColorRows(row, Color.DimGray, Color.White);
+                    SetColorRows(row, Color.Transparent, Color.Black);
                 }
             }
+        }
+
+        private static bool IsPaid(DataGridViewRow row)
+        {
+            return Convert.ToBoolean(row.Cells[15].Value);
         }
 
         private static void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)
@@ -212,6 +231,36 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 }
 
                 MessageBox.Show(information, "Erro ao tentar cadastrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnShowDetails_Click(object sender, EventArgs e)
+        {
+            Guid identificador = Guid.NewGuid();
+
+            foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
+            {
+                bool isOk = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid guidId);
+
+                identificador = guidId;
+            }
+
+            var selected = LastSearch.FirstOrDefault().Value.FirstOrDefault(x => x.Id == identificador);
+
+            if (selected?.Details?.Count > 0)
+            {
+                Relacionado frmRegistroRelacionado = new()
+                {
+                    Environment = Environment,
+                    LastSearch = LastSearch,
+                    Identificador = identificador
+                };
+
+                frmRegistroRelacionado.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Não foi encontrado nenhum registro relacionado", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

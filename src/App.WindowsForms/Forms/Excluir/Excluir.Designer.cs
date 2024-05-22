@@ -1,4 +1,6 @@
-﻿namespace App.WindowsForms.Forms.ExcluirDetalhes
+﻿using System.Windows.Forms;
+
+namespace App.WindowsForms.Forms.ExcluirDetalhes
 {
     partial class FrmExibirDetalhes
     {
@@ -28,10 +30,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmExibirDetalhes));
             dgvExcluirDetalhes = new DataGridView();
             lblExcluirDetalhesItensSelecionadosDataGridView = new Label();
             btnExcluir = new Button();
+            btnShowDetails = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).BeginInit();
             SuspendLayout();
             // 
@@ -42,12 +46,23 @@
             dgvExcluirDetalhes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvExcluirDetalhes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dgvExcluirDetalhes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            dgvExcluirDetalhes.BackgroundColor = SystemColors.AppWorkspace;
             dgvExcluirDetalhes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Window;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgvExcluirDetalhes.DefaultCellStyle = dataGridViewCellStyle1;
+            dgvExcluirDetalhes.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvExcluirDetalhes.Location = new Point(12, 49);
             dgvExcluirDetalhes.Name = "dgvExcluirDetalhes";
+            dgvExcluirDetalhes.ReadOnly = true;
             dgvExcluirDetalhes.RowTemplate.Height = 25;
             dgvExcluirDetalhes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvExcluirDetalhes.Size = new Size(1153, 273);
+            dgvExcluirDetalhes.Size = new Size(1257, 453);
             dgvExcluirDetalhes.TabIndex = 0;
             dgvExcluirDetalhes.RowsAdded += DgvExcluirDetalhes_RowsAdded;
             dgvExcluirDetalhes.SelectionChanged += DgvExcluirDetalhes_SelectionChanged;
@@ -56,7 +71,7 @@
             // 
             lblExcluirDetalhesItensSelecionadosDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblExcluirDetalhesItensSelecionadosDataGridView.AutoSize = true;
-            lblExcluirDetalhesItensSelecionadosDataGridView.Location = new Point(968, 31);
+            lblExcluirDetalhesItensSelecionadosDataGridView.Location = new Point(1072, 31);
             lblExcluirDetalhesItensSelecionadosDataGridView.Name = "lblExcluirDetalhesItensSelecionadosDataGridView";
             lblExcluirDetalhesItensSelecionadosDataGridView.RightToLeft = RightToLeft.Yes;
             lblExcluirDetalhesItensSelecionadosDataGridView.Size = new Size(197, 15);
@@ -77,18 +92,32 @@
             btnExcluir.UseVisualStyleBackColor = false;
             btnExcluir.Click += BtnExcluir_Click;
             // 
+            // btnShowDetails
+            // 
+            btnShowDetails.BackColor = Color.MediumBlue;
+            btnShowDetails.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            btnShowDetails.ForeColor = SystemColors.ButtonFace;
+            btnShowDetails.Location = new Point(168, 12);
+            btnShowDetails.Name = "btnShowDetails";
+            btnShowDetails.Size = new Size(150, 31);
+            btnShowDetails.TabIndex = 18;
+            btnShowDetails.Text = "Detalhes Registro(s)";
+            btnShowDetails.UseVisualStyleBackColor = false;
+            btnShowDetails.Click += BtnShowDetails_Click;
+            // 
             // FrmExibirDetalhes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1177, 334);
+            ClientSize = new Size(1281, 514);
+            Controls.Add(btnShowDetails);
             Controls.Add(btnExcluir);
             Controls.Add(lblExcluirDetalhesItensSelecionadosDataGridView);
             Controls.Add(dgvExcluirDetalhes);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "FrmExibirDetalhes";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Indicar os itens para exclusão";
+            Text = "Lista todos os itens relacionados a conta selecionada";
             Load += FrmExcluirDetalhes_Load;
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).EndInit();
             ResumeLayout(false);
@@ -100,5 +129,6 @@
         private DataGridView dgvExcluirDetalhes;
         private Label lblExcluirDetalhesItensSelecionadosDataGridView;
         private Button btnExcluir;
+        private Button btnShowDetails;
     }
 }
