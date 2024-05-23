@@ -237,13 +237,13 @@
             return dictionary;
         }
 
-        public static Dictionary<int, string> GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter()
+        public static Dictionary<DateTime, string> GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter()
         {
             var dateTimeCorteInitial = new DateTime(2023, 12, 01);
 
             DateTime firstDate = new(dateTimeCorteInitial.Year, dateTimeCorteInitial.Month, 1, 0, 0, 0, DateTimeKind.Local);
 
-            Dictionary<int, string> yearMonths = new();
+            Dictionary<DateTime, string> yearMonths = new();
 
             for (int i = 0; i < 27; i++)
             {
@@ -251,7 +251,7 @@
 
                 var yearMonthAdd = DateServiceUtils.GetYearMonthPortugueseByDateTime(dateAdd);
 
-                yearMonths.Add(i, yearMonthAdd);
+                yearMonths.Add(dateAdd, yearMonthAdd);
             }
 
             return yearMonths;

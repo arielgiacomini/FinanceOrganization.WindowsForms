@@ -5,8 +5,8 @@ using App.Forms.ViewModel;
 using App.WindowsForms.Forms.Excluir;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+
 
 namespace App.WindowsForms.Forms.ExcluirDetalhes
 {
@@ -27,6 +27,53 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private async void FrmExcluirDetalhes_Load(object sender, EventArgs e)
         {
             await PreencherCampos();
+
+            PreencherlblTotaisRegistrosEValores();
+
+            PreecherPrecoMedio();
+        }
+
+        private void PreecherPrecoMedio()
+        {
+            decimal valorTotalItens = 0;
+            int quantidadeItensPagos = 0;
+
+            foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
+            {
+                bool isOkValue = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
+                bool isOkPay = bool.TryParse(row.Cells[15].Value.ToString(), out bool hasPay);
+
+
+                valorTotalItens += isOkValue && hasPay ? valor : 0;
+                quantidadeItensPagos += isOkPay & hasPay ? 1 : 0;
+            }
+
+            string descricaoConta = dgvExcluirDetalhes.Rows[dgvExcluirDetalhes.Rows.GetFirstRow(DataGridViewElementStates.Selected)].Cells[3].Value?.ToString() ?? string.Empty;
+
+            decimal avgPrice = 0;
+            if (quantidadeItensPagos > 0)
+            {
+                avgPrice = valorTotalItens / quantidadeItensPagos;
+            }
+
+            lblValorMedioOnlyPagos.Text = string
+                .Concat($"[{descricaoConta}] - ", "Valor Médio: ", avgPrice.ToString("C"));
+        }
+
+        private void PreencherlblTotaisRegistrosEValores()
+        {
+            decimal valorTotalItens = 0;
+            int quantidadeTotalItens = dgvExcluirDetalhes.RowCount;
+
+            foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
+            {
+                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
+
+                valorTotalItens += isOk ? valor : 0;
+            }
+
+            lblTotaisRegistrosEValores.Text = string
+                .Concat("Totais de Registro(s): ", quantidadeTotalItens, " - ", valorTotalItens.ToString("C"));
         }
 
         private async Task PreencherCampos()

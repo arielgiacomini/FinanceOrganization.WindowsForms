@@ -29,9 +29,11 @@ namespace App.Forms.Forms.Pay
 
             cboPagamentoMesAno.Items.AddRange(yearMonths.Values.ToArray());
 
-            _ = yearMonths.TryGetValue(3, out string? currentYearMont);
+            var dateTimeNow = DateTime.Now;
+            DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
+            _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
 
-            cboPagamentoMesAno.SelectedItem = currentYearMont;
+            cboPagamentoMesAno.SelectedItem = currentYearMonth;
 
             if (!string.IsNullOrWhiteSpace(selectedItem))
             {
