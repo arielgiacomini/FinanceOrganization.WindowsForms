@@ -402,7 +402,9 @@ namespace App.Forms.Forms
             cboContaPagarAnoMesInicial.Items.AddRange(yearMonthsArray);
             cboEfetuarPagamentoAnoMes.Items.AddRange(yearMonthsArray);
 
-            _ = yearMonths.TryGetValue(3, out string? currentYearMonth);
+            var dateTimeNow = DateTime.Now;
+            DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
+            _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
 
             cboContaPagarAnoMesInicial.SelectedItem = currentYearMonth;
             cboEfetuarPagamentoAnoMes.SelectedItem = currentYearMonth;
@@ -418,7 +420,9 @@ namespace App.Forms.Forms
 
             cboContaPagarAnoMesFinal.Items.AddRange(yearMonthsArray);
 
-            _ = yearMonths.TryGetValue(3, out string? currentYearMonth);
+            var dateTimeNow = DateTime.Now;
+            DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
+            _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
 
             cboContaPagarAnoMesFinal.SelectedItem = currentYearMonth;
         }

@@ -36,6 +36,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             lblExcluirDetalhesItensSelecionadosDataGridView = new Label();
             btnExcluir = new Button();
             btnShowDetails = new Button();
+            lblValorMedioOnlyPagos = new Label();
+            lblTotaisRegistrosEValores = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).BeginInit();
             SuspendLayout();
             // 
@@ -62,7 +64,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.ReadOnly = true;
             dgvExcluirDetalhes.RowTemplate.Height = 25;
             dgvExcluirDetalhes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvExcluirDetalhes.Size = new Size(1257, 453);
+            dgvExcluirDetalhes.Size = new Size(1257, 436);
             dgvExcluirDetalhes.TabIndex = 0;
             dgvExcluirDetalhes.RowsAdded += DgvExcluirDetalhes_RowsAdded;
             dgvExcluirDetalhes.SelectionChanged += DgvExcluirDetalhes_SelectionChanged;
@@ -105,11 +107,39 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             btnShowDetails.UseVisualStyleBackColor = false;
             btnShowDetails.Click += BtnShowDetails_Click;
             // 
+            // lblValorMedioOnlyPagos
+            // 
+            lblValorMedioOnlyPagos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblValorMedioOnlyPagos.AutoSize = true;
+            lblValorMedioOnlyPagos.Font = new Font("Dubai", 14.2499981F, FontStyle.Bold, GraphicsUnit.Point);
+            lblValorMedioOnlyPagos.ForeColor = SystemColors.Highlight;
+            lblValorMedioOnlyPagos.Location = new Point(321, 4);
+            lblValorMedioOnlyPagos.Name = "lblValorMedioOnlyPagos";
+            lblValorMedioOnlyPagos.RightToLeft = RightToLeft.Yes;
+            lblValorMedioOnlyPagos.Size = new Size(212, 32);
+            lblValorMedioOnlyPagos.TabIndex = 19;
+            lblValorMedioOnlyPagos.Text = "Valor Médio: R$ 1.400,00";
+            lblValorMedioOnlyPagos.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblTotaisRegistrosEValores
+            // 
+            lblTotaisRegistrosEValores.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblTotaisRegistrosEValores.AutoSize = true;
+            lblTotaisRegistrosEValores.Location = new Point(1009, 488);
+            lblTotaisRegistrosEValores.Name = "lblTotaisRegistrosEValores";
+            lblTotaisRegistrosEValores.RightToLeft = RightToLeft.Yes;
+            lblTotaisRegistrosEValores.Size = new Size(260, 15);
+            lblTotaisRegistrosEValores.TabIndex = 20;
+            lblTotaisRegistrosEValores.Text = "Quantidade de Registros: 1 - Total: R$ 100.400,00";
+            lblTotaisRegistrosEValores.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // FrmExibirDetalhes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1281, 514);
+            Controls.Add(lblTotaisRegistrosEValores);
+            Controls.Add(lblValorMedioOnlyPagos);
             Controls.Add(btnShowDetails);
             Controls.Add(btnExcluir);
             Controls.Add(lblExcluirDetalhesItensSelecionadosDataGridView);
@@ -130,5 +160,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private Label lblExcluirDetalhesItensSelecionadosDataGridView;
         private Button btnExcluir;
         private Button btnShowDetails;
+        private Label lblValorMedioOnlyPagos;
+        private Label lblTotaisRegistrosEValores;
     }
 }
