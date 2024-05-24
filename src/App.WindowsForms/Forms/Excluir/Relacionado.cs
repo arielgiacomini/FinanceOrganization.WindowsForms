@@ -27,11 +27,35 @@ namespace App.WindowsForms.Forms.Excluir
             {
                 PreecherDataGridViewExcluirDetalhes(lastSearch);
 
+                PreecherPrecoMedio();
+
                 lblInformacoesTotais.Text = string
                         .Concat("Itens Totais: ",
                             lastSearch.Count, " - ",
                             lastSearch.Select(x => x.Value).Sum().ToString("C"));
             }
+        }
+
+        private void PreecherPrecoMedio()
+        {
+            decimal valorTotalItens = 0;
+            int itensTotal = dgvRegistroRelacionado.Rows.Count;
+
+            foreach (DataGridViewRow row in dgvRegistroRelacionado.Rows)
+            {
+                bool isOkValue = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal valor);
+
+                valorTotalItens += isOkValue ? valor : 0;
+            }
+
+            decimal avgPrice = 0;
+            if (itensTotal > 0)
+            {
+                avgPrice = valorTotalItens / itensTotal;
+            }
+
+            lblValorMedioTotalLista.Text = string
+                .Concat("Valor Médio Total: ", avgPrice.ToString("C"));
         }
 
         private void PreecherDataGridViewExcluirDetalhes(IList<Details> details)
@@ -60,6 +84,31 @@ namespace App.WindowsForms.Forms.Excluir
             dgvRegistroRelacionado.Columns[14].Visible = false;
             dgvRegistroRelacionado.Columns[15].HeaderText = "Data de Alteração";
             dgvRegistroRelacionado.Columns[15].Visible = false;
+        }
+
+        private void DgvRegistroRelacionado_SelectionChanged(object sender, EventArgs e)
+        {
+            decimal valorTotalItensSelecionados = 0;
+            int quantidadeTotalItensSelecionados = dgvRegistroRelacionado.SelectedRows.Count;
+
+            foreach (DataGridViewRow row in dgvRegistroRelacionado.SelectedRows)
+            {
+                bool isOk = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal valor);
+
+                valorTotalItensSelecionados += isOk ? valor : 0;
+            }
+
+            decimal avgPrice = 0;
+            if (quantidadeTotalItensSelecionados > 0)
+            {
+                avgPrice = valorTotalItensSelecionados / quantidadeTotalItensSelecionados;
+            }
+
+            lblValorTotalMedioSelecionados.Text = string
+                    .Concat("Valor Médio Apenas Selecionados: ", avgPrice.ToString("C"));
+
+            lblRegistrosSelecionados.Text = string
+                .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
         }
     }
 }
