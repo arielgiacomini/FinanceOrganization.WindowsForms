@@ -1,6 +1,6 @@
 ﻿namespace App.Forms.DataSource
 {
-    public class DgvEfetuarPagamentoListagemDataSource
+    public class DgvVisualizarContaPagarDataSource
     {
         public Guid Id { get; set; }
         public int IdFixedInvoice { get; set; }

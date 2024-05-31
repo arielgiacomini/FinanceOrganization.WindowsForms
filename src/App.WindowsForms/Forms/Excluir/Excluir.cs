@@ -15,7 +15,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
         public DeleteBillToPayViewModel DeleteBillToPayViewModel { get; set; } = new DeleteBillToPayViewModel();
         public SearchBillToPayViewModel PostSearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
-        public Dictionary<string, IList<DgvEfetuarPagamentoListagemDataSource>> LastSearch = new();
+        public Dictionary<string, IList<DgvVisualizarContaPagarDataSource>> LastSearch = new();
         private readonly Dictionary<int, DeleteBillToPayViewModel> _deleteBillToPayViewModels = new();
         public string? Environment { get; set; }
 
@@ -93,7 +93,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             PreecherDataGridViewExcluirDetalhes(dataSourceOrderBy);
         }
 
-        private void PreecherDataGridViewExcluirDetalhes(IList<DgvEfetuarPagamentoListagemDataSource> dataSourceOrderBy)
+        private void PreecherDataGridViewExcluirDetalhes(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
         {
             dgvExcluirDetalhes.DataSource = dataSourceOrderBy;
             dgvExcluirDetalhes.Columns[0].HeaderText = "Id";
@@ -130,9 +130,9 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.Columns[19].Visible = false;
         }
 
-        private static IList<DgvEfetuarPagamentoListagemDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
+        private static IList<DgvVisualizarContaPagarDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
         {
-            IList<DgvEfetuarPagamentoListagemDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvEfetuarPagamentoListagemDataSource>();
+            IList<DgvVisualizarContaPagarDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvVisualizarContaPagarDataSource>();
 
             if (searchBillToPayOutput.Output == null || searchBillToPayOutput.Output.Data == null)
             {
@@ -143,7 +143,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             var json = JsonConvert.SerializeObject(dados);
 
-            var conversion = JsonConvert.DeserializeObject<IList<DgvEfetuarPagamentoListagemDataSource>>(json);
+            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaPagarDataSource>>(json);
 
             foreach (var item in conversion!)
             {
