@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>2024.05.24</Version>
+    <Version>2024.05.31</Version>
     <PackageId>CFMArielGiacomini</PackageId>
     <Authors>Ariel Giacomini</Authors>
     <Company>IAgtec</Company>

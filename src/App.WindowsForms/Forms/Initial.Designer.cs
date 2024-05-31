@@ -1,6 +1,4 @@
-﻿using App.Forms.DataSource;
-
-namespace App.Forms.Forms
+﻿namespace App.Forms.Forms
 {
     partial class Initial
     {
@@ -79,6 +77,11 @@ namespace App.Forms.Forms
             lblEfetuarPagamentoAnoMes = new Label();
             cboEfetuarPagamentoAnoMes = new ComboBox();
             dgvEfetuarPagamentoListagem = new DataGridView();
+            tbpEstudosFinanceiros = new TabPage();
+            lblEstudoFinanceiroMesesSerAnalisado = new Label();
+            cboEstudoFinanceiroMesesAnalises = new ComboBox();
+            btnSearchMonthlyAverageAnalysis = new Button();
+            dgvSearchMonthlyAverageAnalysis = new DataGridView();
             lblVersion = new Label();
             lblInfoHeader = new Label();
             rdbAmbienteLocal = new RadioButton();
@@ -90,6 +93,8 @@ namespace App.Forms.Forms
             ((System.ComponentModel.ISupportInitialize)dgvContaPagar).BeginInit();
             tbpListarContaPagar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).BeginInit();
+            tbpEstudosFinanceiros.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvSearchMonthlyAverageAnalysis).BeginInit();
             SuspendLayout();
             // 
             // tbcInitial
@@ -97,6 +102,7 @@ namespace App.Forms.Forms
             tbcInitial.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tbcInitial.Controls.Add(tbpCadastroContaPagar);
             tbcInitial.Controls.Add(tbpListarContaPagar);
+            tbcInitial.Controls.Add(tbpEstudosFinanceiros);
             tbcInitial.Location = new Point(0, 21);
             tbcInitial.Name = "tbcInitial";
             tbcInitial.SelectedIndex = 0;
@@ -623,6 +629,66 @@ namespace App.Forms.Forms
             dgvEfetuarPagamentoListagem.RowsAdded += DgvEfetuarPagamentoListagem_RowsAdded;
             dgvEfetuarPagamentoListagem.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
             // 
+            // tbpEstudosFinanceiros
+            // 
+            tbpEstudosFinanceiros.Controls.Add(lblEstudoFinanceiroMesesSerAnalisado);
+            tbpEstudosFinanceiros.Controls.Add(cboEstudoFinanceiroMesesAnalises);
+            tbpEstudosFinanceiros.Controls.Add(btnSearchMonthlyAverageAnalysis);
+            tbpEstudosFinanceiros.Controls.Add(dgvSearchMonthlyAverageAnalysis);
+            tbpEstudosFinanceiros.Location = new Point(4, 24);
+            tbpEstudosFinanceiros.Name = "tbpEstudosFinanceiros";
+            tbpEstudosFinanceiros.Padding = new Padding(3);
+            tbpEstudosFinanceiros.Size = new Size(1208, 461);
+            tbpEstudosFinanceiros.TabIndex = 3;
+            tbpEstudosFinanceiros.Text = "Estudos Financeiros";
+            tbpEstudosFinanceiros.UseVisualStyleBackColor = true;
+            // 
+            // lblEstudoFinanceiroMesesSerAnalisado
+            // 
+            lblEstudoFinanceiroMesesSerAnalisado.AutoSize = true;
+            lblEstudoFinanceiroMesesSerAnalisado.Location = new Point(8, 14);
+            lblEstudoFinanceiroMesesSerAnalisado.Name = "lblEstudoFinanceiroMesesSerAnalisado";
+            lblEstudoFinanceiroMesesSerAnalisado.Size = new Size(194, 15);
+            lblEstudoFinanceiroMesesSerAnalisado.TabIndex = 3;
+            lblEstudoFinanceiroMesesSerAnalisado.Text = "Quantos Meses quer ter de Análise?";
+            // 
+            // cboEstudoFinanceiroMesesAnalises
+            // 
+            cboEstudoFinanceiroMesesAnalises.FormattingEnabled = true;
+            cboEstudoFinanceiroMesesAnalises.Location = new Point(207, 10);
+            cboEstudoFinanceiroMesesAnalises.Name = "cboEstudoFinanceiroMesesAnalises";
+            cboEstudoFinanceiroMesesAnalises.Size = new Size(121, 23);
+            cboEstudoFinanceiroMesesAnalises.TabIndex = 2;
+            // 
+            // btnSearchMonthlyAverageAnalysis
+            // 
+            btnSearchMonthlyAverageAnalysis.Location = new Point(334, 10);
+            btnSearchMonthlyAverageAnalysis.Name = "btnSearchMonthlyAverageAnalysis";
+            btnSearchMonthlyAverageAnalysis.Size = new Size(75, 23);
+            btnSearchMonthlyAverageAnalysis.TabIndex = 1;
+            btnSearchMonthlyAverageAnalysis.Text = "Buscar";
+            btnSearchMonthlyAverageAnalysis.UseVisualStyleBackColor = true;
+            btnSearchMonthlyAverageAnalysis.Click += BtnSearchMonthlyAverageAnalysis_Click;
+            // 
+            // dgvSearchMonthlyAverageAnalysis
+            // 
+            dgvSearchMonthlyAverageAnalysis.AllowUserToAddRows = false;
+            dgvSearchMonthlyAverageAnalysis.AllowUserToDeleteRows = false;
+            dgvSearchMonthlyAverageAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvSearchMonthlyAverageAnalysis.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dgvSearchMonthlyAverageAnalysis.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            dgvSearchMonthlyAverageAnalysis.BackgroundColor = SystemColors.AppWorkspace;
+            dgvSearchMonthlyAverageAnalysis.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvSearchMonthlyAverageAnalysis.DefaultCellStyle = dataGridViewCellStyle1;
+            dgvSearchMonthlyAverageAnalysis.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dgvSearchMonthlyAverageAnalysis.Location = new Point(6, 40);
+            dgvSearchMonthlyAverageAnalysis.Name = "dgvSearchMonthlyAverageAnalysis";
+            dgvSearchMonthlyAverageAnalysis.ReadOnly = true;
+            dgvSearchMonthlyAverageAnalysis.RowTemplate.Height = 25;
+            dgvSearchMonthlyAverageAnalysis.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvSearchMonthlyAverageAnalysis.Size = new Size(908, 413);
+            dgvSearchMonthlyAverageAnalysis.TabIndex = 0;
+            // 
             // lblVersion
             // 
             lblVersion.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -713,6 +779,9 @@ namespace App.Forms.Forms
             tbpListarContaPagar.ResumeLayout(false);
             tbpListarContaPagar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).EndInit();
+            tbpEstudosFinanceiros.ResumeLayout(false);
+            tbpEstudosFinanceiros.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvSearchMonthlyAverageAnalysis).EndInit();
             ResumeLayout(false);
         }
 
@@ -772,5 +841,10 @@ namespace App.Forms.Forms
         private Button btnExibirDetalhes;
         private CheckBox cboNaoEnviarMesAnoFinal;
         private CheckBox cboHabilitarDataCompra;
+        private TabPage tbpEstudosFinanceiros;
+        private DataGridView dgvSearchMonthlyAverageAnalysis;
+        private Button btnSearchMonthlyAverageAnalysis;
+        private ComboBox cboEstudoFinanceiroMesesAnalises;
+        private Label lblEstudoFinanceiroMesesSerAnalisado;
     }
 }

@@ -5,7 +5,7 @@ namespace App.WindowsForms.Forms.Excluir
     public partial class Relacionado : Form
     {
         public string? Environment { get; set; }
-        public Dictionary<string, IList<DgvEfetuarPagamentoListagemDataSource>> LastSearch = new();
+        public Dictionary<string, IList<DgvVisualizarContaPagarDataSource>> LastSearch = new();
         public Guid Identificador;
 
         public Relacionado()

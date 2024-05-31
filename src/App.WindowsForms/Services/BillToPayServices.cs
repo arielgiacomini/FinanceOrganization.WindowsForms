@@ -109,5 +109,23 @@ namespace App.Forms.Services
 
             return JsonConvert.DeserializeObject<DeleteBillToPayOutput>(response) ?? new DeleteBillToPayOutput();
         }
+
+        public static async Task<SearchMonthlyAverageAnalysisOutput> SearchMonthlyAverageAnalysis(SearchMonthlyAverageAnalysisViewModel viewModel)
+        {
+            using var client = new HttpClient();
+
+            var content = new StringContent(JsonConvert.SerializeObject(viewModel), Encoding.UTF8, "application/json");
+
+            var result = client.PostAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/bills-to-pay/SearchMonthlyAverageAnalysis", content).Result;
+
+            if (!result.IsSuccessStatusCode)
+            {
+                return new SearchMonthlyAverageAnalysisOutput();
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<SearchMonthlyAverageAnalysisOutput>(response) ?? new SearchMonthlyAverageAnalysisOutput();
+        }
     }
 }

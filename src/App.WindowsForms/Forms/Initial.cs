@@ -6,7 +6,10 @@ using App.Forms.Forms.Pay;
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.DataSource;
 using App.WindowsForms.Forms.ExcluirDetalhes;
+using App.WindowsForms.Services.Output;
+using App.WindowsForms.ViewModel;
 using Domain.Entities;
 using Domain.Utils;
 using Newtonsoft.Json;
@@ -16,13 +19,15 @@ namespace App.Forms.Forms
 {
     public partial class Initial : Form
     {
-        private const string TAB_PAGE_LIVRE = "tbpContaPagarLivre";
-        private const string TAB_PAGE_CARTAO_CREDITO = "tbpContaPagarCartaoCredito";
-        private const string TAB_PAGE_PAGAMENTO = "tbpEfetuarPagamento";
+        private const string TAB_PAGE_CONTA_PAGAR_CADASTRO = "tbpContaPagarLivre";
+        private const string TAB_PAGE_VISUALIZAR_CONTA_PAGAR = "tbpEfetuarPagamento";
+        private const string TAB_PAGE_ESTUDO_FINANCEIRO = "tbpEstudosFinanceiros";
         private const string DESCRICAO_GROUP_BOX = "Cadastro de Conta a Pagar";
         private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
         private readonly Dictionary<int, CreateBillToPayViewModel> _createBillToPayViewModels = new();
-        private IList<DgvEfetuarPagamentoListagemDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvEfetuarPagamentoListagemDataSource>();
+        private IList<DgvVisualizarContaPagarDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvVisualizarContaPagarDataSource>();
+        private IList<DgvVisualizarEstudoFinanceiroDataSource> _dgvVisuarEstudoFinanceiroDataSource = new List<DgvVisualizarEstudoFinanceiroDataSource>();
+
         public static int CurrentIndex { get; set; } = 0;
         public decimal ValorContaPagarDigitadoTextBox { get; set; } = 0;
         public int Identifier { get; set; } = 0;
@@ -48,6 +53,7 @@ namespace App.Forms.Forms
             PreencherComboBoxContaPagarCategoria();
             PreencherComboBoxContaPagarTipoConta();
             PreencherComboBoxAnoMes();
+            PreencherComboBoxEstudoFinanceiroQuantideMeses();
             RegraCamposAnoMes();
             CampoValor();
             TabPageIndexOne();
@@ -55,8 +61,8 @@ namespace App.Forms.Forms
             PreencherContaPagarFrequencia();
             PreencherContaPagarTipoCadastro();
             await BuscarListaPagamentos();
-            tbcInitial.SelectedTab = tbcInitial.TabPages[(tbcInitial.TabCount) - 1];
-
+            await SearchMonthlyAverageAnalysis();
+            tbcInitial.SelectedTab = tbcInitial.TabPages[0];
             ToolTip tooltipBtnPagamentoAvulso = new();
             tooltipBtnPagamentoAvulso.SetToolTip(this.btnPagamentoAvulso, "Ideal p/ Pagamento em Massa, Ex.: Cartão de Crédito");
         }
@@ -558,15 +564,14 @@ namespace App.Forms.Forms
             var tabPageCurrentText = tabPageCurrent.Text;
             switch (tabPageCurrent.Name)
             {
-                case TAB_PAGE_LIVRE:
-                    SetParameters(tabPageCurrentText, "Dizimo", "Cartão de Débito", "Livre");
+                case TAB_PAGE_CONTA_PAGAR_CADASTRO:
+                    SetParameters(tabPageCurrentText, "Alimentação:Café da Manhã", "Cartão de Crédito", "Livre");
                     grbTemplateContaPagar.Text = string.Concat(DESCRICAO_GROUP_BOX, " - ", tabPageCurrentText);
                     break;
-                case TAB_PAGE_CARTAO_CREDITO:
-                    SetParameters(tabPageCurrentText, "Alimentação:Café da Manhã", "Cartão de Crédito", "Mensal");
-                    grbTemplateContaPagar.Text = string.Concat(DESCRICAO_GROUP_BOX, " - ", tabPageCurrentText);
+                case TAB_PAGE_VISUALIZAR_CONTA_PAGAR:
+                    SetParameters(tabPageCurrentText, "Nenhum");
                     break;
-                case TAB_PAGE_PAGAMENTO:
+                case TAB_PAGE_ESTUDO_FINANCEIRO:
                     SetParameters(tabPageCurrentText, "Nenhum");
                     break;
                 default:
@@ -583,8 +588,7 @@ namespace App.Forms.Forms
         private bool TabPageCurrentIsFormWithTemplate()
         {
             return
-                   tbcInitial.TabPages[tbcInitial.SelectedIndex].Name == TAB_PAGE_LIVRE
-                || tbcInitial.TabPages[tbcInitial.SelectedIndex].Name == TAB_PAGE_CARTAO_CREDITO;
+                   tbcInitial.TabPages[tbcInitial.SelectedIndex].Name == TAB_PAGE_CONTA_PAGAR_CADASTRO;
         }
 
         private void TabPageIndexOne()
@@ -633,12 +637,12 @@ namespace App.Forms.Forms
                 .ThenByDescending(purchase => purchase.PurchaseDate)
                 .ToList();
 
-            PreecherDataGridViewEfetuarPagamento(dataSourceOrderBy);
+            PreecherDataGridViewContaPagarListar(dataSourceOrderBy);
         }
 
-        private void PreecherDataGridViewEfetuarPagamento(IList<DgvEfetuarPagamentoListagemDataSource> dataSourceOrderBy)
+        private void PreecherDataGridViewContaPagarListar(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
         {
-            Consolidate(dataSourceOrderBy);
+            ConsolidateContaPagarListagem(dataSourceOrderBy);
 
             _dgvEfetuarPagamentoListagemDataSource = dataSourceOrderBy;
 
@@ -681,7 +685,7 @@ namespace App.Forms.Forms
             dgvEfetuarPagamentoListagem.Columns[19].Visible = false;
         }
 
-        private void Consolidate(IList<DgvEfetuarPagamentoListagemDataSource> dataSourceOrderBy)
+        private void ConsolidateContaPagarListagem(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
         {
             #region TOTAL GERAL
 
@@ -793,9 +797,9 @@ namespace App.Forms.Forms
                             .Format("{0:#,##0.00}", valorTotal));
         }
 
-        private static IList<DgvEfetuarPagamentoListagemDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
+        private static IList<DgvVisualizarContaPagarDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
         {
-            IList<DgvEfetuarPagamentoListagemDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvEfetuarPagamentoListagemDataSource>();
+            IList<DgvVisualizarContaPagarDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvVisualizarContaPagarDataSource>();
 
             if (searchBillToPayOutput.Output == null || searchBillToPayOutput.Output.Data == null)
             {
@@ -806,7 +810,7 @@ namespace App.Forms.Forms
 
             var json = JsonConvert.SerializeObject(dados);
 
-            var conversion = JsonConvert.DeserializeObject<IList<DgvEfetuarPagamentoListagemDataSource>>(json);
+            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaPagarDataSource>>(json);
 
             foreach (var item in conversion!)
             {
@@ -861,11 +865,11 @@ namespace App.Forms.Forms
                     .Where(x => x.Category == cboEfetuarPagamentoCategoria.Text)
                     .ToList();
 
-                PreecherDataGridViewEfetuarPagamento(filterByCategory);
+                PreecherDataGridViewContaPagarListar(filterByCategory);
             }
             else
             {
-                PreecherDataGridViewEfetuarPagamento(_dgvEfetuarPagamentoListagemDataSource);
+                PreecherDataGridViewContaPagarListar(_dgvEfetuarPagamentoListagemDataSource);
             }
         }
 
@@ -1126,6 +1130,143 @@ namespace App.Forms.Forms
             {
                 cboContaPagarAnoMesFinal.Enabled = true;
                 PreencherComboBoxcboContaPagarAnoMesFinal();
+            }
+        }
+
+        private async void BtnSearchMonthlyAverageAnalysis_Click(object sender, EventArgs e)
+        {
+            lblInfoHeader.Text = AdjusteInfoHeader(DateTime.Now);
+            await SearchMonthlyAverageAnalysis();
+        }
+
+        public async Task SearchMonthlyAverageAnalysis()
+        {
+            _dgvVisuarEstudoFinanceiroDataSource.Clear();
+
+            SearchMonthlyAverageAnalysisViewModel search = new()
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now,
+                QuantityMonthsAnalysis = MapQuantityMonths()
+            };
+
+            await PreencherEstudoFinanceiroDataGridViewHistory(search);
+        }
+
+        private async Task PreencherEstudoFinanceiroDataGridViewHistory(SearchMonthlyAverageAnalysisViewModel search)
+        {
+            BillToPayServices.Environment = Environment;
+            var resultSearch = await BillToPayServices.SearchMonthlyAverageAnalysis(search);
+
+            var dataSource = MapSearchMonthlyAverageAnalysisResultToDataSource(resultSearch);
+
+            var dataSourceOrderBy = dataSource
+                .ToList();
+
+            PreecherDataGridViewEstudoFinanceiro(dataSourceOrderBy);
+        }
+
+        private static IList<DgvVisualizarEstudoFinanceiroDataSource> MapSearchMonthlyAverageAnalysisResultToDataSource(SearchMonthlyAverageAnalysisOutput output)
+        {
+            IList<DgvVisualizarEstudoFinanceiroDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvVisualizarEstudoFinanceiroDataSource>();
+
+            if (output.Output == null || output.Output.Data == null)
+            {
+                return dgvEfetuarPagamentoListagemDataSources;
+            }
+
+            var dados = output.Output.Data;
+
+            var json = JsonConvert.SerializeObject(dados);
+
+            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarEstudoFinanceiroDataSource>>(json);
+
+            foreach (var item in conversion!)
+            {
+                dgvEfetuarPagamentoListagemDataSources.Add(item);
+            }
+
+            return dgvEfetuarPagamentoListagemDataSources;
+        }
+
+        private void PreecherDataGridViewEstudoFinanceiro(IList<DgvVisualizarEstudoFinanceiroDataSource> dataSourceOrderBy)
+        {
+            ConsolidateEstudoFinanceiro(dataSourceOrderBy);
+
+            _dgvVisuarEstudoFinanceiroDataSource = dataSourceOrderBy;
+
+            dgvSearchMonthlyAverageAnalysis.DataSource = dataSourceOrderBy;
+            dgvSearchMonthlyAverageAnalysis.Columns[0].HeaderText = "Categoria";
+            dgvSearchMonthlyAverageAnalysis.Columns[1].HeaderText = "Registros Totais";
+
+            dgvSearchMonthlyAverageAnalysis.Columns[2].HeaderText = "R$ Total";
+            dgvSearchMonthlyAverageAnalysis.Columns[2].DefaultCellStyle.Format = "C2";
+            dgvSearchMonthlyAverageAnalysis.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvSearchMonthlyAverageAnalysis.Columns[3].HeaderText = "Meses Análisados";
+
+            dgvSearchMonthlyAverageAnalysis.Columns[4].HeaderText = "R$ Média Mensal";
+            dgvSearchMonthlyAverageAnalysis.Columns[4].DefaultCellStyle.Format = "C2";
+            dgvSearchMonthlyAverageAnalysis.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvSearchMonthlyAverageAnalysis.Columns[5].HeaderText = "Registros Média";
+            dgvSearchMonthlyAverageAnalysis.Columns[6].HeaderText = "Primeira Data";
+            dgvSearchMonthlyAverageAnalysis.Columns[7].HeaderText = "Última Data";
+        }
+
+        private void ConsolidateEstudoFinanceiro(IList<DgvVisualizarEstudoFinanceiroDataSource> dataSourceOrderBy)
+        {
+
+        }
+
+        private void PreencherComboBoxEstudoFinanceiroQuantideMeses()
+        {
+            Dictionary<int, string> quantidaeMeses = new()
+            {
+                { 0, "Mês Anterior" },
+                { 1, "2 meses anteriores" },
+                { 2, "3 meses anteriores" },
+                { 3, "4 meses anteriores" },
+                { 4, "5 meses anteriores" }
+            };
+
+            foreach (var item in quantidaeMeses)
+            {
+                cboEstudoFinanceiroMesesAnalises.Items.Add(item.Value);
+            }
+
+            cboEstudoFinanceiroMesesAnalises.SelectedItem = quantidaeMeses.Where(x => x.Key == 3).FirstOrDefault().Value;
+        }
+
+        private int MapQuantityMonths()
+        {
+            if (cboEstudoFinanceiroMesesAnalises.Text == "Mês Anterior")
+            {
+                return -0;
+            }
+
+            else if (cboEstudoFinanceiroMesesAnalises.Text == "2 meses anteriores")
+            {
+                return -1;
+            }
+
+            else if (cboEstudoFinanceiroMesesAnalises.Text == "3 meses anteriores")
+            {
+                return -2;
+            }
+
+            else if (cboEstudoFinanceiroMesesAnalises.Text == "4 meses anteriores")
+            {
+                return -3;
+            }
+
+            else if (cboEstudoFinanceiroMesesAnalises.Text == "5 meses anteriores")
+            {
+                return -4;
+            }
+            else
+            {
+                return -3;
             }
         }
     }
