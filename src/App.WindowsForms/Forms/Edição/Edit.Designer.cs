@@ -306,7 +306,6 @@
             // 
             // cboContaPagarAnoMesInicial
             // 
-            cboContaPagarAnoMesInicial.Enabled = false;
             cboContaPagarAnoMesInicial.FormattingEnabled = true;
             cboContaPagarAnoMesInicial.Location = new Point(116, 151);
             cboContaPagarAnoMesInicial.Name = "cboContaPagarAnoMesInicial";

@@ -27,6 +27,7 @@ namespace App.Forms.Forms.Edição
             cboContaPagarTipoConta.Text = EditBillToPayViewModel.Account;
             cboContaPagarFrequencia.Text = EditBillToPayViewModel.Frequence;
             cboContaPagarTipoCadastro.Text = EditBillToPayViewModel.RegistrationType;
+            PreencherComboBoxAnoMes(EditBillToPayViewModel.YearMonth!);
             cboContaPagarAnoMesInicial.Text = EditBillToPayViewModel.YearMonth;
             cboContaPagarCategory.Text = EditBillToPayViewModel.Category;
             txtContaPagarValor.Text = EditBillToPayViewModel.Value.ToString("C");
@@ -48,6 +49,20 @@ namespace App.Forms.Forms.Edição
             rdbPagamentoNaoPago.Checked = !EditBillToPayViewModel.HasPay;
             rtbContaPagarMensagemAdicional.Text = EditBillToPayViewModel.AdditionalMessage;
             lblContaPagarDataCriacao.Text = EditBillToPayViewModel.LastChangeDate.ToString();
+        }
+
+        private void PreencherComboBoxAnoMes(string current)
+        {
+            var yearMonths = DateServiceUtils.GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter();
+            var yearMonthsArray = yearMonths.Values.ToArray();
+
+            cboContaPagarAnoMesInicial.Items.AddRange(yearMonthsArray);
+
+            var dateTimeNow = DateTime.Now;
+            DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
+            _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
+
+            cboContaPagarAnoMesInicial.SelectedItem = current;
         }
 
         private async void BtnContaPagarEditar_Click(object sender, EventArgs e)
