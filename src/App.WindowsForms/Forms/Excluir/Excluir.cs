@@ -5,6 +5,7 @@ using App.Forms.ViewModel;
 using App.WindowsForms.Forms.Excluir;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
+using Domain.Entities;
 using Newtonsoft.Json;
 
 
@@ -155,31 +156,27 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            SetColor();
-        }
-
-        private void SetColor()
-        {
             foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
             {
-                Console.WriteLine($"Está na linha de indice [{row.Index}] com o valor de Mes/Ano [{row.Cells[8].Value}]");
-                if (IsPaid(row))
-                {
-                    SetColorRows(row, Color.DarkGreen, Color.White);
-                }
-                else
-                {
-                    SetColorRows(row, Color.Transparent, Color.Black);
-                }
+                //if (Convert.ToBoolean(row.Cells[15].Value))
+                //{
+                //    SetColorRows(row, Color.DarkGreen, Color.White);
+                //}
+
+                //if (row?.Cells[2]?.Value?.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
+                //{
+                //    SetColorRows(row, Color.DarkOrange, Color.Black);
+                //}
+
+                //if (!string.IsNullOrWhiteSpace(row?.Cells[16]?.Value?.ToString())
+                //    && (bool)(row?.Cells[16]?.Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
+                //{
+                //    SetColorRows(row, Color.DimGray, Color.White);
+                //}
             }
         }
 
-        private static bool IsPaid(DataGridViewRow row)
-        {
-            return Convert.ToBoolean(row.Cells[15].Value);
-        }
-
-        private static void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)
+        private void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)
         {
             var columnsCount = row.Cells.Count;
 
@@ -309,6 +306,37 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             {
                 MessageBox.Show("Não foi encontrado nenhum registro relacionado", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void DgvExcluirDetalhes_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            //for (int i = 0; i < dgvExcluirDetalhes.Rows.Count; i++)
+            //{
+            //    if (Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value))
+            //    {
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkGreen;
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+            //    }
+
+            //    if (dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString() == Account.CARTAO_CREDITO
+            //        && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value))
+            //    {
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkOrange;
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+            //    }
+
+            //    if (!string.IsNullOrWhiteSpace(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString())
+            //        && (bool)(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
+            //    {
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DimGray;
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+            //    }
+            //    else
+            //    {
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.Transparent;
+            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
+            //    }
+            //}
         }
     }
 }
