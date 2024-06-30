@@ -23,7 +23,7 @@ namespace App.Forms.Forms
         private const string TAB_PAGE_VISUALIZAR_CONTA_PAGAR = "tbpEfetuarPagamento";
         private const string TAB_PAGE_ESTUDO_FINANCEIRO = "tbpEstudosFinanceiros";
         private const string DESCRICAO_GROUP_BOX = "Cadastro de Conta a Pagar";
-        private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
+        private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra: ";
         private readonly Dictionary<int, CreateBillToPayViewModel> _createBillToPayViewModels = new();
         private IList<DgvVisualizarContaPagarDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvVisualizarContaPagarDataSource>();
         private IList<DgvVisualizarEstudoFinanceiroDataSource> _dgvVisuarEstudoFinanceiroDataSource = new List<DgvVisualizarEstudoFinanceiroDataSource>();
@@ -65,6 +65,7 @@ namespace App.Forms.Forms
             tbcInitial.SelectedTab = tbcInitial.TabPages[0];
             ToolTip tooltipBtnPagamentoAvulso = new();
             tooltipBtnPagamentoAvulso.SetToolTip(this.btnPagamentoAvulso, "Ideal p/ Pagamento em Massa, Ex.: Cartão de Crédito");
+            SetColorGrbTemplateContaPagar();
         }
 
         private string AdjusteInfoHeader(DateTime? lastUpdate = null)
@@ -1268,6 +1269,71 @@ namespace App.Forms.Forms
             {
                 return -3;
             }
+        }
+
+        private void CkbCartaoCreditoNaira_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ckbCartaoCreditoNaira.Checked)
+            {
+                if (cboContaPagarTipoConta.Text != "Cartão de Crédito")
+                {
+                    cboContaPagarTipoConta.Text = "Cartão de Crédito";
+                }
+
+                SetColorGrbTemplateContaPagar();
+
+                if (!rtbContaPagarMensagemAdicional.Text.StartsWith(EH_CARTAO_CREDITO_NAIRA))
+                {
+                    rtbContaPagarMensagemAdicional.Text = string.Concat(EH_CARTAO_CREDITO_NAIRA, txtContaPagarNameDescription.Text);
+                }
+            }
+            else
+            {
+                SetColorGrbTemplateContaPagar();
+                rtbContaPagarMensagemAdicional.Text = rtbContaPagarMensagemAdicional.Text.Replace(EH_CARTAO_CREDITO_NAIRA, "");
+            }
+        }
+
+        private void SetColorGrbTemplateContaPagar()
+        {
+            if (cboContaPagarTipoConta.Text == "Cartão de Crédito")
+            {
+                if (ckbCartaoCreditoNaira.Checked)
+                {
+                    grbTemplateContaPagar.BackColor = Color.DimGray;
+                    grbTemplateContaPagar.ForeColor = Color.White;
+                }
+                else
+                {
+                    grbTemplateContaPagar.BackColor = Color.DarkOrange;
+                    grbTemplateContaPagar.ForeColor = Color.Black;
+                }
+            }
+            else
+            {
+                grbTemplateContaPagar.BackColor = Color.White;
+                grbTemplateContaPagar.ForeColor = Color.Black;
+            }
+        }
+
+        private void DtpContaPagarDataCompra_ValueChanged(object sender, EventArgs e)
+        {
+            var dayChoise = DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataCompra.Text);
+
+            if (dayChoise.HasValue)
+            {
+                cboContaPagarMelhorDiaPagamento.Text = dayChoise.Value.Day.ToString();
+            }
+        }
+
+        private void CboContaPagarTipoConta_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cboContaPagarTipoConta.Text != "Cartão de Crédito" && ckbCartaoCreditoNaira.Checked)
+            {
+                ckbCartaoCreditoNaira.Checked = false;
+            }
+
+            SetColorGrbTemplateContaPagar();
         }
     }
 }

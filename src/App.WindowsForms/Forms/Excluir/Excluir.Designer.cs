@@ -66,6 +66,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvExcluirDetalhes.Size = new Size(1257, 436);
             dgvExcluirDetalhes.TabIndex = 0;
+            dgvExcluirDetalhes.CellFormatting += DgvExcluirDetalhes_CellFormatting;
             dgvExcluirDetalhes.RowsAdded += DgvExcluirDetalhes_RowsAdded;
             dgvExcluirDetalhes.SelectionChanged += DgvExcluirDetalhes_SelectionChanged;
             // 
@@ -123,7 +124,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             // 
             // lblTotaisRegistrosEValores
             // 
-            lblTotaisRegistrosEValores.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblTotaisRegistrosEValores.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblTotaisRegistrosEValores.AutoSize = true;
             lblTotaisRegistrosEValores.Location = new Point(1009, 488);
             lblTotaisRegistrosEValores.Name = "lblTotaisRegistrosEValores";

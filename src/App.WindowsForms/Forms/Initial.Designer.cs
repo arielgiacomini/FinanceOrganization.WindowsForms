@@ -33,6 +33,7 @@
             tbcInitial = new TabControl();
             tbpCadastroContaPagar = new TabPage();
             grbTemplateContaPagar = new GroupBox();
+            ckbCartaoCreditoNaira = new CheckBox();
             cboHabilitarDataCompra = new CheckBox();
             cboNaoEnviarMesAnoFinal = new CheckBox();
             btnContaPagarCadastrar = new Button();
@@ -124,6 +125,7 @@
             // grbTemplateContaPagar
             // 
             grbTemplateContaPagar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            grbTemplateContaPagar.Controls.Add(ckbCartaoCreditoNaira);
             grbTemplateContaPagar.Controls.Add(cboHabilitarDataCompra);
             grbTemplateContaPagar.Controls.Add(cboNaoEnviarMesAnoFinal);
             grbTemplateContaPagar.Controls.Add(btnContaPagarCadastrar);
@@ -159,6 +161,17 @@
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
             grbTemplateContaPagar.Text = "Cadastro de Conta a Pagar - Livre";
+            // 
+            // ckbCartaoCreditoNaira
+            // 
+            ckbCartaoCreditoNaira.AutoSize = true;
+            ckbCartaoCreditoNaira.Location = new Point(289, 111);
+            ckbCartaoCreditoNaira.Name = "ckbCartaoCreditoNaira";
+            ckbCartaoCreditoNaira.Size = new Size(155, 19);
+            ckbCartaoCreditoNaira.TabIndex = 38;
+            ckbCartaoCreditoNaira.Text = "Cartão de Crédito Naíra?";
+            ckbCartaoCreditoNaira.UseVisualStyleBackColor = true;
+            ckbCartaoCreditoNaira.CheckedChanged += CkbCartaoCreditoNaira_CheckedChanged;
             // 
             // cboHabilitarDataCompra
             // 
@@ -307,6 +320,7 @@
             dtpContaPagarDataCompra.Name = "dtpContaPagarDataCompra";
             dtpContaPagarDataCompra.Size = new Size(237, 23);
             dtpContaPagarDataCompra.TabIndex = 17;
+            dtpContaPagarDataCompra.ValueChanged += DtpContaPagarDataCompra_ValueChanged;
             // 
             // lblContaPagarDataCompra
             // 
@@ -436,6 +450,7 @@
             cboContaPagarTipoConta.Name = "cboContaPagarTipoConta";
             cboContaPagarTipoConta.Size = new Size(167, 23);
             cboContaPagarTipoConta.TabIndex = 5;
+            cboContaPagarTipoConta.SelectedValueChanged += CboContaPagarTipoConta_SelectedValueChanged;
             // 
             // tbpListarContaPagar
             // 
@@ -846,5 +861,6 @@
         private Button btnSearchMonthlyAverageAnalysis;
         private ComboBox cboEstudoFinanceiroMesesAnalises;
         private Label lblEstudoFinanceiroMesesSerAnalisado;
+        private CheckBox ckbCartaoCreditoNaira;
     }
 }
