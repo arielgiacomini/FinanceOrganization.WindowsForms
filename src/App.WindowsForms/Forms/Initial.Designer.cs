@@ -450,6 +450,7 @@
             cboContaPagarTipoConta.Name = "cboContaPagarTipoConta";
             cboContaPagarTipoConta.Size = new Size(167, 23);
             cboContaPagarTipoConta.TabIndex = 5;
+            cboContaPagarTipoConta.SelectedValueChanged += CboContaPagarTipoConta_SelectedValueChanged;
             // 
             // tbpListarContaPagar
             // 

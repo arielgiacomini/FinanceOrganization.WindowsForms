@@ -1275,6 +1275,11 @@ namespace App.Forms.Forms
         {
             if (ckbCartaoCreditoNaira.Checked)
             {
+                if (cboContaPagarTipoConta.Text != "Cartão de Crédito")
+                {
+                    cboContaPagarTipoConta.Text = "Cartão de Crédito";
+                }
+
                 SetColorGrbTemplateContaPagar();
 
                 if (!rtbContaPagarMensagemAdicional.Text.StartsWith(EH_CARTAO_CREDITO_NAIRA))
@@ -1304,6 +1309,11 @@ namespace App.Forms.Forms
                     grbTemplateContaPagar.ForeColor = Color.Black;
                 }
             }
+            else
+            {
+                grbTemplateContaPagar.BackColor = Color.White;
+                grbTemplateContaPagar.ForeColor = Color.Black;
+            }
         }
 
         private void DtpContaPagarDataCompra_ValueChanged(object sender, EventArgs e)
@@ -1314,6 +1324,16 @@ namespace App.Forms.Forms
             {
                 cboContaPagarMelhorDiaPagamento.Text = dayChoise.Value.Day.ToString();
             }
+        }
+
+        private void CboContaPagarTipoConta_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cboContaPagarTipoConta.Text != "Cartão de Crédito" && ckbCartaoCreditoNaira.Checked)
+            {
+                ckbCartaoCreditoNaira.Checked = false;
+            }
+
+            SetColorGrbTemplateContaPagar();
         }
     }
 }
