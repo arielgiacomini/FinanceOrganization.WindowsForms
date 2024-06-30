@@ -65,6 +65,7 @@ namespace App.Forms.Forms
             tbcInitial.SelectedTab = tbcInitial.TabPages[0];
             ToolTip tooltipBtnPagamentoAvulso = new();
             tooltipBtnPagamentoAvulso.SetToolTip(this.btnPagamentoAvulso, "Ideal p/ Pagamento em Massa, Ex.: Cartão de Crédito");
+            SetColorGrbTemplateContaPagar();
         }
 
         private string AdjusteInfoHeader(DateTime? lastUpdate = null)
@@ -1274,9 +1275,33 @@ namespace App.Forms.Forms
         {
             if (ckbCartaoCreditoNaira.Checked)
             {
-                if (!txtContaPagarNameDescription.Text.StartsWith(EH_CARTAO_CREDITO_NAIRA))
+                SetColorGrbTemplateContaPagar();
+
+                if (!rtbContaPagarMensagemAdicional.Text.StartsWith(EH_CARTAO_CREDITO_NAIRA))
                 {
-                    txtContaPagarNameDescription.Text = string.Concat(EH_CARTAO_CREDITO_NAIRA, txtContaPagarNameDescription.Text);
+                    rtbContaPagarMensagemAdicional.Text = string.Concat(EH_CARTAO_CREDITO_NAIRA, txtContaPagarNameDescription.Text);
+                }
+            }
+            else
+            {
+                SetColorGrbTemplateContaPagar();
+                rtbContaPagarMensagemAdicional.Text = rtbContaPagarMensagemAdicional.Text.Replace(EH_CARTAO_CREDITO_NAIRA, "");
+            }
+        }
+
+        private void SetColorGrbTemplateContaPagar()
+        {
+            if (cboContaPagarTipoConta.Text == "Cartão de Crédito")
+            {
+                if (ckbCartaoCreditoNaira.Checked)
+                {
+                    grbTemplateContaPagar.BackColor = Color.DimGray;
+                    grbTemplateContaPagar.ForeColor = Color.White;
+                }
+                else
+                {
+                    grbTemplateContaPagar.BackColor = Color.DarkOrange;
+                    grbTemplateContaPagar.ForeColor = Color.Black;
                 }
             }
         }
