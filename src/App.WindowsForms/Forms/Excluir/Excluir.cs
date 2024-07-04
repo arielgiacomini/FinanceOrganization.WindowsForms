@@ -88,7 +88,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             LastSearch.Add(DateTime.Now.ToString(), dataSource);
 
             var dataSourceOrderBy = dataSource
-                .OrderBy(dueDate => dueDate.DueDate)
+                .OrderBy(hasPay => hasPay.HasPay)
+                .ThenBy(creditCard => creditCard.Account == Account.CARTAO_CREDITO)
+                .ThenBy(dueDate => dueDate.DueDate)
+                .ThenByDescending(purchase => purchase.PurchaseDate)
                 .ToList();
 
             PreecherDataGridViewExcluirDetalhes(dataSourceOrderBy);
@@ -158,21 +161,21 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         {
             foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
             {
-                //if (Convert.ToBoolean(row.Cells[15].Value))
-                //{
-                //    SetColorRows(row, Color.DarkGreen, Color.White);
-                //}
+                if (Convert.ToBoolean(row.Cells[15].Value))
+                {
+                    SetColorRows(row, Color.DarkGreen, Color.White);
+                }
 
-                //if (row?.Cells[2]?.Value?.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
-                //{
-                //    SetColorRows(row, Color.DarkOrange, Color.Black);
-                //}
+                if (row?.Cells[2]?.Value?.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
+                {
+                    SetColorRows(row, Color.DarkOrange, Color.Black);
+                }
 
-                //if (!string.IsNullOrWhiteSpace(row?.Cells[16]?.Value?.ToString())
-                //    && (bool)(row?.Cells[16]?.Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
-                //{
-                //    SetColorRows(row, Color.DimGray, Color.White);
-                //}
+                if (!string.IsNullOrWhiteSpace(row?.Cells[16]?.Value?.ToString())
+                    && (bool)(row?.Cells[16]?.Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
+                {
+                    SetColorRows(row, Color.DimGray, Color.White);
+                }
             }
         }
 
