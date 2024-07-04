@@ -2,6 +2,7 @@
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using Domain.Entities;
 using Domain.Utils;
 
 namespace App.Forms.Forms.Pay
@@ -177,7 +178,8 @@ namespace App.Forms.Forms.Pay
                 HasPay = rdbPagamentoPago.Checked ? rdbPagamentoPago.Checked : rdbPagamentoNaoPago.Checked,
                 LastChangeDate = DateTime.Now,
                 YearMonth = cboPagamentoMesAno.Text,
-                Account = cboPagamentoConta.Text
+                Account = cboPagamentoConta.Text,
+                ConsiderNairaCreditCard = ckbCartaoCreditoNaira.Checked
             };
 
             if (!sendYearMonthAndAccount)
@@ -187,6 +189,20 @@ namespace App.Forms.Forms.Pay
             }
 
             return request;
+        }
+
+        private void CkbCartaoCreditoNaira_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ckbCartaoCreditoNaira.Checked)
+            {
+                MessageBox.Show($"Só será efetuado pagamento de todos os itens que comtemplam a fatura do mês [{cboPagamentoMesAno.Text}] de todos os itens que estão marcados como [{EH_CARTAO_CREDITO_NAIRA}]", "Informação de Pagamento",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (cboPagamentoConta.Text != Account.CARTAO_CREDITO)
+                {
+                    cboPagamentoConta.Text = Account.CARTAO_CREDITO;
+                }
+            }
         }
     }
 }
