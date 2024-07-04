@@ -42,12 +42,13 @@
             btnPagamentoPagar = new Button();
             lblPagamentoNome = new Label();
             lblPagamentoValor = new Label();
+            ckbCartaoCreditoNaira = new CheckBox();
             SuspendLayout();
             // 
             // lblPagamentoIdContaPagar
             // 
             lblPagamentoIdContaPagar.AutoSize = true;
-            lblPagamentoIdContaPagar.Location = new Point(25, 43);
+            lblPagamentoIdContaPagar.Location = new Point(21, 45);
             lblPagamentoIdContaPagar.Name = "lblPagamentoIdContaPagar";
             lblPagamentoIdContaPagar.Size = new Size(114, 15);
             lblPagamentoIdContaPagar.TabIndex = 0;
@@ -55,7 +56,7 @@
             // 
             // txtPagamentoIdContaPagar
             // 
-            txtPagamentoIdContaPagar.Location = new Point(145, 40);
+            txtPagamentoIdContaPagar.Location = new Point(141, 42);
             txtPagamentoIdContaPagar.Name = "txtPagamentoIdContaPagar";
             txtPagamentoIdContaPagar.Size = new Size(287, 23);
             txtPagamentoIdContaPagar.TabIndex = 1;
@@ -63,7 +64,7 @@
             // lblPagamentoData
             // 
             lblPagamentoData.AutoSize = true;
-            lblPagamentoData.Location = new Point(25, 130);
+            lblPagamentoData.Location = new Point(21, 138);
             lblPagamentoData.Name = "lblPagamentoData";
             lblPagamentoData.Size = new Size(114, 15);
             lblPagamentoData.TabIndex = 2;
@@ -71,7 +72,7 @@
             // 
             // txtPagamentoData
             // 
-            txtPagamentoData.Location = new Point(145, 127);
+            txtPagamentoData.Location = new Point(141, 135);
             txtPagamentoData.Name = "txtPagamentoData";
             txtPagamentoData.Size = new Size(155, 23);
             txtPagamentoData.TabIndex = 3;
@@ -80,7 +81,7 @@
             // 
             rdbPagamentoPago.AutoSize = true;
             rdbPagamentoPago.Checked = true;
-            rdbPagamentoPago.Location = new Point(315, 128);
+            rdbPagamentoPago.Location = new Point(311, 136);
             rdbPagamentoPago.Name = "rdbPagamentoPago";
             rdbPagamentoPago.Size = new Size(52, 19);
             rdbPagamentoPago.TabIndex = 4;
@@ -91,7 +92,7 @@
             // rdbPagamentoNaoPago
             // 
             rdbPagamentoNaoPago.AutoSize = true;
-            rdbPagamentoNaoPago.Location = new Point(373, 128);
+            rdbPagamentoNaoPago.Location = new Point(369, 136);
             rdbPagamentoNaoPago.Name = "rdbPagamentoNaoPago";
             rdbPagamentoNaoPago.Size = new Size(77, 19);
             rdbPagamentoNaoPago.TabIndex = 5;
@@ -101,7 +102,7 @@
             // lblPagamentoConta
             // 
             lblPagamentoConta.AutoSize = true;
-            lblPagamentoConta.Location = new Point(97, 72);
+            lblPagamentoConta.Location = new Point(93, 80);
             lblPagamentoConta.Name = "lblPagamentoConta";
             lblPagamentoConta.Size = new Size(42, 15);
             lblPagamentoConta.TabIndex = 6;
@@ -110,7 +111,7 @@
             // lblPagamentoMesAno
             // 
             lblPagamentoMesAno.AutoSize = true;
-            lblPagamentoMesAno.Location = new Point(80, 101);
+            lblPagamentoMesAno.Location = new Point(76, 109);
             lblPagamentoMesAno.Name = "lblPagamentoMesAno";
             lblPagamentoMesAno.Size = new Size(59, 15);
             lblPagamentoMesAno.TabIndex = 7;
@@ -119,7 +120,7 @@
             // cboPagamentoConta
             // 
             cboPagamentoConta.FormattingEnabled = true;
-            cboPagamentoConta.Location = new Point(145, 69);
+            cboPagamentoConta.Location = new Point(141, 77);
             cboPagamentoConta.Name = "cboPagamentoConta";
             cboPagamentoConta.Size = new Size(154, 23);
             cboPagamentoConta.TabIndex = 8;
@@ -127,14 +128,14 @@
             // cboPagamentoMesAno
             // 
             cboPagamentoMesAno.FormattingEnabled = true;
-            cboPagamentoMesAno.Location = new Point(145, 98);
+            cboPagamentoMesAno.Location = new Point(141, 106);
             cboPagamentoMesAno.Name = "cboPagamentoMesAno";
             cboPagamentoMesAno.Size = new Size(121, 23);
             cboPagamentoMesAno.TabIndex = 9;
             // 
             // btnPagamentoPagar
             // 
-            btnPagamentoPagar.Location = new Point(189, 159);
+            btnPagamentoPagar.Location = new Point(185, 168);
             btnPagamentoPagar.Name = "btnPagamentoPagar";
             btnPagamentoPagar.Size = new Size(147, 27);
             btnPagamentoPagar.TabIndex = 10;
@@ -161,18 +162,30 @@
             lblPagamentoValor.BackColor = Color.Crimson;
             lblPagamentoValor.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
             lblPagamentoValor.ForeColor = SystemColors.ControlLightLight;
-            lblPagamentoValor.Location = new Point(388, 86);
+            lblPagamentoValor.Location = new Point(358, 171);
             lblPagamentoValor.Name = "lblPagamentoValor";
             lblPagamentoValor.Size = new Size(44, 19);
             lblPagamentoValor.TabIndex = 13;
             lblPagamentoValor.Text = "Valor";
             lblPagamentoValor.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // ckbCartaoCreditoNaira
+            // 
+            ckbCartaoCreditoNaira.AutoSize = true;
+            ckbCartaoCreditoNaira.Location = new Point(301, 71);
+            ckbCartaoCreditoNaira.Name = "ckbCartaoCreditoNaira";
+            ckbCartaoCreditoNaira.Size = new Size(155, 34);
+            ckbCartaoCreditoNaira.TabIndex = 14;
+            ckbCartaoCreditoNaira.Text = "Será pago apenas \r\nCartão de Crédito Naíra?";
+            ckbCartaoCreditoNaira.UseVisualStyleBackColor = true;
+            ckbCartaoCreditoNaira.CheckedChanged += CkbCartaoCreditoNaira_CheckedChanged;
+            // 
             // FrmPagamento
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(512, 198);
+            ClientSize = new Size(512, 209);
+            Controls.Add(ckbCartaoCreditoNaira);
             Controls.Add(lblPagamentoValor);
             Controls.Add(lblPagamentoNome);
             Controls.Add(btnPagamentoPagar);
@@ -210,5 +223,6 @@
         private Button btnPagamentoPagar;
         private Label lblPagamentoNome;
         private Label lblPagamentoValor;
+        private CheckBox ckbCartaoCreditoNaira;
     }
 }
