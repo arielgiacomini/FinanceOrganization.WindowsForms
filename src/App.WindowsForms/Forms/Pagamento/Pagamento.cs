@@ -167,6 +167,12 @@ namespace App.Forms.Forms.Pay
 
                 MessageBox.Show(mensagem, "Erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            var message = output.Output.Message;
+            if (!string.IsNullOrEmpty(message))
+            {
+                MessageBox.Show(message, "Erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private PayBillToPayViewModel MapPayBillToPayToRequest(Guid? idContaPagar = null, bool sendYearMonthAndAccount = true)

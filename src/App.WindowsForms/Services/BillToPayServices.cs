@@ -70,7 +70,9 @@ namespace App.Forms.Services
         {
             using var client = new HttpClient();
 
-            var content = new StringContent(JsonConvert.SerializeObject(editBillToPayViewModel), Encoding.UTF8, "application/json");
+            var json = JsonConvert.SerializeObject(editBillToPayViewModel);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var result = client.PutAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/bills-to-pay/edit", content).Result;
 
