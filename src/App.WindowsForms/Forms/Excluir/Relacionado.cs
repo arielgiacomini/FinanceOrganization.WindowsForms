@@ -19,7 +19,7 @@ namespace App.WindowsForms.Forms.Excluir
                 .FirstOrDefault().Value
                 .Where(x => x.Id == Identificador)
                 .Select(show => show.Details!.ToList())
-                .FirstOrDefault()
+                .FirstOrDefault()!
                 .OrderBy(order => order.PurchaseDate)
                 .ToList();
 

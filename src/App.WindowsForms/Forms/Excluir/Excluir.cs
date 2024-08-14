@@ -7,6 +7,7 @@ using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
 using Domain.Entities;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 
 
 namespace App.WindowsForms.Forms.ExcluirDetalhes
@@ -87,14 +88,47 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             LastSearch.Add(DateTime.Now.ToString(), dataSource);
 
-            var dataSourceOrderBy = dataSource
-                .OrderBy(hasPay => hasPay.HasPay)
-                .ThenBy(creditCard => creditCard.Account == Account.CARTAO_CREDITO)
-                .ThenBy(dueDate => dueDate.DueDate)
-                .ThenByDescending(purchase => purchase.PurchaseDate)
+            ConcurrentDictionary<int, DgvVisualizarContaPagarDataSource> dictionary = new();
+            int contador = 0;
+
+            var topThreePay = dataSource
+                .Where(x => x.HasPay)
+                .OrderByDescending(dueDate => dueDate.DueDate)
+                .ToList()
+                .Take(3)
                 .ToList();
 
-            PreecherDataGridViewExcluirDetalhes(dataSourceOrderBy);
+            var dataSourceOrderBy = dataSource
+            .OrderBy(hasPay => hasPay.HasPay)
+            .ThenBy(creditCard => creditCard.Account == Account.CARTAO_CREDITO)
+            .ThenBy(dueDate => dueDate.DueDate)
+            .ThenByDescending(purchase => purchase.PurchaseDate)
+            .ToList();
+
+            foreach (var topThree in topThreePay)
+            {
+                contador++;
+
+                dataSourceOrderBy.Remove(topThree);
+
+                dictionary.TryAdd(contador, topThree);
+            }
+
+            foreach (var item in dataSourceOrderBy)
+            {
+                contador++;
+
+                dictionary.TryAdd(contador, item);
+            }
+
+            IList<DgvVisualizarContaPagarDataSource> all
+                    = new List<DgvVisualizarContaPagarDataSource>(dictionary.Count);
+            foreach (var item in dictionary)
+            {
+                all.Add(item.Value);
+            }
+
+            PreecherDataGridViewExcluirDetalhes(all);
         }
 
         private void PreecherDataGridViewExcluirDetalhes(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
@@ -158,6 +192,20 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         }
 
         private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            //Collor();
+        }
+
+        private void DgvExcluirDetalhes_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            if (Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15]))
+            {
+                dgvExcluirDetalhes.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.DarkGreen;
+                dgvExcluirDetalhes.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.White;
+            }
+        }
+
+        private void Collor()
         {
             foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
             {
@@ -313,33 +361,38 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private void DgvExcluirDetalhes_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            //for (int i = 0; i < dgvExcluirDetalhes.Rows.Count; i++)
-            //{
-            //    if (Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value))
-            //    {
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkGreen;
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-            //    }
+            for (int i = 0; i < dgvExcluirDetalhes.Rows.Count; i++)
+            {
+                var hasPay = Convert.ToBoolean(e.Value);
 
-            //    if (dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString() == Account.CARTAO_CREDITO
-            //        && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value))
-            //    {
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkOrange;
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-            //    }
+                if (hasPay)
+                {
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkGreen;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                }
 
-            //    if (!string.IsNullOrWhiteSpace(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString())
-            //        && (bool)(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
-            //    {
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DimGray;
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-            //    }
-            //    else
-            //    {
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.Transparent;
-            //        dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
-            //    }
-            //}
+                var creditCard = e.Value?.ToString() == Account.CARTAO_CREDITO
+                    && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value);
+
+                if (dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString() == Account.CARTAO_CREDITO
+                    && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value))
+                {
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkOrange;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                }
+
+                if (!string.IsNullOrWhiteSpace(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString())
+                    && (bool)(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
+                {
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DimGray;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                }
+                else
+                {
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.Transparent;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
+                }
+            }
         }
     }
 }

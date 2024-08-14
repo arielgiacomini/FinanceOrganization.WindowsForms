@@ -69,6 +69,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.CellFormatting += DgvExcluirDetalhes_CellFormatting;
             dgvExcluirDetalhes.RowsAdded += DgvExcluirDetalhes_RowsAdded;
             dgvExcluirDetalhes.SelectionChanged += DgvExcluirDetalhes_SelectionChanged;
+            dgvExcluirDetalhes.RowPrePaint += DgvExcluirDetalhes_RowPrePaint;
             // 
             // lblExcluirDetalhesItensSelecionadosDataGridView
             // 
