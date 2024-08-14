@@ -372,7 +372,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 }
 
                 var creditCard = e.Value?.ToString() == Account.CARTAO_CREDITO
-                    && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value)
+                    && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value);
 
                 if (dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString() == Account.CARTAO_CREDITO
                     && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value))
