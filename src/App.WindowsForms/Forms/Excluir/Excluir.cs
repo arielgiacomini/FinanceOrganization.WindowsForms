@@ -105,7 +105,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             .ThenByDescending(purchase => purchase.PurchaseDate)
             .ToList();
 
-            foreach (var topThree in topThreePay)
+            foreach (var topThree in topThreePay.OrderBy(dueDate => dueDate.DueDate))
             {
                 contador++;
 
@@ -193,37 +193,45 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            //Collor();
-        }
-
-        private void DgvExcluirDetalhes_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-            if (Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15]))
-            {
-                dgvExcluirDetalhes.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.DarkGreen;
-                dgvExcluirDetalhes.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.White;
-            }
+            Collor();
         }
 
         private void Collor()
         {
-            foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
+            for (int i = 0; i < dgvExcluirDetalhes.Rows.Count; i++)
             {
-                if (Convert.ToBoolean(row.Cells[15].Value))
+                var hasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value?.ToString());
+
+                if (hasPay)
                 {
-                    SetColorRows(row, Color.DarkGreen, Color.White);
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkGreen;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+
+                    continue;
                 }
 
-                if (row?.Cells[2]?.Value?.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
+                var creditCardNotPay = dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString() == Account.CARTAO_CREDITO
+                    && !hasPay;
+
+                if (creditCardNotPay)
                 {
-                    SetColorRows(row, Color.DarkOrange, Color.Black);
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkOrange;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+
+                    continue;
                 }
 
-                if (!string.IsNullOrWhiteSpace(row?.Cells[16]?.Value?.ToString())
-                    && (bool)(row?.Cells[16]?.Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
+                var msg = dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString();
+
+                if (!string.IsNullOrWhiteSpace(msg) && (bool)msg.StartsWith(EH_CARTAO_CREDITO_NAIRA))
                 {
-                    SetColorRows(row, Color.DimGray, Color.White);
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DimGray;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+
+                    continue;
                 }
+
+                dgvExcluirDetalhes.Rows[i].DefaultCellStyle = null;
             }
         }
 
@@ -356,42 +364,6 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             else
             {
                 MessageBox.Show("Não foi encontrado nenhum registro relacionado", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void DgvExcluirDetalhes_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            for (int i = 0; i < dgvExcluirDetalhes.Rows.Count; i++)
-            {
-                var hasPay = Convert.ToBoolean(e.Value);
-
-                if (hasPay)
-                {
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkGreen;
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-                }
-
-                var creditCard = e.Value?.ToString() == Account.CARTAO_CREDITO
-                    && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value);
-
-                if (dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString() == Account.CARTAO_CREDITO
-                    && !Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value))
-                {
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkOrange;
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-                }
-
-                if (!string.IsNullOrWhiteSpace(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString())
-                    && (bool)(dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
-                {
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DimGray;
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-                }
-                else
-                {
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.Transparent;
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
-                }
             }
         }
     }
