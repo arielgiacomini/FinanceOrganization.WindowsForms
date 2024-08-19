@@ -959,6 +959,13 @@ namespace App.Forms.Forms
                 {
                     SetColorRows(row, Color.DimGray, Color.White);
                 }
+
+                var projection = row?.Cells[3]?.Value?.ToString().Contains("(Projetado para o mês todo)") ?? false;
+
+                if (projection)
+                {
+                    SetColorRows(row, Color.LightGreen, Color.Black);
+                }
             }
         }
 
