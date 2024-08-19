@@ -8,6 +8,7 @@ using App.WindowsForms.ViewModel;
 using Domain.Entities;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 
 namespace App.WindowsForms.Forms.ExcluirDetalhes
@@ -28,11 +29,28 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async void FrmExcluirDetalhes_Load(object sender, EventArgs e)
         {
+            Stopwatch stopWatch = new();
+            stopWatch.Start();
+
             await PreencherCampos();
 
             PreencherlblTotaisRegistrosEValores();
 
             PreecherPrecoMedio();
+
+            PreencherTempoCarregamentoTela(stopWatch);
+        }
+
+        private void PreencherTempoCarregamentoTela(Stopwatch stopWatch)
+        {
+            stopWatch.Stop();
+
+            TimeSpan ts = stopWatch.Elapsed;
+
+            string elapsedTime = string
+                .Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+
+            lblRunTimeLoad.Text = string.Concat("Tempo de Carregamento dos dados desta tela: ", elapsedTime);
         }
 
         private void PreecherPrecoMedio()
@@ -88,15 +106,27 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             LastSearch.Add(DateTime.Now.ToString(), dataSource);
 
+            IList<DgvVisualizarContaPagarDataSource> all = OrderingRule(dataSource);
+
+            PreecherDataGridViewExcluirDetalhes(all);
+        }
+
+        private static IList<DgvVisualizarContaPagarDataSource> OrderingRule(IList<DgvVisualizarContaPagarDataSource> dataSource)
+        {
             ConcurrentDictionary<int, DgvVisualizarContaPagarDataSource> dictionary = new();
             int contador = 0;
 
-            var topThreePay = dataSource
-                .Where(x => x.HasPay)
-                .OrderByDescending(dueDate => dueDate.DueDate)
-                .ToList()
-                .Take(3)
-                .ToList();
+            List<DgvVisualizarContaPagarDataSource> topRecords = new();
+
+            if (!FewRecords(dataSource))
+            {
+                topRecords = dataSource
+                    .Where(x => x.HasPay && x.DueDate < DateTime.Now)
+                    .OrderByDescending(dueDate => dueDate.DueDate)
+                    .ToList()
+                    .Take(3)
+                    .ToList();
+            }
 
             var dataSourceOrderBy = dataSource
             .OrderBy(hasPay => hasPay.HasPay)
@@ -105,7 +135,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             .ThenByDescending(purchase => purchase.PurchaseDate)
             .ToList();
 
-            foreach (var topThree in topThreePay.OrderBy(dueDate => dueDate.DueDate))
+            foreach (var topThree in topRecords.OrderBy(dueDate => dueDate.DueDate))
             {
                 contador++;
 
@@ -123,12 +153,18 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             IList<DgvVisualizarContaPagarDataSource> all
                     = new List<DgvVisualizarContaPagarDataSource>(dictionary.Count);
+
             foreach (var item in dictionary)
             {
                 all.Add(item.Value);
             }
 
-            PreecherDataGridViewExcluirDetalhes(all);
+            return all;
+        }
+
+        private static bool FewRecords(IList<DgvVisualizarContaPagarDataSource> dataSource)
+        {
+            return dataSource.Count <= 18;
         }
 
         private void PreecherDataGridViewExcluirDetalhes(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)

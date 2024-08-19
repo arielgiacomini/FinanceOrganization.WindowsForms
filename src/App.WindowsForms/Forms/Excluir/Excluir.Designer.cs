@@ -38,6 +38,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             btnShowDetails = new Button();
             lblValorMedioOnlyPagos = new Label();
             lblTotaisRegistrosEValores = new Label();
+            lblRunTimeLoad = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).BeginInit();
             SuspendLayout();
             // 
@@ -113,7 +114,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             lblValorMedioOnlyPagos.AutoSize = true;
             lblValorMedioOnlyPagos.Font = new Font("Dubai", 14.2499981F, FontStyle.Bold, GraphicsUnit.Point);
             lblValorMedioOnlyPagos.ForeColor = SystemColors.Highlight;
-            lblValorMedioOnlyPagos.Location = new Point(321, 4);
+            lblValorMedioOnlyPagos.Location = new Point(335, 9);
             lblValorMedioOnlyPagos.Name = "lblValorMedioOnlyPagos";
             lblValorMedioOnlyPagos.RightToLeft = RightToLeft.Yes;
             lblValorMedioOnlyPagos.Size = new Size(212, 32);
@@ -123,21 +124,35 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             // 
             // lblTotaisRegistrosEValores
             // 
-            lblTotaisRegistrosEValores.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblTotaisRegistrosEValores.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lblTotaisRegistrosEValores.AutoSize = true;
             lblTotaisRegistrosEValores.Location = new Point(1009, 488);
+            lblTotaisRegistrosEValores.Margin = new Padding(3, 0, 0, 0);
             lblTotaisRegistrosEValores.Name = "lblTotaisRegistrosEValores";
             lblTotaisRegistrosEValores.RightToLeft = RightToLeft.Yes;
             lblTotaisRegistrosEValores.Size = new Size(260, 15);
             lblTotaisRegistrosEValores.TabIndex = 20;
             lblTotaisRegistrosEValores.Text = "Quantidade de Registros: 1 - Total: R$ 100.400,00";
-            lblTotaisRegistrosEValores.TextAlign = ContentAlignment.MiddleLeft;
+            lblTotaisRegistrosEValores.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lblRunTimeLoad
+            // 
+            lblRunTimeLoad.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblRunTimeLoad.AutoSize = true;
+            lblRunTimeLoad.Location = new Point(12, 488);
+            lblRunTimeLoad.Name = "lblRunTimeLoad";
+            lblRunTimeLoad.RightToLeft = RightToLeft.Yes;
+            lblRunTimeLoad.Size = new Size(64, 15);
+            lblRunTimeLoad.TabIndex = 21;
+            lblRunTimeLoad.Text = "00:00:01.00";
+            lblRunTimeLoad.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // FrmExibirDetalhes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1281, 514);
+            Controls.Add(lblRunTimeLoad);
             Controls.Add(lblTotaisRegistrosEValores);
             Controls.Add(lblValorMedioOnlyPagos);
             Controls.Add(btnShowDetails);
@@ -162,5 +177,6 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private Button btnShowDetails;
         private Label lblValorMedioOnlyPagos;
         private Label lblTotaisRegistrosEValores;
+        private Label lblRunTimeLoad;
     }
 }
