@@ -8,6 +8,7 @@ using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using App.WindowsForms.DataSource;
 using App.WindowsForms.Forms.ExcluirDetalhes;
+using App.WindowsForms.Services;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
 using Domain.Entities;
@@ -50,7 +51,7 @@ namespace App.Forms.Forms
             lblVersion.Text = InfoHeader.Version;
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
-            PreencherComboBoxContaPagarCategoria();
+            await PreencherComboBoxContaPagarCategoriaAsync();
             PreencherComboBoxContaPagarTipoConta();
             PreencherComboBoxAnoMes();
             PreencherComboBoxEstudoFinanceiroQuantideMeses();
@@ -246,93 +247,39 @@ namespace App.Forms.Forms
             lblContaPagarDataCriacao.Text = string.Concat(texto, DateTime.Now);
         }
 
-        private void PreencherComboBoxContaPagarCategoria(string tabPageName = null, string categorySelected = null)
+        private async Task PreencherComboBoxContaPagarCategoriaAsync(string tabPageName = null, string categorySelected = null)
         {
-            Dictionary<int, string> categoriasContaPagar = new()
+            CategoryServices.Environment = Environment;
+            var resultSearch = await CategoryServices.SearchCategories(new SearchCategoryViewModel());
+
+            Dictionary<int, string> categoriasContaPagar = new() { };
+
+            int cont = 0;
+            foreach (var item in resultSearch.Categories)
             {
-                    { 0, "Nenhum" },
-                    { 1, "Alimentação:Açougue" },
-                    { 2, "Alimentação:Almoço" },
-                    { 3, "Alimentação:Besteiras" },
-                    { 4, "Alimentação:Café da Manhã" },
-                    { 5, "Alimentação:Café da Tarde" },
-                    { 6, "Alimentação:Comemoração" },
-                    { 7, "Alimentação:Feira" },
-                    { 8, "Alimentação:Jantar" },
-                    { 9, "Alimentação:Mercado" },
-                    { 10, "Automóvel:Combustível" },
-                    { 11, "Automóvel:Documentação" },
-                    { 12, "Automóvel:Estacionamento" },
-                    { 13, "Automóvel:Garagem" },
-                    { 14, "Automóvel:Limpeza" },
-                    { 15, "Automóvel:Manutenção" },
-                    { 16, "Automóvel:Seguro" },
-                    { 17, "Automóvel:Uber" },
-                    { 18, "Cabeleleiro:Ariel" },
-                    { 19, "Cabeleleiro:Leo" },
-                    { 20, "Cartão de Crédito:Pontos" },
-                    { 21, "Casa:Água" },
-                    { 22, "Casa:Amortização Financiamento" },
-                    { 23, "Casa:Eletrodoméstico" },
-                    { 24, "Casa:Energia" },
-                    { 25, "Casa:Financiamento" },
-                    { 26, "Casa:Gás" },
-                    { 27, "Casa:IPTU" },
-                    { 28, "Casa:Manutenção" },
-                    { 29, "Casa:Segurança" },
-                    { 30, "Casa:TV" },
-                    { 31, "Casa:Utensilios" },
-                    { 32, "Casa:Utensílios" },
-                    { 33, "Casa:Utensílios:Cobertor" },
-                    { 34, "Celular:Internet" },
-                    { 35, "Celular:Pelicula" },
-                    { 36, "Curso:Inglês:Ariel" },
-                    { 37, "Curso:Programação:Ariel" },
-                    { 38, "Dizimo" },
-                    { 39, "Documentos:Ariel" },
-                    { 40, "Documentos:Naira" },
-                    { 41, "Esporte:Ariel" },
-                    { 42, "Esporte:Helena" },
-                    { 43, "Esporte:Naíra" },
-                    { 44, "Esporte:TaxaMatricula" },
-                    { 45, "Estética:Naíra" },
-                    { 46, "Farmacia:Remédio" },
-                    { 47, "Filhos:Helena" },
-                    { 48, "Filhos:Leo" },
-                    { 49, "Gasto de Terceiros:Junior" },
-                    { 50, "Gasto de Terceiros:Mãe" },
-                    { 51, "Higiêne:Ariel" },
-                    { 52, "Higiêne:Naira" },
-                    { 53, "Internet:Fixa Casa TIM" },
-                    { 54, "Internet:Fixa Casa VIP" },
-                    { 55, "Internet:Fixa Escritório VIP" },
-                    { 56, "Internet:Móvel Naíra" },
-                    { 57, "Jogos:Bingo" },
-                    { 58, "Jogos:Estadio" },
-                    { 59, "Jogos:RifaOnline" },
-                    { 60, "Jogos:SorteioDrone" },
-                    { 61, "Livros" },
-                    { 62, "Passeio:Bar" },
-                    { 63, "Passeio:Circo" },
-                    { 64, "Perfumaria" },
-                    { 65, "Presente:Arthur" },
-                    { 66, "Presente:Naira" },
-                    { 67, "Presente:Naíra" },
-                    { 68, "SeguroVida:Naira" },
-                    { 69, "Serviço:Cloud" },
-                    { 70, "Serviço:Produtividade" },
-                    { 71, "Serviço:Streaming" },
-                    { 72, "Transporte:Escolar" },
-                    { 73, "Vestuário:Ariel" },
-                    { 74, "Vestuário:Helena" },
-                    { 75, "Vestuário:Leo" },
-                    { 76, "Vestuário:Presente" },
-                    { 77, "Viagem" }
-            };
+                if (cont == 0)
+                {
+                    categoriasContaPagar.Add(cont, "Nenhum");
+                    cont++;
+                    categoriasContaPagar.Add(cont, item);
+                }
+                else
+                {
+                    categoriasContaPagar.Add(cont, item);
+                }
+
+                cont++;
+            }
 
             var categoriasContaPagarOrderBy = categoriasContaPagar
                 .OrderBy(x => x.Value)
+                .Where(x => x.Key != 0)
                 .ToList();
+
+            var first = categoriasContaPagar.FirstOrDefault(x => x.Key == 0);
+
+            cboContaPagarCategory.Items.Add(first.Value);
+            cboEfetuarPagamentoCategoria.Items.Add(first.Value);
 
             foreach (var item in categoriasContaPagarOrderBy)
             {
@@ -342,8 +289,8 @@ namespace App.Forms.Forms
 
             if (categorySelected == null)
             {
-                cboContaPagarCategory.SelectedItem = categoriasContaPagarOrderBy.FirstOrDefault().Value;
-                cboEfetuarPagamentoCategoria.SelectedItem = categoriasContaPagarOrderBy.FirstOrDefault().Value;
+                cboContaPagarCategory.SelectedItem = first.Value;
+                cboEfetuarPagamentoCategoria.SelectedItem = first.Value;
             }
             else
             {
@@ -601,7 +548,7 @@ namespace App.Forms.Forms
         {
             cboContaPagarCategory.Items.Clear();
             cboContaPagarTipoConta.Items.Clear();
-            PreencherComboBoxContaPagarCategoria(tabPageName, category);
+            PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category);
             PreencherComboBoxContaPagarTipoConta(tabPageName, account);
         }
 
