@@ -289,7 +289,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
             {
-                bool isOk = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal valor);
+                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
 
                 valorTotalItensSelecionados += isOk ? valor : 0;
             }

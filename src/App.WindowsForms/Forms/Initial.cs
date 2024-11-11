@@ -637,7 +637,7 @@ namespace App.Forms.Forms
         {
             #region TOTAL GERAL
 
-            var quantidadeTotal = dataSourceOrderBy.Count;
+            var quantidadeTotal = dataSourceOrderBy.Where(x => x.Value > 0).Count();
             var valorTotal = Convert.ToDecimal(dataSourceOrderBy.Sum(x => x.Value));
             ConsolidatePreencherlblGridViewTotais(quantidadeTotal, valorTotal);
 
@@ -1006,7 +1006,7 @@ namespace App.Forms.Forms
 
             foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
             {
-                bool isOk = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal valor);
+                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
 
                 valorTotalItensSelecionados += isOk ? valor : 0;
             }
