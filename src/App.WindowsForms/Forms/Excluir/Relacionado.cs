@@ -93,7 +93,7 @@ namespace App.WindowsForms.Forms.Excluir
 
             foreach (DataGridViewRow row in dgvRegistroRelacionado.SelectedRows)
             {
-                bool isOk = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal valor);
+                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
 
                 valorTotalItensSelecionados += isOk ? valor : 0;
             }
