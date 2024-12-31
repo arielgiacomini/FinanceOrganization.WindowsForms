@@ -2,10 +2,10 @@
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.Entities;
 using App.WindowsForms.Forms.Excluir;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
-using Domain.Entities;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -21,6 +21,17 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         public Dictionary<string, IList<DgvVisualizarContaPagarDataSource>> LastSearch = new();
         private readonly Dictionary<int, DeleteBillToPayViewModel> _deleteBillToPayViewModels = new();
         public string? Environment { get; set; }
+        public IList<Account>? CreditCard
+        {
+            set
+            {
+                _creditCard = value?.ToList();
+                _listCreditCard = _creditCard?.ToList().Select(static x => x.Name).ToList();
+            }
+        }
+
+        private static List<Account>? _creditCard;
+        private static List<string>? _listCreditCard;
 
         public FrmExibirDetalhes()
         {
@@ -68,7 +79,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 quantidadeItensPagos += isOkPay & hasPay ? 1 : 0;
             }
 
-            string descricaoConta = dgvExcluirDetalhes.Rows[dgvExcluirDetalhes.Rows.GetFirstRow(DataGridViewElementStates.Selected)].Cells[3].Value?.ToString() ?? string.Empty;
+            string descricaoConta = dgvExcluirDetalhes
+                .Rows[dgvExcluirDetalhes
+                .Rows.GetFirstRow(DataGridViewElementStates.Selected)]
+                .Cells[3].Value?.ToString() ?? string.Empty;
 
             decimal avgPrice = 0;
             if (quantidadeItensPagos > 0)
@@ -130,7 +144,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             var dataSourceOrderBy = dataSource
             .OrderBy(hasPay => hasPay.HasPay)
-            .ThenBy(creditCard => creditCard.Account == Account.CARTAO_CREDITO)
+            .ThenBy(creditCard => _listCreditCard?.Contains(creditCard.Account))
             .ThenBy(dueDate => dueDate.DueDate)
             .ThenByDescending(purchase => purchase.PurchaseDate)
             .ToList();
@@ -246,7 +260,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     continue;
                 }
 
-                var creditCardNotPay = dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString() == Account.CARTAO_CREDITO
+                var creditCardNotPay = (_listCreditCard?.Contains(dgvExcluirDetalhes?.Rows[i]?.Cells[2].Value?.ToString()) ?? false)
                     && !hasPay;
 
                 if (creditCardNotPay)
@@ -257,9 +271,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     continue;
                 }
 
-                var msg = dgvExcluirDetalhes.Rows[i].Cells[16].Value?.ToString();
-
-                if (!string.IsNullOrWhiteSpace(msg) && (bool)msg.StartsWith(EH_CARTAO_CREDITO_NAIRA))
+                //TODO: MUDAREMOS OS REGISTROS PASSADOS, OU SEJA, O QUE ESTÁ DEFINIDO COMO CARTÃO DE CRÉDITO APENAS SERÁ FEITO UPDATE PARA CARTÃO DE CRÉDITO NUBANK
+                var nubank = _listCreditCard?.Where(x => x.Contains("Nubank")).ToList();
+                //TODO: DEFINIR CORES VIA CONFIGURAÇÃO, DEIXAR NO BANCO DE DADOS
+                if (nubank != null && nubank.Contains(dgvExcluirDetalhes?.Rows[i]?.Cells[2].Value?.ToString()))
                 {
                     dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DimGray;
                     dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;

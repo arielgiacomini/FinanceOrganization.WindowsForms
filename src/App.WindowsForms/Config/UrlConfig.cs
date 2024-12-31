@@ -23,5 +23,10 @@ namespace App.Forms.Config
 
             return configUrl;
         }
+
+        public static string GetEnviromentInitialize()
+        {
+            return ConfigurationManager.AppSettings["enviroment.initialize"] ?? "Produção";
+        }
     }
 }
