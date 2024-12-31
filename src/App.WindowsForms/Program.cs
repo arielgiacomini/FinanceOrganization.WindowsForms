@@ -14,7 +14,8 @@ namespace App.Forms
 
         private static InfoHeader? GetInfoHeader()
         {
-            var urlAPI = UrlConfig.GetFinanceOrganizationApiUrl("Produção");
+            var enviroment = UrlConfig.GetEnviromentInitialize();
+            var urlAPI = UrlConfig.GetFinanceOrganizationApiUrl(enviroment);
 
             if (string.IsNullOrWhiteSpace(urlAPI))
             {
@@ -33,7 +34,7 @@ namespace App.Forms
                 IsProductionEnvironment = productionEnviroment,
                 Url = urlAPI,
                 Version = Info.GetVersionString(),
-                Environment = "Produção"
+                Environment = enviroment
             };
 
             return infoHeader;

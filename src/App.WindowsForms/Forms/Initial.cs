@@ -7,7 +7,9 @@ using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using App.WindowsForms.DataSource;
+using App.WindowsForms.Entities;
 using App.WindowsForms.Forms.ExcluirDetalhes;
+using App.WindowsForms.Repository;
 using App.WindowsForms.Services;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
@@ -35,6 +37,8 @@ namespace App.Forms.Forms
         public InfoHeader InfoHeader { get; set; } = new InfoHeader();
         public string? Environment { get; set; }
 
+        public AccountRepository AccountRepository = new();
+
         public Initial(InfoHeader? infoHeader)
         {
             if (infoHeader != null)
@@ -52,7 +56,7 @@ namespace App.Forms.Forms
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
             await PreencherComboBoxContaPagarCategoriaAsync();
-            PreencherComboBoxContaPagarTipoConta();
+            await PreencherComboBoxContaPagarAccount();
             PreencherComboBoxAnoMes();
             PreencherComboBoxEstudoFinanceiroQuantideMeses();
             RegraCamposAnoMes();
@@ -313,37 +317,36 @@ namespace App.Forms.Forms
             }
         }
 
-        private void PreencherComboBoxContaPagarTipoConta(string tabPageName = null, string accountSelected = null)
+        private async Task PreencherComboBoxContaPagarAccount(string tabPageName = null, string accountSelected = null)
         {
-            Dictionary<int, string> tipoConta = new()
-            {
-                { 1, "Cartão de Crédito" },
-                { 2, "Cartão de Débito" },
-                { 3, "Cartão VA" },
-                { 4, "Cartão VR" },
-                { 5, "Itaú" }
-            };
+            AccountServices.Environment = Environment;
+            var accounts = await AccountServices.SearchAccounts(new SearchAccountViewModel());
 
-            foreach (var item in tipoConta)
+            foreach (var account in accounts)
             {
-                cboContaPagarTipoConta.Items.Add(item.Value);
+                AccountRepository.AddOnMemory(account);
+            }
+
+            foreach (var item in AccountRepository._accounts.Values.OrderBy((x) => x.Name))
+            {
+                cboContaPagarTipoConta.Items.Add(item.Name);
             }
 
             if (accountSelected == null)
             {
-                cboContaPagarTipoConta.SelectedItem = tipoConta.FirstOrDefault().Value;
+                cboContaPagarTipoConta.SelectedItem = AccountRepository._accounts[0];
             }
             else
             {
-                var theChoise = tipoConta.FirstOrDefault(x => x.Value == accountSelected);
+                var theChoise = AccountRepository._accounts.FirstOrDefault(x => x.Value.Name == accountSelected);
 
-                if (theChoise.Value.Length > 0)
+                if (theChoise.Value.Name != null)
                 {
                     cboContaPagarTipoConta.SelectedItem = theChoise.Value;
                 }
                 else
                 {
-                    cboContaPagarTipoConta.SelectedItem = tipoConta.FirstOrDefault().Value;
+                    cboContaPagarTipoConta.SelectedItem = AccountRepository._accounts.FirstOrDefault().Value.Name;
                 }
             }
         }
@@ -549,7 +552,7 @@ namespace App.Forms.Forms
             cboContaPagarCategory.Items.Clear();
             cboContaPagarTipoConta.Items.Clear();
             PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category);
-            PreencherComboBoxContaPagarTipoConta(tabPageName, account);
+            PreencherComboBoxContaPagarAccount(tabPageName, account);
         }
 
         private async void BtnEfetuarPagamentoBuscar_Click(object sender, EventArgs e)
@@ -580,7 +583,7 @@ namespace App.Forms.Forms
 
             var dataSourceOrderBy = dataSource
                 .OrderBy(hasPay => hasPay.HasPay)
-                .ThenBy(creditCard => creditCard.Account == Account.CARTAO_CREDITO)
+                .ThenBy(creditCard => creditCard.Account == AccountFixed.CARTAO_CREDITO)
                 .ThenBy(dueDate => dueDate.DueDate)
                 .ThenByDescending(purchase => purchase.PurchaseDate)
                 .ToList();
@@ -656,19 +659,19 @@ namespace App.Forms.Forms
             #region CARTÃO DE CRÉDITO FAMÍLIA
 
             var quantidadeTotalCartaoCreditoFamilia = dataSourceOrderBy
-                .Count(creditCardFamily => creditCardFamily.Account == Account.CARTAO_CREDITO
+                .Count(creditCardFamily => creditCardFamily.Account == AccountFixed.CARTAO_CREDITO
                     && !(creditCardFamily.AdditionalMessage != null
                      && creditCardFamily.AdditionalMessage.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)));
 
             var quantidadeTotalPagoCartaoCreditoFamilia = dataSourceOrderBy
-                .Count(creditCardFamily => creditCardFamily.Account == Account.CARTAO_CREDITO
+                .Count(creditCardFamily => creditCardFamily.Account == AccountFixed.CARTAO_CREDITO
                     && !(creditCardFamily.AdditionalMessage != null
                      && creditCardFamily.AdditionalMessage.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA))
                      && creditCardFamily.HasPay);
 
             var valorTotalCartaoCreditoFamilia = Convert
                 .ToDecimal(dataSourceOrderBy
-                .Where(creditCardFamily => creditCardFamily.Account == Account.CARTAO_CREDITO
+                .Where(creditCardFamily => creditCardFamily.Account == AccountFixed.CARTAO_CREDITO
                     && !(creditCardFamily.AdditionalMessage != null
                      && creditCardFamily.AdditionalMessage.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
                 .Sum(x => x.Value));
@@ -680,18 +683,18 @@ namespace App.Forms.Forms
             #region CARTÃO DE CRÉDITO NAÍRA
 
             var quantidadeTotalCartaoCreditoNaira = dataSourceOrderBy
-                .Count(creditCardNaira => creditCardNaira.Account == Account.CARTAO_CREDITO
+                .Count(creditCardNaira => creditCardNaira.Account == AccountFixed.CARTAO_CREDITO
                     && creditCardNaira.AdditionalMessage != null && creditCardNaira.AdditionalMessage.ToString()
                 .StartsWith(EH_CARTAO_CREDITO_NAIRA));
 
             var quantidadeTotalPagoCartaoCreditoNaira = dataSourceOrderBy
-                .Count(creditCardNaira => creditCardNaira.Account == Account.CARTAO_CREDITO
+                .Count(creditCardNaira => creditCardNaira.Account == AccountFixed.CARTAO_CREDITO
                     && creditCardNaira.AdditionalMessage != null && creditCardNaira.AdditionalMessage.ToString()
                 .StartsWith(EH_CARTAO_CREDITO_NAIRA) && creditCardNaira.HasPay);
 
             var valorTotalCartaoCreditoNaira = Convert
                 .ToDecimal(dataSourceOrderBy
-                .Where(creditCardNaira => creditCardNaira.Account == Account.CARTAO_CREDITO
+                .Where(creditCardNaira => creditCardNaira.Account == AccountFixed.CARTAO_CREDITO
                     && creditCardNaira.AdditionalMessage != null && creditCardNaira.AdditionalMessage.ToString()
                 .StartsWith(EH_CARTAO_CREDITO_NAIRA))
                 .Sum(x => x.Value));
@@ -896,7 +899,7 @@ namespace App.Forms.Forms
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
 
-                if (row?.Cells[2]?.Value?.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
+                if (row?.Cells[2]?.Value?.ToString() == AccountFixed.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
                 {
                     SetColorRows(row, Color.DarkOrange, Color.Black);
                 }
@@ -1030,12 +1033,13 @@ namespace App.Forms.Forms
                 idsFixedInvoices.Add(idFixedInvoice);
             }
 
-            searchBillToPayViewModel.IdFixedInvoices = idsFixedInvoices.ToArray();
+            searchBillToPayViewModel.IdBillToPayRegistrations = idsFixedInvoices.ToArray();
 
             FrmExibirDetalhes frmExcluirDetalhes = new()
             {
                 PostSearchBillToPayViewModel = searchBillToPayViewModel,
-                Environment = Environment
+                Environment = Environment,
+                CreditCard = AccountRepository.GetAccountsOnlyCreditCard()
             };
 
             frmExcluirDetalhes.ShowDialog();
