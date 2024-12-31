@@ -165,7 +165,7 @@
             // ckbCartaoCreditoNaira
             // 
             ckbCartaoCreditoNaira.AutoSize = true;
-            ckbCartaoCreditoNaira.Location = new Point(289, 111);
+            ckbCartaoCreditoNaira.Location = new Point(337, 111);
             ckbCartaoCreditoNaira.Name = "ckbCartaoCreditoNaira";
             ckbCartaoCreditoNaira.Size = new Size(155, 19);
             ckbCartaoCreditoNaira.TabIndex = 38;
@@ -430,9 +430,9 @@
             lblContaPagarTipoConta.AutoSize = true;
             lblContaPagarTipoConta.Location = new Point(28, 111);
             lblContaPagarTipoConta.Name = "lblContaPagarTipoConta";
-            lblContaPagarTipoConta.Size = new Size(84, 15);
+            lblContaPagarTipoConta.Size = new Size(42, 15);
             lblContaPagarTipoConta.TabIndex = 4;
-            lblContaPagarTipoConta.Text = "Tipo de Conta:";
+            lblContaPagarTipoConta.Text = "Conta:";
             // 
             // lblContaPagarAnoMesInicial
             // 
@@ -446,9 +446,9 @@
             // cboContaPagarTipoConta
             // 
             cboContaPagarTipoConta.FormattingEnabled = true;
-            cboContaPagarTipoConta.Location = new Point(116, 108);
+            cboContaPagarTipoConta.Location = new Point(76, 108);
             cboContaPagarTipoConta.Name = "cboContaPagarTipoConta";
-            cboContaPagarTipoConta.Size = new Size(167, 23);
+            cboContaPagarTipoConta.Size = new Size(228, 23);
             cboContaPagarTipoConta.TabIndex = 5;
             cboContaPagarTipoConta.SelectedValueChanged += CboContaPagarTipoConta_SelectedValueChanged;
             // 

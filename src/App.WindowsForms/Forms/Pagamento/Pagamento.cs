@@ -204,9 +204,9 @@ namespace App.Forms.Forms.Pay
                 MessageBox.Show($"Só será efetuado pagamento de todos os itens que comtemplam a fatura do mês [{cboPagamentoMesAno.Text}] de todos os itens que estão marcados como [{EH_CARTAO_CREDITO_NAIRA}]", "Informação de Pagamento",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                if (cboPagamentoConta.Text != Account.CARTAO_CREDITO)
+                if (cboPagamentoConta.Text != AccountFixed.CARTAO_CREDITO)
                 {
-                    cboPagamentoConta.Text = Account.CARTAO_CREDITO;
+                    cboPagamentoConta.Text = AccountFixed.CARTAO_CREDITO;
                 }
             }
         }
