@@ -49,7 +49,8 @@ namespace App.WindowsForms.Services
                     CommissionPercentage = account.CommissionPercentage,
                     Enable = account.Enable,
                     CreationDate = account.CreationDate,
-                    LastChangeDate = account.LastChangeDate
+                    LastChangeDate = account.LastChangeDate,
+                    IsCreditCard = account.IsCreditCard
                 });
             }
 

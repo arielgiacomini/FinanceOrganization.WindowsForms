@@ -6,6 +6,18 @@ namespace App.WindowsForms.Repository
     {
         public Dictionary<int, Account> _accounts = new();
 
+        /// <summary>
+        /// Variável Privada da Instância
+        /// </summary>
+        private static AccountRepository _instance = null;
+        /// <summary>
+        /// Get a instância
+        /// </summary>
+        public static AccountRepository Instance
+        {
+            get { return _instance ??= new AccountRepository(); }
+        }
+
         public void AddOnMemory(Account account)
         {
             if (_accounts.Count == 0)
@@ -24,7 +36,7 @@ namespace App.WindowsForms.Repository
         {
             foreach (var itemAccount in _accounts)
             {
-                if (itemAccount.Value.Name.StartsWith(account))
+                if (itemAccount.Value.Name == account && itemAccount.Value.IsCreditCard)
                 {
                     return true;
                 }
@@ -46,7 +58,7 @@ namespace App.WindowsForms.Repository
             {
                 if (itemAccount != null)
                 {
-                    if (itemAccount.Name.StartsWith("Cartão de Crédito"))
+                    if (itemAccount.IsCreditCard)
                     {
                         accounts.Add(itemAccount);
                     }
@@ -54,6 +66,19 @@ namespace App.WindowsForms.Repository
             }
 
             return accounts;
+        }
+
+        public Account? GetAccountByName(string account)
+        {
+            foreach (var itemAccount in _accounts)
+            {
+                if (itemAccount.Value.Name == account)
+                {
+                    return itemAccount.Value;
+                }
+            }
+
+            return null;
         }
     }
 }

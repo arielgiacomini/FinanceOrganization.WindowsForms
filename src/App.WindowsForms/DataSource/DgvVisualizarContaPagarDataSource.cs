@@ -1,4 +1,6 @@
-﻿namespace App.Forms.DataSource
+﻿using App.WindowsForms.Entities;
+
+namespace App.Forms.DataSource
 {
     public class DgvVisualizarContaPagarDataSource
     {
@@ -60,6 +62,7 @@
         public DateTime CreationDate { get; set; }
         public DateTime? LastChangeDate { get; set; }
         public IList<Details>? Details { get; set; }
+        public Account? AccountObject { get; set; }
     }
 
     public class Details
