@@ -54,5 +54,9 @@
         /// Data de alteração do registro
         /// </summary>
         public DateTime? LastChangeDate { get; set; }
+        /// <summary>
+        /// Indica se a conta é Cartão de Crédito
+        /// </summary>
+        public bool IsCreditCard { get; set; } = false;
     }
 }
