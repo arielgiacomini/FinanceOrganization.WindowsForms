@@ -52,7 +52,8 @@ namespace App.Forms.Services
         {
             using var client = new HttpClient();
 
-            var content = new StringContent(JsonConvert.SerializeObject(payBillToPayViewModel), Encoding.UTF8, "application/json");
+            var json = JsonConvert.SerializeObject(payBillToPayViewModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var result = client.PatchAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/bills-to-pay/pay", content).Result;
 

@@ -123,7 +123,7 @@ namespace App.Forms.Forms.Pay
             {
                 _ = Guid.TryParse(txtPagamentoIdContaPagar.Text, out Guid idContaPagar);
 
-                request = MapPayBillToPayToRequest(idContaPagar, false);
+                request = MapPayBillToPayToRequest(idContaPagar);
             }
 
             BillToPayServices.Environment = Environment;
