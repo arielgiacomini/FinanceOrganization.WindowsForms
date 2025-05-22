@@ -1,6 +1,18 @@
-﻿namespace App.WindowsForms.Entities
+﻿using App.Forms.Services.Output;
+
+namespace App.WindowsForms.Services.Output
 {
-    public class Account
+    public class SearchAccountOutput
+    {
+        public int Quantidade { get; set; } = 0;
+        public IList<SearchAccountData> Data { get; set; } = new List<SearchAccountData>();
+        public Dictionary<string, string> Validations { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Errors { get; set; } = new Dictionary<string, string>();
+        public OutputStatus Status { get; set; }
+        public string? Message { get; set; }
+    }
+
+    public class SearchAccountData
     {
         /// <summary>
         /// Identificador único da conta
@@ -9,7 +21,7 @@
         /// <summary>
         /// Descrição da Conta
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
         /// <summary>
         /// Dia de Vencimento
         /// </summary>
@@ -57,6 +69,6 @@
         /// <summary>
         /// Indica se a conta é Cartão de Crédito
         /// </summary>
-        public bool IsCreditCard { get; set; } = false;
+        public bool IsCreditCard { get; set; }
     }
 }

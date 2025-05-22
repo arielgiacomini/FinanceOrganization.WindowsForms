@@ -8,10 +8,10 @@ using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using App.WindowsForms.DataSource;
 using App.WindowsForms.Forms.ExcluirDetalhes;
+using App.WindowsForms.Repository;
 using App.WindowsForms.Services;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
-using Domain.Entities;
 using Domain.Utils;
 using Newtonsoft.Json;
 using System.Data;
@@ -35,6 +35,8 @@ namespace App.Forms.Forms
         public InfoHeader InfoHeader { get; set; } = new InfoHeader();
         public string? Environment { get; set; }
 
+        private AccountRepository _accountRepository;
+
         public Initial(InfoHeader? infoHeader)
         {
             if (infoHeader != null)
@@ -43,25 +45,28 @@ namespace App.Forms.Forms
                 Environment = infoHeader.Environment;
             }
 
+            _accountRepository = AccountRepository.Instance;
+
             InitializeComponent();
         }
 
         private async void Initial_Load(object sender, EventArgs e)
         {
+
             lblVersion.Text = InfoHeader.Version;
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
             await PreencherComboBoxContaPagarCategoriaAsync();
-            PreencherComboBoxContaPagarTipoConta();
+            await PreencherComboBoxContaPagarAccount();
             PreencherComboBoxAnoMes();
             PreencherComboBoxEstudoFinanceiroQuantideMeses();
             RegraCamposAnoMes();
             CampoValor();
             TabPageIndexOne();
             PreencherContaPagarMelhorDiaPagamento();
-            PreencherContaPagarFrequencia();
-            PreencherContaPagarTipoCadastro();
-            await BuscarListaPagamentos();
+            LoadFrequence();
+            LoadType();
+            await LoadHistory();
             await SearchMonthlyAverageAnalysis();
             tbcInitial.SelectedTab = tbcInitial.TabPages[0];
             ToolTip tooltipBtnPagamentoAvulso = new();
@@ -313,37 +318,36 @@ namespace App.Forms.Forms
             }
         }
 
-        private void PreencherComboBoxContaPagarTipoConta(string tabPageName = null, string accountSelected = null)
+        private async Task PreencherComboBoxContaPagarAccount(string tabPageName = null, string accountSelected = null)
         {
-            Dictionary<int, string> tipoConta = new()
-            {
-                { 1, "Cartão de Crédito" },
-                { 2, "Cartão de Débito" },
-                { 3, "Cartão VA" },
-                { 4, "Cartão VR" },
-                { 5, "Itaú" }
-            };
+            AccountServices.Environment = Environment;
+            var accounts = await AccountServices.SearchAccounts(new SearchAccountViewModel());
 
-            foreach (var item in tipoConta)
+            foreach (var account in accounts)
             {
-                cboContaPagarTipoConta.Items.Add(item.Value);
+                _accountRepository.AddOnMemory(account);
+            }
+
+            foreach (var item in _accountRepository._accounts.Values.OrderBy((x) => x.Name))
+            {
+                cboContaPagarTipoConta.Items.Add(item.Name);
             }
 
             if (accountSelected == null)
             {
-                cboContaPagarTipoConta.SelectedItem = tipoConta.FirstOrDefault().Value;
+                cboContaPagarTipoConta.SelectedItem = _accountRepository._accounts[0];
             }
             else
             {
-                var theChoise = tipoConta.FirstOrDefault(x => x.Value == accountSelected);
+                var theChoise = _accountRepository._accounts.FirstOrDefault(x => x.Value.Name == accountSelected);
 
-                if (theChoise.Value.Length > 0)
+                if (theChoise.Value.Name != null)
                 {
                     cboContaPagarTipoConta.SelectedItem = theChoise.Value;
                 }
                 else
                 {
-                    cboContaPagarTipoConta.SelectedItem = tipoConta.FirstOrDefault().Value;
+                    cboContaPagarTipoConta.SelectedItem = _accountRepository._accounts.FirstOrDefault().Value.Name;
                 }
             }
         }
@@ -394,7 +398,7 @@ namespace App.Forms.Forms
             cboContaPagarMelhorDiaPagamento.SelectedItem = DateTime.Now.Day;
         }
 
-        private void PreencherContaPagarFrequencia(string tabPageName = null, string frequenciaSelected = null)
+        private void LoadFrequence(string tabPageName = null, string frequenciaSelected = null)
         {
             Dictionary<int, string> frequencia = new()
             {
@@ -427,7 +431,7 @@ namespace App.Forms.Forms
             }
         }
 
-        private void PreencherContaPagarTipoCadastro(string tabPageName = null, string tipoCadastroSelected = null)
+        private void LoadType(string tabPageName = null, string tipoCadastroSelected = null)
         {
             Dictionary<int, string> tipoCadastro = new()
             {
@@ -549,16 +553,16 @@ namespace App.Forms.Forms
             cboContaPagarCategory.Items.Clear();
             cboContaPagarTipoConta.Items.Clear();
             PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category);
-            PreencherComboBoxContaPagarTipoConta(tabPageName, account);
+            PreencherComboBoxContaPagarAccount(tabPageName, account);
         }
 
         private async void BtnEfetuarPagamentoBuscar_Click(object sender, EventArgs e)
         {
             lblInfoHeader.Text = AdjusteInfoHeader(DateTime.Now);
-            await BuscarListaPagamentos();
+            await LoadHistory();
         }
 
-        public async Task BuscarListaPagamentos()
+        public async Task LoadHistory()
         {
             _dgvEfetuarPagamentoListagemDataSource.Clear();
             cboEfetuarPagamentoCategoria.SelectedItem = "Nenhum";
@@ -580,7 +584,7 @@ namespace App.Forms.Forms
 
             var dataSourceOrderBy = dataSource
                 .OrderBy(hasPay => hasPay.HasPay)
-                .ThenBy(creditCard => creditCard.Account == Account.CARTAO_CREDITO)
+                .ThenBy(creditCard => creditCard.AccountObject?.IsCreditCard)
                 .ThenBy(dueDate => dueDate.DueDate)
                 .ThenByDescending(purchase => purchase.PurchaseDate)
                 .ToList();
@@ -656,19 +660,19 @@ namespace App.Forms.Forms
             #region CARTÃO DE CRÉDITO FAMÍLIA
 
             var quantidadeTotalCartaoCreditoFamilia = dataSourceOrderBy
-                .Count(creditCardFamily => creditCardFamily.Account == Account.CARTAO_CREDITO
+                .Count(creditCardFamily => creditCardFamily.AccountObject!.IsCreditCard
                     && !(creditCardFamily.AdditionalMessage != null
                      && creditCardFamily.AdditionalMessage.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)));
 
             var quantidadeTotalPagoCartaoCreditoFamilia = dataSourceOrderBy
-                .Count(creditCardFamily => creditCardFamily.Account == Account.CARTAO_CREDITO
+                .Count(creditCardFamily => creditCardFamily.AccountObject!.IsCreditCard
                     && !(creditCardFamily.AdditionalMessage != null
                      && creditCardFamily.AdditionalMessage.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA))
                      && creditCardFamily.HasPay);
 
             var valorTotalCartaoCreditoFamilia = Convert
                 .ToDecimal(dataSourceOrderBy
-                .Where(creditCardFamily => creditCardFamily.Account == Account.CARTAO_CREDITO
+                .Where(creditCardFamily => creditCardFamily.AccountObject!.IsCreditCard
                     && !(creditCardFamily.AdditionalMessage != null
                      && creditCardFamily.AdditionalMessage.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
                 .Sum(x => x.Value));
@@ -680,18 +684,18 @@ namespace App.Forms.Forms
             #region CARTÃO DE CRÉDITO NAÍRA
 
             var quantidadeTotalCartaoCreditoNaira = dataSourceOrderBy
-                .Count(creditCardNaira => creditCardNaira.Account == Account.CARTAO_CREDITO
+                .Count(creditCardNaira => creditCardNaira.AccountObject!.IsCreditCard
                     && creditCardNaira.AdditionalMessage != null && creditCardNaira.AdditionalMessage.ToString()
                 .StartsWith(EH_CARTAO_CREDITO_NAIRA));
 
             var quantidadeTotalPagoCartaoCreditoNaira = dataSourceOrderBy
-                .Count(creditCardNaira => creditCardNaira.Account == Account.CARTAO_CREDITO
+                .Count(creditCardNaira => creditCardNaira.AccountObject!.IsCreditCard
                     && creditCardNaira.AdditionalMessage != null && creditCardNaira.AdditionalMessage.ToString()
                 .StartsWith(EH_CARTAO_CREDITO_NAIRA) && creditCardNaira.HasPay);
 
             var valorTotalCartaoCreditoNaira = Convert
                 .ToDecimal(dataSourceOrderBy
-                .Where(creditCardNaira => creditCardNaira.Account == Account.CARTAO_CREDITO
+                .Where(creditCardNaira => creditCardNaira.AccountObject!.IsCreditCard
                     && creditCardNaira.AdditionalMessage != null && creditCardNaira.AdditionalMessage.ToString()
                 .StartsWith(EH_CARTAO_CREDITO_NAIRA))
                 .Sum(x => x.Value));
@@ -745,7 +749,7 @@ namespace App.Forms.Forms
                             .Format("{0:#,##0.00}", valorTotal));
         }
 
-        private static IList<DgvVisualizarContaPagarDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
+        private IList<DgvVisualizarContaPagarDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
         {
             IList<DgvVisualizarContaPagarDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvVisualizarContaPagarDataSource>();
 
@@ -762,6 +766,21 @@ namespace App.Forms.Forms
 
             foreach (var item in conversion!)
             {
+                if (item.Account == null)
+                {
+                    continue;
+                }
+
+                var account = _accountRepository
+                    .GetAccountByName(item.Account!);
+
+                if (account == null)
+                {
+                    continue;
+                }
+
+                item.AccountObject = account;
+
                 dgvEfetuarPagamentoListagemDataSources.Add(item);
             }
 
@@ -896,7 +915,9 @@ namespace App.Forms.Forms
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
 
-                if (row?.Cells[2]?.Value?.ToString() == Account.CARTAO_CREDITO && !Convert.ToBoolean(row?.Cells[15]?.Value))
+                var account = _accountRepository.GetAccountByName(row?.Cells[2]?.Value?.ToString());
+
+                if (account.IsCreditCard && !Convert.ToBoolean(row?.Cells[15]?.Value))
                 {
                     SetColorRows(row, Color.DarkOrange, Color.Black);
                 }
@@ -1030,12 +1051,13 @@ namespace App.Forms.Forms
                 idsFixedInvoices.Add(idFixedInvoice);
             }
 
-            searchBillToPayViewModel.IdFixedInvoices = idsFixedInvoices.ToArray();
+            searchBillToPayViewModel.IdBillToPayRegistrations = idsFixedInvoices.ToArray();
 
             FrmExibirDetalhes frmExcluirDetalhes = new()
             {
                 PostSearchBillToPayViewModel = searchBillToPayViewModel,
-                Environment = Environment
+                Environment = Environment,
+                CreditCard = _accountRepository.GetAccountsOnlyCreditCard()
             };
 
             frmExcluirDetalhes.ShowDialog();

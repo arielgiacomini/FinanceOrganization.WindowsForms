@@ -1,8 +1,7 @@
-﻿using App.Forms.Enums;
-using App.Forms.Services;
+﻿using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
-using Domain.Entities;
+using App.WindowsForms.Repository;
 using Domain.Utils;
 
 namespace App.Forms.Forms.Pay
@@ -19,8 +18,12 @@ namespace App.Forms.Forms.Pay
         public decimal? Valor { get; set; } = 0;
         public string? Environment { get; set; }
 
+        private AccountRepository _accountRepository;
+
         public FrmPagamento()
         {
+            _accountRepository = AccountRepository.Instance;
+
             InitializeComponent();
         }
 
@@ -44,28 +47,28 @@ namespace App.Forms.Forms.Pay
 
         private void PreencherComboBoxContaPagarTipoConta(string accountSelected = null)
         {
-            var tipoConta = TipoConta.GetTipoContaEnable();
+            var accounts = _accountRepository._accounts.Values.OrderBy((x) => x.Name);
 
-            foreach (var item in tipoConta)
+            foreach (var account in accounts)
             {
-                cboPagamentoConta.Items.Add(item.Value);
+                cboPagamentoConta.Items.Add(account.Name);
             }
 
             if (string.IsNullOrWhiteSpace(accountSelected))
             {
-                cboPagamentoConta.SelectedItem = tipoConta.FirstOrDefault().Value;
+                cboPagamentoConta.SelectedItem = accounts.FirstOrDefault()?.Name;
             }
             else
             {
-                var theChoise = tipoConta.FirstOrDefault(x => x.Value == accountSelected);
+                var theChoise = accounts.FirstOrDefault(x => x.Name == accountSelected);
 
-                if (theChoise.Value.Length > 0)
+                if (theChoise?.Name.Length > 0)
                 {
-                    cboPagamentoConta.SelectedItem = theChoise.Value;
+                    cboPagamentoConta.SelectedItem = theChoise.Name;
                 }
                 else
                 {
-                    cboPagamentoConta.SelectedItem = tipoConta.FirstOrDefault().Value;
+                    cboPagamentoConta.SelectedItem = accounts.FirstOrDefault()?.Name;
                 }
             }
         }
@@ -204,9 +207,11 @@ namespace App.Forms.Forms.Pay
                 MessageBox.Show($"Só será efetuado pagamento de todos os itens que comtemplam a fatura do mês [{cboPagamentoMesAno.Text}] de todos os itens que estão marcados como [{EH_CARTAO_CREDITO_NAIRA}]", "Informação de Pagamento",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                if (cboPagamentoConta.Text != Account.CARTAO_CREDITO)
+                var account = _accountRepository.GetAccountByName(cboPagamentoConta.Text);
+
+                if (account != null)
                 {
-                    cboPagamentoConta.Text = Account.CARTAO_CREDITO;
+                    cboPagamentoConta.Text = account.Name;
                 }
             }
         }
