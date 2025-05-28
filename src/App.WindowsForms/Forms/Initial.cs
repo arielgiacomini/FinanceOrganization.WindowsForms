@@ -330,7 +330,12 @@ namespace App.Forms.Forms
 
             foreach (var item in _accountRepository._accounts.Values.OrderBy((x) => x.Name))
             {
-                cboContaPagarTipoConta.Items.Add(item.Name);
+                string name = item.Name;
+                if (item.IsCreditCard)
+                {
+                    name = string.Concat(item.Name, " - ", item.CardNumber);
+                }
+                cboContaPagarTipoConta.Items.Add(name);
             }
 
             if (accountSelected == null)
@@ -552,8 +557,8 @@ namespace App.Forms.Forms
         {
             cboContaPagarCategory.Items.Clear();
             cboContaPagarTipoConta.Items.Clear();
-            PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category);
-            PreencherComboBoxContaPagarAccount(tabPageName, account);
+            PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
+            PreencherComboBoxContaPagarAccount(tabPageName, account).GetAwaiter().GetResult();
         }
 
         private async void BtnEfetuarPagamentoBuscar_Click(object sender, EventArgs e)
@@ -1272,24 +1277,22 @@ namespace App.Forms.Forms
 
         private void SetColorGrbTemplateContaPagar()
         {
-            if (cboContaPagarTipoConta.Text == "Cartão de Crédito")
+            var accountComboBox = cboContaPagarTipoConta.Text;
+
+            if (accountComboBox.StartsWith("Cartão de Crédito"))
             {
-                if (ckbCartaoCreditoNaira.Checked)
-                {
-                    grbTemplateContaPagar.BackColor = Color.DimGray;
-                    grbTemplateContaPagar.ForeColor = Color.White;
-                }
-                else
-                {
-                    grbTemplateContaPagar.BackColor = Color.DarkOrange;
-                    grbTemplateContaPagar.ForeColor = Color.Black;
-                }
+                accountComboBox = accountComboBox.Split(" - ")[0];
             }
-            else
+
+            var account = _accountRepository.GetAccountByName(accountComboBox);
+
+            if (account == null)
             {
-                grbTemplateContaPagar.BackColor = Color.White;
-                grbTemplateContaPagar.ForeColor = Color.Black;
+                return;
             }
+
+            grbTemplateContaPagar.BackColor = ColorTranslator.FromHtml(account!.Colors!.BackgroundColorHexadecimal);
+            grbTemplateContaPagar.ForeColor = ColorTranslator.FromHtml(account!.Colors!.FonteColorHexadecimal);
         }
 
         private void DtpContaPagarDataCompra_ValueChanged(object sender, EventArgs e)

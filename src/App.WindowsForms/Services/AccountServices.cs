@@ -50,7 +50,17 @@ namespace App.WindowsForms.Services
                     Enable = account.Enable,
                     CreationDate = account.CreationDate,
                     LastChangeDate = account.LastChangeDate,
-                    IsCreditCard = account.IsCreditCard
+                    IsCreditCard = account.IsCreditCard,
+                    Colors = new Entities.CollorAccount
+                    {
+                        Id = account.Colors!.Id,
+                        AccountId = account.Id,
+                        BackgroundColorHexadecimal = account?.Colors?.BackgroundColorHexadecimal!,
+                        FonteColorHexadecimal = account?.Colors?.FonteColorHexadecimal!,
+                        Enable = account.Colors.Enable,
+                        CreationDate = account.Colors.CreationDate,
+                        LastChangeDate = account.Colors.LastChangeDate
+                    }
                 });
             }
 
