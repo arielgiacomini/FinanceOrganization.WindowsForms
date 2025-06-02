@@ -10,6 +10,7 @@ namespace App.Forms.Forms.Edição
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
         public decimal valorContaPagarDigitadoTextBox = 0;
         public string? Environment { get; set; }
+        public bool EditInLote { get; set; } = false;
 
         public FrmEdit()
         {
@@ -49,6 +50,33 @@ namespace App.Forms.Forms.Edição
             rdbPagamentoNaoPago.Checked = !EditBillToPayViewModel.HasPay;
             rtbContaPagarMensagemAdicional.Text = EditBillToPayViewModel.AdditionalMessage;
             lblContaPagarDataCriacao.Text = EditBillToPayViewModel.LastChangeDate.ToString();
+
+            if (EditInLote)
+            {
+                txtContaPagarNameDescription.Enabled = true;
+                cboContaPagarTipoConta.Enabled = false;
+                cboContaPagarFrequencia.Enabled = false;
+                cboContaPagarTipoCadastro.Enabled = false;
+                cboContaPagarAnoMesInicial.Enabled = false;
+                cboContaPagarCategory.Enabled = false;
+                txtContaPagarValor.Enabled = false;
+
+                if (EditBillToPayViewModel.PurchaseDate == null)
+                {
+                    dtpContaPagarDataCompra.Enabled = false;
+                }
+                else
+                {
+                    cboHabilitarDataCompra.Checked = true;
+                }
+
+                dtpContaPagarDataVencimento.Enabled = false;
+                txtContaPagarDataPagamento.Enabled = false;
+                rdbPagamentoPago.Enabled = false;
+                rdbPagamentoNaoPago.Enabled = false;
+                rtbContaPagarMensagemAdicional.Enabled = false;
+                lblContaPagarDataCriacao.Enabled = false;
+            }
         }
 
         private void PreencherComboBoxAnoMes(string current)

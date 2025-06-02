@@ -1,4 +1,5 @@
 ﻿using App.Forms.DataSource;
+using App.Forms.Forms.Edição;
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
@@ -6,6 +7,7 @@ using App.WindowsForms.Entities;
 using App.WindowsForms.Forms.Excluir;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
+using Domain.Utils;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -15,11 +17,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 {
     public partial class FrmExibirDetalhes : Form
     {
-        private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
         public DeleteBillToPayViewModel DeleteBillToPayViewModel { get; set; } = new DeleteBillToPayViewModel();
         public SearchBillToPayViewModel PostSearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
+        public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
         public Dictionary<string, IList<DgvVisualizarContaPagarDataSource>> LastSearch = new();
-        private readonly Dictionary<int, DeleteBillToPayViewModel> _deleteBillToPayViewModels = new();
         public string? Environment { get; set; }
         public IList<Account>? CreditCard
         {
@@ -138,7 +139,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     .Where(x => x.HasPay && x.DueDate < DateTime.Now)
                     .OrderByDescending(dueDate => dueDate.DueDate)
                     .ToList()
-                    .Take(3)
+                    .Take(8)
                     .ToList();
             }
 
@@ -415,6 +416,54 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             else
             {
                 MessageBox.Show("Não foi encontrado nenhum registro relacionado", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void EditarRegistroSelecionado_dgvExcluirDetalhes_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
+            {
+                // TODO:
+                // pegar o primeiro registro selecionado...
+                // popular a edição inserindo o este registro na tela...
+                // depois sugerir edição apenas dos campos que podem ser editados em lote...
+                // disparar para a API de edição.
+
+                FrmEdit frmEditInLote = new()
+                {
+                    EditBillToPayViewModel = new EditBillToPayViewModel() { DueDate = DateTime.Now, LastChangeDate = DateTime.Now },
+                    Environment = Environment
+                };
+
+                frmEditInLote.EditInLote = true;
+                frmEditInLote.ShowDialog();
+
+                List<EditBillToPayViewModel> basketEdits = new();
+
+                foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
+                {
+                    _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid guidId);
+                    _ = int.TryParse(row.Cells[1].Value.ToString(), out int registrationId);
+
+                    basketEdits.Add(new EditBillToPayViewModel()
+                    {
+                        Id = guidId,
+                        IdFixedInvoice = registrationId,
+                        Name = row.Cells[3].Value.ToString(),
+                        Account = row.Cells[2].Value.ToString(),
+                        Frequence = row.Cells[12].Value.ToString(),
+                        RegistrationType = row.Cells[13].Value.ToString(),
+                        YearMonth = row.Cells[11].Value.ToString(),
+                        Category = row.Cells[4].Value.ToString(),
+                        Value = Convert.ToDecimal(row.Cells[7].Value.ToString().Replace("R$ ", "")),
+                        PurchaseDate = DateServiceUtils.GetDateTimeOfString(row.Cells[9].Value.ToString()),
+                        PayDay = row.Cells[14].Value.ToString(),
+                        HasPay = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
+                        DueDate = DateServiceUtils.GetDateTimeOfString(row.Cells[10].Value.ToString()) ?? DateTime.Now,
+                        AdditionalMessage = row.Cells[16].Value.ToString(),
+                        LastChangeDate = DateServiceUtils.GetDateTimeOfString(row.Cells[18].Value.ToString()) ?? DateTime.Now
+                    });
+                }
             }
         }
     }

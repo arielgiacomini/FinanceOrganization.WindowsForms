@@ -67,6 +67,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvExcluirDetalhes.Size = new Size(1257, 436);
             dgvExcluirDetalhes.TabIndex = 0;
+            dgvExcluirDetalhes.CellMouseDown += EditarRegistroSelecionado_dgvExcluirDetalhes_CellMouseDown;
             dgvExcluirDetalhes.RowsAdded += DgvExcluirDetalhes_RowsAdded;
             dgvExcluirDetalhes.SelectionChanged += DgvExcluirDetalhes_SelectionChanged;
             // 

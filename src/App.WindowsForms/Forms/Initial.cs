@@ -859,7 +859,7 @@ namespace App.Forms.Forms
                 .TranslateValorEmStringDinheiro(txtContaPagarValor.Text);
         }
 
-        private void DgvEfetuarPagamentoListagem_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        private void EditarRegistroSelecionado_DgvEfetuarPagamentoListagem_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
             {
