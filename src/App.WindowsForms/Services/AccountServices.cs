@@ -35,7 +35,7 @@ namespace App.WindowsForms.Services
 
             foreach (var account in output.Data)
             {
-                accounts.Add(new Account()
+                var newAccount = new Account()
                 {
                     Id = account.Id,
                     Name = account.Name!,
@@ -50,18 +50,24 @@ namespace App.WindowsForms.Services
                     Enable = account.Enable,
                     CreationDate = account.CreationDate,
                     LastChangeDate = account.LastChangeDate,
-                    IsCreditCard = account.IsCreditCard,
-                    Colors = new Entities.CollorAccount
+                    IsCreditCard = account.IsCreditCard
+                };
+
+                if (account.Colors != null)
+                {
+                    newAccount.Colors = new Entities.CollorAccount
                     {
                         Id = account.Colors!.Id,
                         AccountId = account.Id,
                         BackgroundColorHexadecimal = account?.Colors?.BackgroundColorHexadecimal!,
                         FonteColorHexadecimal = account?.Colors?.FonteColorHexadecimal!,
-                        Enable = account.Colors.Enable,
+                        Enable = account!.Colors.Enable,
                         CreationDate = account.Colors.CreationDate,
                         LastChangeDate = account.Colors.LastChangeDate
-                    }
-                });
+                    };
+                }
+
+                accounts.Add(newAccount);
             }
 
             return accounts;

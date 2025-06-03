@@ -133,10 +133,12 @@ namespace App.Forms.Forms
         {
             Identifier++;
 
+            var accountWithoutNumbers = cboContaPagarTipoConta.Text.Split(" - ");
+
             var createBillToPay = new CreateBillToPayViewModel
             {
                 Name = txtContaPagarNameDescription.Text,
-                Account = cboContaPagarTipoConta.Text,
+                Account = accountWithoutNumbers[0],
                 Frequence = cboContaPagarFrequencia.Text,
                 RegistrationType = cboContaPagarTipoCadastro.Text,
                 InitialMonthYear = cboContaPagarAnoMesInicial.Text,
@@ -325,7 +327,10 @@ namespace App.Forms.Forms
 
             foreach (var account in accounts)
             {
-                _accountRepository.AddOnMemory(account);
+                if (account.Enable)
+                {
+                    _accountRepository.AddOnMemory(account);
+                }
             }
 
             foreach (var item in _accountRepository._accounts.Values.OrderBy((x) => x.Name))
