@@ -1,6 +1,7 @@
 ﻿using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.Repository;
 using Domain.Utils;
 
 namespace App.Forms.Forms.Edição
@@ -13,8 +14,12 @@ namespace App.Forms.Forms.Edição
         public string? Environment { get; set; }
         public bool EditInLote { get; set; } = false;
 
+        private AccountRepository _accountRepository;
+
         public FrmEdit()
         {
+            _accountRepository = AccountRepository.Instance;
+
             InitializeComponent();
         }
 
@@ -26,7 +31,7 @@ namespace App.Forms.Forms.Edição
         private void PreencherCampos()
         {
             txtContaPagarNameDescription.Text = EditBillToPayViewModel.Name;
-            cboContaPagarTipoConta.Text = EditBillToPayViewModel.Account;
+            PreencherComboBoxContaPagarAccount(EditBillToPayViewModel.Account!);
             cboContaPagarFrequencia.Text = EditBillToPayViewModel.Frequence;
             cboContaPagarTipoCadastro.Text = EditBillToPayViewModel.RegistrationType;
             PreencherComboBoxAnoMes(EditBillToPayViewModel.YearMonth!);
@@ -92,6 +97,43 @@ namespace App.Forms.Forms.Edição
             _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
 
             cboContaPagarAnoMesInicial.SelectedItem = current;
+        }
+
+        private void PreencherComboBoxContaPagarAccount(string current)
+        {
+            cboContaPagarTipoConta.Items.Add(current);
+
+            foreach (var item in _accountRepository._accounts.Values.OrderBy((x) => x.Name))
+            {
+                string name = item.Name;
+                if (item.IsCreditCard)
+                {
+                    name = string.Concat(item.Name, " - ", item.CardNumber);
+                }
+
+                if (item.Enable)
+                {
+                    cboContaPagarTipoConta.Items.Add(name);
+                }
+            }
+
+            if (current == null)
+            {
+                cboContaPagarTipoConta.SelectedItem = _accountRepository._accounts[0];
+            }
+            else
+            {
+                var theChoise = _accountRepository._accounts.FirstOrDefault(x => x.Value.Name == current);
+
+                if (theChoise.Value.Name != null)
+                {
+                    cboContaPagarTipoConta.SelectedItem = theChoise.Value.Name;
+                }
+                else
+                {
+                    cboContaPagarTipoConta.SelectedItem = _accountRepository._accounts.FirstOrDefault().Value.Name;
+                }
+            }
         }
 
         private async void BtnContaPagarEditar_Click(object sender, EventArgs e)

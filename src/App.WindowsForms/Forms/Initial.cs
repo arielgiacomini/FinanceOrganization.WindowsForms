@@ -327,10 +327,7 @@ namespace App.Forms.Forms
 
             foreach (var account in accounts)
             {
-                if (account.Enable)
-                {
-                    _accountRepository.AddOnMemory(account);
-                }
+                _accountRepository.AddOnMemory(account);
             }
 
             foreach (var item in _accountRepository._accounts.Values.OrderBy((x) => x.Name))
@@ -340,7 +337,11 @@ namespace App.Forms.Forms
                 {
                     name = string.Concat(item.Name, " - ", item.CardNumber);
                 }
-                cboContaPagarTipoConta.Items.Add(name);
+
+                if (item.Enable)
+                {
+                    cboContaPagarTipoConta.Items.Add(name);
+                }
             }
 
             if (accountSelected == null)
