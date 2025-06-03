@@ -41,16 +41,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async void FrmExcluirDetalhes_Load(object sender, EventArgs e)
         {
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
-
-            await PreencherCampos();
-
-            PreencherlblTotaisRegistrosEValores();
-
-            PreecherPrecoMedio();
-
-            PreencherTempoCarregamentoTela(stopWatch);
+            await CarregamentoTelaAgain();
         }
 
         private void PreencherTempoCarregamentoTela(Stopwatch stopWatch)
@@ -487,7 +478,28 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 };
 
                 frmEditInLote.ShowDialog();
+
+                await CarregamentoTelaAgain();
             }
+        }
+
+        private async void BtnAtualizar_Click(object sender, EventArgs e)
+        {
+            await CarregamentoTelaAgain();
+        }
+
+        private async Task CarregamentoTelaAgain()
+        {
+            Stopwatch stopWatch = new();
+            stopWatch.Start();
+
+            await PreencherCampos();
+
+            PreencherlblTotaisRegistrosEValores();
+
+            PreecherPrecoMedio();
+
+            PreencherTempoCarregamentoTela(stopWatch);
         }
     }
 }
