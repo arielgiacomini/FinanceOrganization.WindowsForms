@@ -423,9 +423,6 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
             {
-                // TODO:
-                // pegar o primeiro registro selecionado...
-
                 _ = Guid.TryParse(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[0].Value?.ToString(), out Guid guidId);
 
                 var firstSelectedRow = new EditBillToPayViewModel()
@@ -447,17 +444,13 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
                 };
 
-                FrmEdit frmEditInLote = new()
-                {
-                    EditBillToPayViewModel = firstSelectedRow,
-                    Environment = Environment,
-                    EditInLote = true
-                };
-                frmEditInLote.ShowDialog();
+                bool editInLote = false;
+
+                List<EditBillToPayViewModel> basketEdits = new();
 
                 if (dgvExcluirDetalhes.SelectedRows.Count > 1)
                 {
-                    List<EditBillToPayViewModel> basketEdits = new();
+                    editInLote = true;
 
                     foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
                     {
@@ -483,10 +476,17 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                             LastChangeDate = DateServiceUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
                         });
                     }
-
-                    BillToPayServices.Environment = Environment;
-                    var result = await BillToPayServices.EditBasketBillToPay(basketEdits);
                 }
+
+                FrmEdit frmEditInLote = new()
+                {
+                    EditBillToPayViewModel = firstSelectedRow,
+                    BasketEditBillToPayViewModel = basketEdits,
+                    Environment = Environment,
+                    EditInLote = editInLote
+                };
+
+                frmEditInLote.ShowDialog();
             }
         }
     }
