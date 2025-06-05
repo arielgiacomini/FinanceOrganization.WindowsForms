@@ -165,7 +165,8 @@
             // ckbCartaoCreditoNaira
             // 
             ckbCartaoCreditoNaira.AutoSize = true;
-            ckbCartaoCreditoNaira.Location = new Point(337, 111);
+            ckbCartaoCreditoNaira.Enabled = false;
+            ckbCartaoCreditoNaira.Location = new Point(305, 134);
             ckbCartaoCreditoNaira.Name = "ckbCartaoCreditoNaira";
             ckbCartaoCreditoNaira.Size = new Size(155, 19);
             ckbCartaoCreditoNaira.TabIndex = 38;
@@ -412,7 +413,7 @@
             cboContaPagarCategory.FormattingEnabled = true;
             cboContaPagarCategory.Location = new Point(116, 69);
             cboContaPagarCategory.Name = "cboContaPagarCategory";
-            cboContaPagarCategory.Size = new Size(188, 23);
+            cboContaPagarCategory.Size = new Size(263, 23);
             cboContaPagarCategory.TabIndex = 3;
             // 
             // cboContaPagarAnoMesInicial
@@ -448,7 +449,7 @@
             cboContaPagarTipoConta.FormattingEnabled = true;
             cboContaPagarTipoConta.Location = new Point(76, 108);
             cboContaPagarTipoConta.Name = "cboContaPagarTipoConta";
-            cboContaPagarTipoConta.Size = new Size(228, 23);
+            cboContaPagarTipoConta.Size = new Size(384, 23);
             cboContaPagarTipoConta.TabIndex = 5;
             cboContaPagarTipoConta.SelectedValueChanged += CboContaPagarTipoConta_SelectedValueChanged;
             // 
