@@ -939,7 +939,7 @@ namespace App.Forms.Forms
                     SetColorRows(row, Color.DimGray, Color.White);
                 }
 
-                var projection = row?.Cells[3]?.Value?.ToString().Contains("(Projetado para o mês todo)") ?? false;
+                var projection = row?.Cells[3]?.Value?.ToString().Contains("Projetado") ?? false;
 
                 if (projection)
                 {

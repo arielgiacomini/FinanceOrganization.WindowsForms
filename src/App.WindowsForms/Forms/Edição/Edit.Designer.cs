@@ -335,7 +335,7 @@
             cboContaPagarTipoConta.FormattingEnabled = true;
             cboContaPagarTipoConta.Location = new Point(116, 108);
             cboContaPagarTipoConta.Name = "cboContaPagarTipoConta";
-            cboContaPagarTipoConta.Size = new Size(167, 23);
+            cboContaPagarTipoConta.Size = new Size(395, 23);
             cboContaPagarTipoConta.TabIndex = 5;
             // 
             // FrmEdit

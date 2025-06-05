@@ -192,7 +192,7 @@ namespace App.Forms.Forms.Edição
         private void MapFormToViewModel()
         {
             EditBillToPayViewModel.Name = txtContaPagarNameDescription.Text;
-            EditBillToPayViewModel.Account = cboContaPagarTipoConta.Text;
+            EditBillToPayViewModel.Account = cboContaPagarTipoConta.Text.Split(" - ")[0];
             EditBillToPayViewModel.Frequence = cboContaPagarFrequencia.Text;
             EditBillToPayViewModel.RegistrationType = cboContaPagarTipoCadastro.Text;
             EditBillToPayViewModel.YearMonth = cboContaPagarAnoMesInicial.Text;
@@ -213,7 +213,7 @@ namespace App.Forms.Forms.Edição
                 BasketEditBillToPayViewModel
                     .FirstOrDefault(f => f.Id == item.Id)!.Name = txtContaPagarNameDescription.Text;
                 BasketEditBillToPayViewModel
-                    .FirstOrDefault(f => f.Id == item.Id)!.Account = cboContaPagarTipoConta.Text;
+                    .FirstOrDefault(f => f.Id == item.Id)!.Account = cboContaPagarTipoConta.Text.Split(" - ")[0];
                 BasketEditBillToPayViewModel
                     .FirstOrDefault(f => f.Id == item.Id)!.Frequence = cboContaPagarFrequencia.Text;
                 BasketEditBillToPayViewModel
