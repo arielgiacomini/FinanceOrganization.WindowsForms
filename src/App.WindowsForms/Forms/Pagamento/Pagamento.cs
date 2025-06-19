@@ -78,6 +78,7 @@ namespace App.Forms.Forms.Pay
             PreencherComboBoxAnoMes(AnoMes);
             PreencherComboBoxContaPagarTipoConta(Conta);
             RegraApresentarInfoPreenchidas();
+            txtPagamentoData.Text = DateTime.Now.ToString("dd/MM/yyyy");
         }
 
         private void RegraApresentarInfoPreenchidas()

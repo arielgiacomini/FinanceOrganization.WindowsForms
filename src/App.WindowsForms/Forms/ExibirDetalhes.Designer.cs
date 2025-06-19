@@ -39,6 +39,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             lblValorMedioOnlyPagos = new Label();
             lblTotaisRegistrosEValores = new Label();
             lblRunTimeLoad = new Label();
+            btnAtualizar = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).BeginInit();
             SuspendLayout();
             // 
@@ -67,6 +68,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvExcluirDetalhes.Size = new Size(1257, 436);
             dgvExcluirDetalhes.TabIndex = 0;
+            dgvExcluirDetalhes.CellMouseDown += EditarRegistroSelecionado_dgvExcluirDetalhes_CellMouseDown;
             dgvExcluirDetalhes.RowsAdded += DgvExcluirDetalhes_RowsAdded;
             dgvExcluirDetalhes.SelectionChanged += DgvExcluirDetalhes_SelectionChanged;
             // 
@@ -147,11 +149,24 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             lblRunTimeLoad.Text = "00:00:01.00";
             lblRunTimeLoad.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // btnAtualizar
+            // 
+            btnAtualizar.BackColor = Color.LawnGreen;
+            btnAtualizar.ForeColor = SystemColors.ControlDarkDark;
+            btnAtualizar.Location = new Point(1183, 5);
+            btnAtualizar.Name = "btnAtualizar";
+            btnAtualizar.Size = new Size(86, 23);
+            btnAtualizar.TabIndex = 22;
+            btnAtualizar.Text = "Atualizar";
+            btnAtualizar.UseVisualStyleBackColor = false;
+            btnAtualizar.Click += BtnAtualizar_Click;
+            // 
             // FrmExibirDetalhes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1281, 514);
+            Controls.Add(btnAtualizar);
             Controls.Add(lblRunTimeLoad);
             Controls.Add(lblTotaisRegistrosEValores);
             Controls.Add(lblValorMedioOnlyPagos);
@@ -178,5 +193,6 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private Label lblValorMedioOnlyPagos;
         private Label lblTotaisRegistrosEValores;
         private Label lblRunTimeLoad;
+        private Button btnAtualizar;
     }
 }

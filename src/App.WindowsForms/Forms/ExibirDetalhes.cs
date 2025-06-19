@@ -1,4 +1,5 @@
 ﻿using App.Forms.DataSource;
+using App.Forms.Forms.Edição;
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
@@ -6,6 +7,7 @@ using App.WindowsForms.Entities;
 using App.WindowsForms.Forms.Excluir;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
+using Domain.Utils;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -15,11 +17,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 {
     public partial class FrmExibirDetalhes : Form
     {
-        private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra";
         public DeleteBillToPayViewModel DeleteBillToPayViewModel { get; set; } = new DeleteBillToPayViewModel();
         public SearchBillToPayViewModel PostSearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
+        public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
         public Dictionary<string, IList<DgvVisualizarContaPagarDataSource>> LastSearch = new();
-        private readonly Dictionary<int, DeleteBillToPayViewModel> _deleteBillToPayViewModels = new();
         public string? Environment { get; set; }
         public IList<Account>? CreditCard
         {
@@ -40,16 +41,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async void FrmExcluirDetalhes_Load(object sender, EventArgs e)
         {
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
-
-            await PreencherCampos();
-
-            PreencherlblTotaisRegistrosEValores();
-
-            PreecherPrecoMedio();
-
-            PreencherTempoCarregamentoTela(stopWatch);
+            await CarregamentoTelaAgain();
         }
 
         private void PreencherTempoCarregamentoTela(Stopwatch stopWatch)
@@ -138,7 +130,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     .Where(x => x.HasPay && x.DueDate < DateTime.Now)
                     .OrderByDescending(dueDate => dueDate.DueDate)
                     .ToList()
-                    .Take(3)
+                    .Take(8)
                     .ToList();
             }
 
@@ -343,7 +335,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             {
                 Id = guidIds.ToArray(),
                 JustUnpaid = true,
-                DisableFixedInvoice = false
+                DisableBillToPayRegistration = false
             };
         }
 
@@ -416,6 +408,98 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             {
                 MessageBox.Show("Não foi encontrado nenhum registro relacionado", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private async void EditarRegistroSelecionado_dgvExcluirDetalhes_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
+            {
+                _ = Guid.TryParse(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[0].Value?.ToString(), out Guid guidId);
+
+                var firstSelectedRow = new EditBillToPayViewModel()
+                {
+                    Id = guidId,
+                    IdFixedInvoice = Convert.ToInt32(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[1].Value?.ToString()),
+                    Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
+                    Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
+                    Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
+                    RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                    YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                    Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
+                    Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString().Replace("R$ ", "")),
+                    PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                    PayDay = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
+                    HasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
+                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
+                    AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
+                    LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+                };
+
+                bool editInLote = false;
+
+                List<EditBillToPayViewModel> basketEdits = new();
+
+                if (dgvExcluirDetalhes.SelectedRows.Count > 1)
+                {
+                    editInLote = true;
+
+                    foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
+                    {
+                        _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid idBillToPay);
+                        _ = int.TryParse(row.Cells[1].Value.ToString(), out int registrationId);
+
+                        basketEdits.Add(new EditBillToPayViewModel()
+                        {
+                            Id = idBillToPay,
+                            IdFixedInvoice = registrationId,
+                            Name = row.Cells[3].Value?.ToString(),
+                            Account = row.Cells[2].Value?.ToString(),
+                            Frequence = row.Cells[12].Value?.ToString(),
+                            RegistrationType = row.Cells[13].Value?.ToString(),
+                            YearMonth = row.Cells[11].Value?.ToString(),
+                            Category = row.Cells[4].Value?.ToString(),
+                            Value = Convert.ToDecimal(row.Cells[7].Value?.ToString().Replace("R$ ", "")),
+                            PurchaseDate = DateServiceUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
+                            PayDay = row.Cells[14].Value?.ToString(),
+                            HasPay = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
+                            DueDate = DateServiceUtils.GetDateTimeOfString(row.Cells[10].Value?.ToString()) ?? DateTime.Now,
+                            AdditionalMessage = row.Cells[16].Value?.ToString(),
+                            LastChangeDate = DateServiceUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
+                        });
+                    }
+                }
+
+                FrmEdit frmEditInLote = new()
+                {
+                    EditBillToPayViewModel = firstSelectedRow,
+                    BasketEditBillToPayViewModel = basketEdits,
+                    Environment = Environment,
+                    EditInLote = editInLote
+                };
+
+                frmEditInLote.ShowDialog();
+
+                await CarregamentoTelaAgain();
+            }
+        }
+
+        private async void BtnAtualizar_Click(object sender, EventArgs e)
+        {
+            await CarregamentoTelaAgain();
+        }
+
+        private async Task CarregamentoTelaAgain()
+        {
+            Stopwatch stopWatch = new();
+            stopWatch.Start();
+
+            await PreencherCampos();
+
+            PreencherlblTotaisRegistrosEValores();
+
+            PreecherPrecoMedio();
+
+            PreencherTempoCarregamentoTela(stopWatch);
         }
     }
 }
