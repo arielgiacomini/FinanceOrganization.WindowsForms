@@ -64,6 +64,8 @@
             lblContaPagarAnoMesInicial = new Label();
             cboContaPagarTipoConta = new ComboBox();
             tbpListarContaPagar = new TabPage();
+            label1 = new Label();
+            btnExcluirInitial = new Button();
             btnExibirDetalhes = new Button();
             lblEfetuarPagamentoItensSelecionadosDataGridView = new Label();
             lblGridViewTotalPago = new Label();
@@ -165,7 +167,8 @@
             // ckbCartaoCreditoNaira
             // 
             ckbCartaoCreditoNaira.AutoSize = true;
-            ckbCartaoCreditoNaira.Location = new Point(337, 111);
+            ckbCartaoCreditoNaira.Enabled = false;
+            ckbCartaoCreditoNaira.Location = new Point(305, 134);
             ckbCartaoCreditoNaira.Name = "ckbCartaoCreditoNaira";
             ckbCartaoCreditoNaira.Size = new Size(155, 19);
             ckbCartaoCreditoNaira.TabIndex = 38;
@@ -412,7 +415,7 @@
             cboContaPagarCategory.FormattingEnabled = true;
             cboContaPagarCategory.Location = new Point(116, 69);
             cboContaPagarCategory.Name = "cboContaPagarCategory";
-            cboContaPagarCategory.Size = new Size(188, 23);
+            cboContaPagarCategory.Size = new Size(263, 23);
             cboContaPagarCategory.TabIndex = 3;
             // 
             // cboContaPagarAnoMesInicial
@@ -448,12 +451,14 @@
             cboContaPagarTipoConta.FormattingEnabled = true;
             cboContaPagarTipoConta.Location = new Point(76, 108);
             cboContaPagarTipoConta.Name = "cboContaPagarTipoConta";
-            cboContaPagarTipoConta.Size = new Size(228, 23);
+            cboContaPagarTipoConta.Size = new Size(384, 23);
             cboContaPagarTipoConta.TabIndex = 5;
             cboContaPagarTipoConta.SelectedValueChanged += CboContaPagarTipoConta_SelectedValueChanged;
             // 
             // tbpListarContaPagar
             // 
+            tbpListarContaPagar.Controls.Add(label1);
+            tbpListarContaPagar.Controls.Add(btnExcluirInitial);
             tbpListarContaPagar.Controls.Add(btnExibirDetalhes);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoItensSelecionadosDataGridView);
             tbpListarContaPagar.Controls.Add(lblGridViewTotalPago);
@@ -475,17 +480,44 @@
             tbpListarContaPagar.Text = "Conta a Pagar - Listar";
             tbpListarContaPagar.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label1.AutoSize = true;
+            label1.BorderStyle = BorderStyle.FixedSingle;
+            label1.ForeColor = SystemColors.ButtonShadow;
+            label1.Location = new Point(624, 65);
+            label1.Name = "label1";
+            label1.Size = new Size(376, 17);
+            label1.TabIndex = 18;
+            label1.Text = "Ao clicar com o botão direito na linha será aberto a edição do registro";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // btnExcluirInitial
+            // 
+            btnExcluirInitial.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnExcluirInitial.BackColor = Color.IndianRed;
+            btnExcluirInitial.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnExcluirInitial.ForeColor = SystemColors.ButtonFace;
+            btnExcluirInitial.Location = new Point(853, 4);
+            btnExcluirInitial.Name = "btnExcluirInitial";
+            btnExcluirInitial.Size = new Size(172, 38);
+            btnExcluirInitial.TabIndex = 17;
+            btnExcluirInitial.Text = "Excluir Registro(s)";
+            btnExcluirInitial.UseVisualStyleBackColor = false;
+            btnExcluirInitial.Click += btnExcluirInitial_Click;
+            // 
             // btnExibirDetalhes
             // 
             btnExibirDetalhes.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnExibirDetalhes.BackColor = Color.Teal;
             btnExibirDetalhes.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnExibirDetalhes.ForeColor = SystemColors.ButtonFace;
-            btnExibirDetalhes.Location = new Point(913, 6);
+            btnExibirDetalhes.Location = new Point(1031, 4);
             btnExibirDetalhes.Name = "btnExibirDetalhes";
             btnExibirDetalhes.Size = new Size(172, 38);
             btnExibirDetalhes.TabIndex = 16;
-            btnExibirDetalhes.Text = "Exibir Todas as Contas";
+            btnExibirDetalhes.Text = "Exibir Detalhe(s)";
             btnExibirDetalhes.UseVisualStyleBackColor = false;
             btnExibirDetalhes.Click += BtnDetalhesContas_Click;
             // 
@@ -565,23 +597,29 @@
             // 
             // lblEfetuarPagamentoInformativoDuploCliqueGrid
             // 
-            lblEfetuarPagamentoInformativoDuploCliqueGrid.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblEfetuarPagamentoInformativoDuploCliqueGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblEfetuarPagamentoInformativoDuploCliqueGrid.AutoSize = true;
-            lblEfetuarPagamentoInformativoDuploCliqueGrid.Location = new Point(540, 67);
+            lblEfetuarPagamentoInformativoDuploCliqueGrid.BorderStyle = BorderStyle.FixedSingle;
+            lblEfetuarPagamentoInformativoDuploCliqueGrid.ForeColor = SystemColors.ButtonShadow;
+            lblEfetuarPagamentoInformativoDuploCliqueGrid.Location = new Point(640, 45);
             lblEfetuarPagamentoInformativoDuploCliqueGrid.Name = "lblEfetuarPagamentoInformativoDuploCliqueGrid";
-            lblEfetuarPagamentoInformativoDuploCliqueGrid.Size = new Size(334, 15);
+            lblEfetuarPagamentoInformativoDuploCliqueGrid.Size = new Size(336, 17);
             lblEfetuarPagamentoInformativoDuploCliqueGrid.TabIndex = 6;
             lblEfetuarPagamentoInformativoDuploCliqueGrid.Text = "Ao efetuar duplo clique na linha do Grid abre para Pagamento";
+            lblEfetuarPagamentoInformativoDuploCliqueGrid.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // btnPagamentoAvulso
             // 
             btnPagamentoAvulso.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnPagamentoAvulso.Location = new Point(1091, 6);
+            btnPagamentoAvulso.BackColor = Color.SeaGreen;
+            btnPagamentoAvulso.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnPagamentoAvulso.ForeColor = Color.White;
+            btnPagamentoAvulso.Location = new Point(657, 4);
             btnPagamentoAvulso.Name = "btnPagamentoAvulso";
-            btnPagamentoAvulso.Size = new Size(112, 38);
+            btnPagamentoAvulso.Size = new Size(190, 38);
             btnPagamentoAvulso.TabIndex = 4;
-            btnPagamentoAvulso.Text = "Novo Pagamento\r\nAvulso";
-            btnPagamentoAvulso.UseVisualStyleBackColor = true;
+            btnPagamentoAvulso.Text = "Pagar Cartão de Crédito";
+            btnPagamentoAvulso.UseVisualStyleBackColor = false;
             btnPagamentoAvulso.Click += BtnPagamentoAvulso_Click;
             // 
             // btnEfetuarPagamentoBuscar
@@ -639,7 +677,7 @@
             dgvEfetuarPagamentoListagem.MultiSelectChanged += DgvEfetuarPagamentoListagem_MultiSelectChanged;
             dgvEfetuarPagamentoListagem.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
             dgvEfetuarPagamentoListagem.CellMouseClick += DgvEfetuarPagamentoListagem_CellMouseClick;
-            dgvEfetuarPagamentoListagem.CellMouseDown += DgvEfetuarPagamentoListagem_CellMouseDown;
+            dgvEfetuarPagamentoListagem.CellMouseDown += EditarRegistroSelecionado_DgvEfetuarPagamentoListagem_CellMouseDown;
             dgvEfetuarPagamentoListagem.ColumnSortModeChanged += DgvEfetuarPagamentoListagem_ColumnSortModeChanged;
             dgvEfetuarPagamentoListagem.RowsAdded += DgvEfetuarPagamentoListagem_RowsAdded;
             dgvEfetuarPagamentoListagem.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
@@ -862,5 +900,7 @@
         private ComboBox cboEstudoFinanceiroMesesAnalises;
         private Label lblEstudoFinanceiroMesesSerAnalisado;
         private CheckBox ckbCartaoCreditoNaira;
+        private Button btnExcluirInitial;
+        private Label label1;
     }
 }

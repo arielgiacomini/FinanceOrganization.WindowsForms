@@ -87,6 +87,26 @@ namespace App.Forms.Services
             return JsonConvert.DeserializeObject<EditBillToPayOutput>(response) ?? new EditBillToPayOutput();
         }
 
+        public static async Task<EditBillToPayOutput> EditBasketBillToPay(IList<EditBillToPayViewModel> basketEditBillToPay)
+        {
+            using var client = new HttpClient();
+
+            var json = JsonConvert.SerializeObject(basketEditBillToPay);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var result = client.PutAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/bills-to-pay/edit-basket", content).Result;
+
+            if (!result.IsSuccessStatusCode)
+            {
+                return new EditBillToPayOutput();
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<EditBillToPayOutput>(response) ?? new EditBillToPayOutput();
+        }
+
         public static async Task<DeleteBillToPayOutput> DeleteBillToPay(DeleteBillToPayViewModel deleteBillToPayViewModel)
         {
             using var client = new HttpClient();

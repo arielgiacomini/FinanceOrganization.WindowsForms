@@ -1,6 +1,7 @@
 ﻿using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.Repository;
 using Domain.Utils;
 
 namespace App.Forms.Forms.Edição
@@ -8,11 +9,17 @@ namespace App.Forms.Forms.Edição
     public partial class FrmEdit : Form
     {
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
+        public IList<EditBillToPayViewModel> BasketEditBillToPayViewModel { get; set; } = new List<EditBillToPayViewModel>();
         public decimal valorContaPagarDigitadoTextBox = 0;
         public string? Environment { get; set; }
+        public bool EditInLote { get; set; } = false;
+
+        private AccountRepository _accountRepository;
 
         public FrmEdit()
         {
+            _accountRepository = AccountRepository.Instance;
+
             InitializeComponent();
         }
 
@@ -24,7 +31,7 @@ namespace App.Forms.Forms.Edição
         private void PreencherCampos()
         {
             txtContaPagarNameDescription.Text = EditBillToPayViewModel.Name;
-            cboContaPagarTipoConta.Text = EditBillToPayViewModel.Account;
+            PreencherComboBoxContaPagarAccount(EditBillToPayViewModel.Account!);
             cboContaPagarFrequencia.Text = EditBillToPayViewModel.Frequence;
             cboContaPagarTipoCadastro.Text = EditBillToPayViewModel.RegistrationType;
             PreencherComboBoxAnoMes(EditBillToPayViewModel.YearMonth!);
@@ -49,6 +56,33 @@ namespace App.Forms.Forms.Edição
             rdbPagamentoNaoPago.Checked = !EditBillToPayViewModel.HasPay;
             rtbContaPagarMensagemAdicional.Text = EditBillToPayViewModel.AdditionalMessage;
             lblContaPagarDataCriacao.Text = EditBillToPayViewModel.LastChangeDate.ToString();
+
+            if (EditInLote)
+            {
+                txtContaPagarNameDescription.Enabled = true;
+                cboContaPagarTipoConta.Enabled = true;
+                cboContaPagarFrequencia.Enabled = true;
+                cboContaPagarTipoCadastro.Enabled = true;
+                cboContaPagarAnoMesInicial.Enabled = false;
+                cboContaPagarCategory.Enabled = true;
+                txtContaPagarValor.Enabled = true;
+
+                if (EditBillToPayViewModel.PurchaseDate == null)
+                {
+                    dtpContaPagarDataCompra.Enabled = false;
+                }
+                else
+                {
+                    cboHabilitarDataCompra.Checked = true;
+                }
+
+                dtpContaPagarDataVencimento.Enabled = false;
+                txtContaPagarDataPagamento.Enabled = false;
+                rdbPagamentoPago.Enabled = false;
+                rdbPagamentoNaoPago.Enabled = false;
+                rtbContaPagarMensagemAdicional.Enabled = false;
+                lblContaPagarDataCriacao.Enabled = false;
+            }
         }
 
         private void PreencherComboBoxAnoMes(string current)
@@ -65,14 +99,63 @@ namespace App.Forms.Forms.Edição
             cboContaPagarAnoMesInicial.SelectedItem = current;
         }
 
+        private void PreencherComboBoxContaPagarAccount(string current)
+        {
+            cboContaPagarTipoConta.Items.Add(current);
+
+            foreach (var item in _accountRepository._accounts.Values.OrderBy((x) => x.Name))
+            {
+                string name = item.Name;
+                if (item.IsCreditCard)
+                {
+                    name = string.Concat(item.Name, " - ", item.CardNumber);
+                }
+
+                if (item.Enable)
+                {
+                    cboContaPagarTipoConta.Items.Add(name);
+                }
+            }
+
+            if (current == null)
+            {
+                cboContaPagarTipoConta.SelectedItem = _accountRepository._accounts[0];
+            }
+            else
+            {
+                var theChoise = _accountRepository._accounts.FirstOrDefault(x => x.Value.Name == current);
+
+                if (theChoise.Value.Name != null)
+                {
+                    cboContaPagarTipoConta.SelectedItem = theChoise.Value.Name;
+                }
+                else
+                {
+                    cboContaPagarTipoConta.SelectedItem = _accountRepository._accounts.FirstOrDefault().Value.Name;
+                }
+            }
+        }
+
         private async void BtnContaPagarEditar_Click(object sender, EventArgs e)
         {
-            MapFormToViewModel();
+            if (EditInLote)
+            {
+                MapFormBasketToViewModel();
 
-            BillToPayServices.Environment = Environment;
-            var result = await BillToPayServices.EditBillToPay(EditBillToPayViewModel);
+                BillToPayServices.Environment = Environment;
+                var result = await BillToPayServices.EditBasketBillToPay(BasketEditBillToPayViewModel);
 
-            OutputMapper(result);
+                OutputMapper(result);
+            }
+            else
+            {
+                MapFormToViewModel();
+
+                BillToPayServices.Environment = Environment;
+                var result = await BillToPayServices.EditBillToPay(EditBillToPayViewModel);
+
+                OutputMapper(result);
+            }
         }
 
         private static void OutputMapper(EditBillToPayOutput result)
@@ -109,7 +192,7 @@ namespace App.Forms.Forms.Edição
         private void MapFormToViewModel()
         {
             EditBillToPayViewModel.Name = txtContaPagarNameDescription.Text;
-            EditBillToPayViewModel.Account = cboContaPagarTipoConta.Text;
+            EditBillToPayViewModel.Account = cboContaPagarTipoConta.Text.Split(" - ")[0];
             EditBillToPayViewModel.Frequence = cboContaPagarFrequencia.Text;
             EditBillToPayViewModel.RegistrationType = cboContaPagarTipoCadastro.Text;
             EditBillToPayViewModel.YearMonth = cboContaPagarAnoMesInicial.Text;
@@ -121,6 +204,39 @@ namespace App.Forms.Forms.Edição
             EditBillToPayViewModel.DueDate = DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataVencimento.Text) ?? DateTime.Now;
             EditBillToPayViewModel.AdditionalMessage = rtbContaPagarMensagemAdicional.Text;
             EditBillToPayViewModel.LastChangeDate = DateServiceUtils.GetDateTimeOfString(lblContaPagarDataCriacao.Text) ?? DateTime.Now;
+        }
+
+        private void MapFormBasketToViewModel()
+        {
+            foreach (var item in BasketEditBillToPayViewModel)
+            {
+                BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Name = txtContaPagarNameDescription.Text;
+                BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Account = cboContaPagarTipoConta.Text.Split(" - ")[0];
+                BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Frequence = cboContaPagarFrequencia.Text;
+                BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.RegistrationType = cboContaPagarTipoCadastro.Text;
+                //BasketEditBillToPayViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.YearMonth = cboContaPagarAnoMesInicial.Text;
+                BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Category = cboContaPagarCategory.Text;
+                BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Value = Convert.ToDecimal(txtContaPagarValor.Text.Replace("R$ ", ""));
+                //BasketEditBillToPayViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.PurchaseDate = cboHabilitarDataCompra.Checked ? DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataCompra.Text) : null;
+                //BasketEditBillToPayViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.PayDay = string.IsNullOrWhiteSpace(txtContaPagarDataPagamento.Text) ? null : txtContaPagarDataPagamento.Text;
+                //BasketEditBillToPayViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.HasPay = rdbPagamentoPago.Checked;
+                //BasketEditBillToPayViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.DueDate = DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataVencimento.Text) ?? DateTime.Now;
+                //BasketEditBillToPayViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.AdditionalMessage = rtbContaPagarMensagemAdicional.Text;
+                BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.LastChangeDate = DateTime.Now;
+            }
         }
 
         private void TxtContaPagarValor_Leave(object sender, EventArgs e)

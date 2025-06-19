@@ -70,5 +70,41 @@ namespace App.WindowsForms.Services.Output
         /// Indica se a conta é Cartão de Crédito
         /// </summary>
         public bool IsCreditCard { get; set; }
+        /// <summary>
+        /// Traduz as cores vinda do serviço de contas
+        /// </summary>
+        public CollorAccount? Colors { get; set; } = new CollorAccount();
+    }
+
+    public class CollorAccount
+    {
+        /// <summary>
+        /// Id único da cor x conta
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
+        /// Id da conta
+        /// </summary>
+        public int AccountId { get; set; }
+        /// <summary>
+        /// Cor predominante do fundo de tela
+        /// </summary>
+        public string BackgroundColorHexadecimal { get; set; } = "#FFFFFF";
+        /// <summary>
+        /// Cor predominante dos textos da tela
+        /// </summary>
+        public string FonteColorHexadecimal { get; set; } = "#000000";
+        /// <summary>
+        /// Indica se o registro ativo
+        /// </summary>
+        public bool Enable { get; set; }
+        /// <summary>
+        /// Data de criação do registro
+        /// </summary>
+        public DateTime CreationDate { get; set; }
+        /// <summary>
+        /// Data de alteração do registro
+        /// </summary>
+        public DateTime? LastChangeDate { get; set; }
     }
 }
