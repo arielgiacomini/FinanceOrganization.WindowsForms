@@ -52,7 +52,6 @@ namespace App.Forms.Forms
 
         private async void Initial_Load(object sender, EventArgs e)
         {
-
             lblVersion.Text = InfoHeader.Version;
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
@@ -415,7 +414,8 @@ namespace App.Forms.Forms
             {
                 { 1, "Livre" },
                 { 2, "Mensal" },
-                { 3, "Mensal:Recorrente" }
+                { 3, "Mensal:Recorrente" },
+                { 4, "Apenas desta vez" }
             };
 
             foreach (var item in frequencia)
@@ -829,13 +829,14 @@ namespace App.Forms.Forms
         {
             FrmPagamento frmPagamento = new()
             {
-                Environment = Environment
+                Environment = Environment,
+                AnoMes = DateServiceUtils.GetYearMonthPortugueseByDateTime(DateTime.Now.AddMonths(-1))
             };
 
             frmPagamento.ShowDialog();
         }
 
-        private void CboEfetuarPagamentoCategoria_SelectedValueChanged(object sender, EventArgs e)
+        private async void CboEfetuarPagamentoCategoria_SelectedValueChanged(object sender, EventArgs e)
         {
             if (cboEfetuarPagamentoCategoria.Text != "Nenhum")
             {
@@ -847,7 +848,7 @@ namespace App.Forms.Forms
             }
             else
             {
-                PreecherDataGridViewContaPagarListar(_dgvEfetuarPagamentoListagemDataSource);
+                await LoadHistory();
             }
         }
 
@@ -1319,6 +1320,92 @@ namespace App.Forms.Forms
             }
 
             SetColorGrbTemplateContaPagar();
+        }
+
+        private async void btnExcluirInitial_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox
+                .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                _ = Task.Run(async () =>
+                {
+
+                    List<Guid> guidIds = new();
+
+                    foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
+                    {
+                        bool isOk = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid guidId);
+
+                        guidIds.Add(guidId);
+                    }
+
+                    BillToPayServices.Environment = Environment;
+                    var output = await BillToPayServices.DeleteBillToPay(MapDeleteViewModel(guidIds));
+
+                    TratamentoOutput(output);
+
+                });
+            }
+            await Task.CompletedTask;
+        }
+
+        public static DeleteBillToPayViewModel MapDeleteViewModel(List<Guid> guidIds)
+        {
+            return new DeleteBillToPayViewModel()
+            {
+                Id = guidIds.ToArray(),
+                JustUnpaid = true,
+                DisableBillToPayRegistration = false
+            };
+        }
+
+        private async void TratamentoOutput(DeleteBillToPayOutput result)
+        {
+            if (result.Output?.Status == OutputStatus.Success)
+            {
+                MessageBox.Show(result.Output.Message,
+                    "Exclusão de registro realizado com sucesso.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                //await PreencherCampos();
+            }
+            else
+            {
+                //await PreencherCampos();
+
+                var information = string.Empty;
+
+                var errors = result.Output?.Errors;
+                var validations = result.Output?.Validations;
+
+                if (errors != null)
+                {
+                    foreach (var error in errors)
+                    {
+                        information = string
+                            .Concat(information, error.Key, " - ", error.Value, " | ");
+                    }
+                }
+
+                if (validations != null)
+                {
+                    foreach (var validation in validations)
+                    {
+                        information = string
+                            .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                    }
+                }
+
+                MessageBox.Show(information, "Erro ao tentar cadastrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task PreencherCampos()
+        {
+            await LoadHistory();
         }
     }
 }

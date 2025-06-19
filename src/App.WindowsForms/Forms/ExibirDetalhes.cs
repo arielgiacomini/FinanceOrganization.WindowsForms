@@ -335,7 +335,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             {
                 Id = guidIds.ToArray(),
                 JustUnpaid = true,
-                DisableFixedInvoice = false
+                DisableBillToPayRegistration = false
             };
         }
 

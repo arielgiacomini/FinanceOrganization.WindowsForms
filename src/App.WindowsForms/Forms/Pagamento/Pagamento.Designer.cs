@@ -58,7 +58,7 @@
             // 
             txtPagamentoIdContaPagar.Location = new Point(141, 42);
             txtPagamentoIdContaPagar.Name = "txtPagamentoIdContaPagar";
-            txtPagamentoIdContaPagar.Size = new Size(287, 23);
+            txtPagamentoIdContaPagar.Size = new Size(469, 23);
             txtPagamentoIdContaPagar.TabIndex = 1;
             // 
             // lblPagamentoData
@@ -122,7 +122,7 @@
             cboPagamentoConta.FormattingEnabled = true;
             cboPagamentoConta.Location = new Point(141, 77);
             cboPagamentoConta.Name = "cboPagamentoConta";
-            cboPagamentoConta.Size = new Size(154, 23);
+            cboPagamentoConta.Size = new Size(469, 23);
             cboPagamentoConta.TabIndex = 8;
             // 
             // cboPagamentoMesAno
@@ -149,7 +149,7 @@
             lblPagamentoNome.BackColor = Color.Lime;
             lblPagamentoNome.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
             lblPagamentoNome.ForeColor = SystemColors.HotTrack;
-            lblPagamentoNome.Location = new Point(25, 9);
+            lblPagamentoNome.Location = new Point(298, 9);
             lblPagamentoNome.Name = "lblPagamentoNome";
             lblPagamentoNome.Size = new Size(148, 19);
             lblPagamentoNome.TabIndex = 11;
@@ -162,7 +162,7 @@
             lblPagamentoValor.BackColor = Color.Crimson;
             lblPagamentoValor.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
             lblPagamentoValor.ForeColor = SystemColors.ControlLightLight;
-            lblPagamentoValor.Location = new Point(358, 171);
+            lblPagamentoValor.Location = new Point(513, 176);
             lblPagamentoValor.Name = "lblPagamentoValor";
             lblPagamentoValor.Size = new Size(44, 19);
             lblPagamentoValor.TabIndex = 13;
@@ -172,7 +172,8 @@
             // ckbCartaoCreditoNaira
             // 
             ckbCartaoCreditoNaira.AutoSize = true;
-            ckbCartaoCreditoNaira.Location = new Point(301, 71);
+            ckbCartaoCreditoNaira.Enabled = false;
+            ckbCartaoCreditoNaira.Location = new Point(455, 106);
             ckbCartaoCreditoNaira.Name = "ckbCartaoCreditoNaira";
             ckbCartaoCreditoNaira.Size = new Size(155, 34);
             ckbCartaoCreditoNaira.TabIndex = 14;
@@ -184,7 +185,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(512, 209);
+            ClientSize = new Size(742, 209);
             Controls.Add(ckbCartaoCreditoNaira);
             Controls.Add(lblPagamentoValor);
             Controls.Add(lblPagamentoNome);
