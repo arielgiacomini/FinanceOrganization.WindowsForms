@@ -6,6 +6,7 @@ namespace App.WindowsForms.Repository
     {
         public Dictionary<int, Account> _accounts = new();
 
+
         /// <summary>
         /// Variável Privada da Instância
         /// </summary>
