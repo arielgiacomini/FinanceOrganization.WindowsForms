@@ -412,6 +412,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async void EditarRegistroSelecionado_dgvExcluirDetalhes_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
+            var rowIndexOld = e.RowIndex;
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
             {
                 _ = Guid.TryParse(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[0].Value?.ToString(), out Guid guidId);
@@ -480,12 +481,18 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 frmEditInLote.ShowDialog();
 
                 await CarregamentoTelaAgain();
+
+                dgvExcluirDetalhes.CurrentCell = dgvExcluirDetalhes.Rows[rowIndexOld].Cells[3];
             }
         }
 
         private async void BtnAtualizar_Click(object sender, EventArgs e)
         {
+            var rowIndexOld = dgvExcluirDetalhes.CurrentCell.RowIndex;
+
             await CarregamentoTelaAgain();
+
+            dgvExcluirDetalhes.CurrentCell = dgvExcluirDetalhes.Rows[rowIndexOld].Cells[3];
         }
 
         private async Task CarregamentoTelaAgain()

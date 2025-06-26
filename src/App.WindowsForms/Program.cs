@@ -1,15 +1,28 @@
 using App.Forms.Config;
 using App.Forms.Forms;
+using Serilog;
 
 namespace App.Forms
 {
-    internal static class Program
+    public static class Program
     {
-        [STAThread]
-        static void Main()
+        public static void Main()
         {
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Initial(GetInfoHeader()));
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            try
+            {
+                ApplicationConfiguration
+                    .Initialize();
+
+                Application.Run(new Initial(GetInfoHeader()));
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         private static InfoHeader? GetInfoHeader()
