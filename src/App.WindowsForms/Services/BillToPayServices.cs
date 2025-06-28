@@ -150,5 +150,21 @@ namespace App.Forms.Services
 
             return JsonConvert.DeserializeObject<SearchMonthlyAverageAnalysisOutput>(response) ?? new SearchMonthlyAverageAnalysisOutput();
         }
+
+        public static async Task<RecordsAwaitingCompleteRegistrationOutput> SearchRecordsAwaitingCompleteRegistration(RecordsAwaitingCompleteRegistrationViewModel viewModel)
+        {
+            using var client = new HttpClient();
+
+            var result = client.GetAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/bills-to-pay/records-awaiting-complete-registration").Result;
+
+            if (!result.IsSuccessStatusCode)
+            {
+                return new RecordsAwaitingCompleteRegistrationOutput();
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<RecordsAwaitingCompleteRegistrationOutput>(response) ?? new RecordsAwaitingCompleteRegistrationOutput();
+        }
     }
 }

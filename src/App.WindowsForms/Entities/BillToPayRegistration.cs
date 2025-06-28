@@ -3,7 +3,7 @@
     /// <summary>
     /// [Faturas/Contas Fixas] - Cadastro, será realizado criações de registros periodicamente, afim de automatizar as contas fixas.
     /// </summary>
-    public class FixedInvoice
+    public class BillToPayRegistration
     {
         public int Id { get; set; }
         public string? Name { get; set; }

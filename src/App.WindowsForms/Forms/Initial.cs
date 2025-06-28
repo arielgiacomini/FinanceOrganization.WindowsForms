@@ -6,14 +6,20 @@ using App.Forms.Forms.Pay;
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.BackgroundServices;
 using App.WindowsForms.DataSource;
 using App.WindowsForms.Forms.ExcluirDetalhes;
 using App.WindowsForms.Repository;
 using App.WindowsForms.Services;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
+using Domain.Entities;
 using Domain.Utils;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Serilog;
+using System.Configuration;
 using System.Data;
 
 namespace App.Forms.Forms
@@ -28,6 +34,8 @@ namespace App.Forms.Forms
         private readonly Dictionary<int, CreateBillToPayViewModel> _createBillToPayViewModels = new();
         private IList<DgvVisualizarContaPagarDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvVisualizarContaPagarDataSource>();
         private IList<DgvVisualizarEstudoFinanceiroDataSource> _dgvVisuarEstudoFinanceiroDataSource = new List<DgvVisualizarEstudoFinanceiroDataSource>();
+        public IHost _host;
+        public int _eventRepeat = 0;
 
         public static int CurrentIndex { get; set; } = 0;
         public decimal ValorContaPagarDigitadoTextBox { get; set; } = 0;
@@ -36,6 +44,7 @@ namespace App.Forms.Forms
         public string? Environment { get; set; }
 
         private AccountRepository _accountRepository;
+        private BillToPayRegistrationRepository _billToPayRegistrationRepository;
 
         public Initial(InfoHeader? infoHeader)
         {
@@ -46,12 +55,20 @@ namespace App.Forms.Forms
             }
 
             _accountRepository = AccountRepository.Instance;
+            _billToPayRegistrationRepository = BillToPayRegistrationRepository.Instance;
+
+            Task.Run(async () =>
+            {
+                await InitializerBackgroundService();
+            });
 
             InitializeComponent();
         }
 
         private async void Initial_Load(object sender, EventArgs e)
         {
+            lblQtdItensParaFinalizarCadastro.Visible = false;
+            lblEventRepeat.Visible = false;
             lblVersion.Text = InfoHeader.Version;
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
@@ -71,6 +88,53 @@ namespace App.Forms.Forms
             ToolTip tooltipBtnPagamentoAvulso = new();
             tooltipBtnPagamentoAvulso.SetToolTip(this.btnPagamentoAvulso, "Ideal p/ Pagamento em Massa, Ex.: Cartão de Crédito");
             SetColorGrbTemplateContaPagar();
+
+            _billToPayRegistrationRepository.DataProcessed += OnEventNotify;
+        }
+
+        /// <summary>
+        /// Evento que executa quando a resposta da API para cadastros pendentes executa.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="listBillToPayRegistration"></param>
+        private void OnEventNotify(object? sender, IList<BillToPayRegistration> listBillToPayRegistration)
+        {
+            _eventRepeat++;
+            _ = TimeSpan.TryParse(ConfigurationManager.AppSettings["routine-worker-start-time"], out TimeSpan time);
+            if (lblQtdItensParaFinalizarCadastro.InvokeRequired)
+            {
+                lblQtdItensParaFinalizarCadastro.Invoke(new Action(async () =>
+                {
+                    lblQtdItensParaFinalizarCadastro.Visible = listBillToPayRegistration.Count > 0;
+                    lblEventRepeat.Visible = listBillToPayRegistration.Count > 0;
+                    lblQtdItensParaFinalizarCadastro.Text = listBillToPayRegistration.Count > 0
+                        ? $"Conta a Pagar pendente de importação: {listBillToPayRegistration.Count}"
+                        : "Nenhum item para finalizar cadastro.";
+                    lblInfoHeader.Text = AdjusteInfoHeader(DateTime.Now);
+                    lblEventRepeat.Text = $"A cada {time.TotalSeconds} segundo(s) é efetuado uma consulta. Evento Repetido: {_eventRepeat}x até o momento.";
+                }));
+            }
+            else
+            {
+                lblQtdItensParaFinalizarCadastro.Visible = listBillToPayRegistration.Count > 0;
+                lblEventRepeat.Visible = listBillToPayRegistration.Count > 0;
+                lblQtdItensParaFinalizarCadastro.Text = listBillToPayRegistration.Count > 0
+                    ? $"Quantidade de Cadastro Pendentes: {listBillToPayRegistration.Count}"
+                    : "Nenhum item para finalizar cadastro.";
+            }
+        }
+
+        private async Task InitializerBackgroundService()
+        {
+            _host = Host.CreateDefaultBuilder()
+            .UseSerilog()
+            .ConfigureServices(services =>
+            {
+                services.AddHostedService<FillInInformationBackgroundService>();
+            })
+            .Build();
+
+            await _host.RunAsync();
         }
 
         private string AdjusteInfoHeader(DateTime? lastUpdate = null)
@@ -870,6 +934,7 @@ namespace App.Forms.Forms
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
             {
+                dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[0].Selected = true;
                 _ = Guid.TryParse(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaPagar);
 
                 if (identificadorContaPagar == Guid.Empty)
@@ -1035,17 +1100,30 @@ namespace App.Forms.Forms
         private void DgvEfetuarPagamentoListagem_SelectionChanged(object sender, EventArgs e)
         {
             decimal valorTotalItensSelecionados = 0;
+            decimal valorRestanteItensSelecionados = 0;
+            decimal valorRealizadoItensSelecionados = 0;
             int quantidadeTotalItensSelecionados = dgvEfetuarPagamentoListagem.SelectedRows.Count;
 
             foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
             {
-                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
+                bool isOKTotalValue = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal totalValue);
+                valorTotalItensSelecionados += isOKTotalValue ? totalValue : 0;
 
-                valorTotalItensSelecionados += isOk ? valor : 0;
+                bool isOKRemainingValue = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal remainingValue);
+                valorRestanteItensSelecionados += isOKRemainingValue ? remainingValue : 0;
+
+                bool isOKCompletedValue = decimal.TryParse(row.Cells[6].Value.ToString(), out decimal completedValue);
+                valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
             }
 
             lblEfetuarPagamentoItensSelecionadosDataGridView.Text = string
-                .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
+                .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
+
+            lblGridViewSelectedRowsRemainingValue.Text = string
+                .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
+
+            lblGridViewSelectedRowsCompleted.Text = string.
+                Concat("Valor realizado dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRealizadoItensSelecionados.ToString("C"));
         }
 
         private void BtnDetalhesContas_Click(object sender, EventArgs e)
