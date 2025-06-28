@@ -73,7 +73,6 @@
             btnExibirDetalhes = new Button();
             lblEfetuarPagamentoItensSelecionadosDataGridView = new Label();
             lblGridViewTotalPago = new Label();
-            lblGridViewCartaoCreditoNaira = new Label();
             lblGridViewCartaoCreditoFamilia = new Label();
             lblGridViewTotais = new Label();
             lblEfetuarPagamentoCategoria = new Label();
@@ -470,7 +469,6 @@
             tbpListarContaPagar.Controls.Add(btnExibirDetalhes);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoItensSelecionadosDataGridView);
             tbpListarContaPagar.Controls.Add(lblGridViewTotalPago);
-            tbpListarContaPagar.Controls.Add(lblGridViewCartaoCreditoNaira);
             tbpListarContaPagar.Controls.Add(lblGridViewCartaoCreditoFamilia);
             tbpListarContaPagar.Controls.Add(lblGridViewTotais);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoCategoria);
@@ -596,31 +594,20 @@
             lblGridViewTotalPago.ForeColor = Color.Green;
             lblGridViewTotalPago.Location = new Point(10, 65);
             lblGridViewTotalPago.Name = "lblGridViewTotalPago";
-            lblGridViewTotalPago.Size = new Size(110, 17);
+            lblGridViewTotalPago.Size = new Size(164, 17);
             lblGridViewTotalPago.TabIndex = 13;
-            lblGridViewTotalPago.Text = "Valor Total Pago";
-            // 
-            // lblGridViewCartaoCreditoNaira
-            // 
-            lblGridViewCartaoCreditoNaira.AutoSize = true;
-            lblGridViewCartaoCreditoNaira.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            lblGridViewCartaoCreditoNaira.ForeColor = Color.DimGray;
-            lblGridViewCartaoCreditoNaira.Location = new Point(268, 65);
-            lblGridViewCartaoCreditoNaira.Name = "lblGridViewCartaoCreditoNaira";
-            lblGridViewCartaoCreditoNaira.Size = new Size(153, 17);
-            lblGridViewCartaoCreditoNaira.TabIndex = 12;
-            lblGridViewCartaoCreditoNaira.Text = "Cartão de Crédito Naíra";
+            lblGridViewTotalPago.Text = "Pago: 100 - R$ 100.000,00";
             // 
             // lblGridViewCartaoCreditoFamilia
             // 
             lblGridViewCartaoCreditoFamilia.AutoSize = true;
-            lblGridViewCartaoCreditoFamilia.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            lblGridViewCartaoCreditoFamilia.ForeColor = Color.DarkOrange;
-            lblGridViewCartaoCreditoFamilia.Location = new Point(267, 45);
+            lblGridViewCartaoCreditoFamilia.Font = new Font("Calibri", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblGridViewCartaoCreditoFamilia.ForeColor = SystemColors.ActiveCaptionText;
+            lblGridViewCartaoCreditoFamilia.Location = new Point(203, 46);
             lblGridViewCartaoCreditoFamilia.Name = "lblGridViewCartaoCreditoFamilia";
-            lblGridViewCartaoCreditoFamilia.Size = new Size(165, 17);
+            lblGridViewCartaoCreditoFamilia.Size = new Size(328, 39);
             lblGridViewCartaoCreditoFamilia.TabIndex = 11;
-            lblGridViewCartaoCreditoFamilia.Text = "Cartão de Crédito Familia";
+            lblGridViewCartaoCreditoFamilia.Text = "Cartão de Crédito Itaú Personnalité Black Cashback: 10 - R$ 17.00,00\r\nCartão de Crédito Nubank: 10 - R$ 17.00,00\r\nCartão de Crédito: 10 - R$ 17.00,00\r\n";
             // 
             // lblGridViewTotais
             // 
@@ -629,9 +616,9 @@
             lblGridViewTotais.ForeColor = Color.OrangeRed;
             lblGridViewTotais.Location = new Point(10, 42);
             lblGridViewTotais.Name = "lblGridViewTotais";
-            lblGridViewTotais.Size = new Size(99, 20);
+            lblGridViewTotais.Size = new Size(187, 20);
             lblGridViewTotais.TabIndex = 9;
-            lblGridViewTotais.Text = "Totais Gerais";
+            lblGridViewTotais.Text = "Total: 134 - R$ 33.300,00";
             // 
             // lblEfetuarPagamentoCategoria
             // 
@@ -934,7 +921,6 @@
         private ComboBox cboEfetuarPagamentoCategoria;
         private Label lblGridViewTotais;
         private Label lblGridViewCartaoCreditoFamilia;
-        private Label lblGridViewCartaoCreditoNaira;
         private Label lblGridViewTotalPago;
         private Label lblVersion;
         private Label lblInfoHeader;
