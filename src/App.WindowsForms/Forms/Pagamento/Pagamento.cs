@@ -104,10 +104,16 @@ namespace App.Forms.Forms.Pay
 
         private async void BtnPagamentoPagar_Click(object sender, EventArgs e)
         {
-            PayBillToPayOutput output;
-            PayBillToPayViewModel request;
+            var account = _accountRepository
+                    .GetAccountByName(cboPagamentoConta.Text!);
 
-            if (cboPagamentoConta.Text == "Cartão de Crédito" && !(AdditionalMessage.StartsWith(EH_CARTAO_CREDITO_NAIRA)))
+            if (account == null)
+            {
+                MessageBox.Show("Conta não encontrada.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (account.IsCreditCard)
             {
                 if (!string.IsNullOrWhiteSpace(txtPagamentoIdContaPagar.Text))
                 {
@@ -118,22 +124,30 @@ namespace App.Forms.Forms.Pay
                     return;
                 }
 
-                request = MapPayBillToPayToRequest();
+                SetOutput(await SendPayment());
             }
             else
             {
                 _ = Guid.TryParse(txtPagamentoIdContaPagar.Text, out Guid idContaPagar);
 
-                request = MapPayBillToPayToRequest(idContaPagar);
+                SetOutput(await SendPayment(idContaPagar));
             }
+        }
+
+        private async Task<PayBillToPayOutput> SendPayment(Guid? idContaPagar = null, bool? advancePayment = null)
+        {
+            PayBillToPayViewModel request;
+            PayBillToPayOutput output;
+
+            request = MapPayBillToPayToRequest(idContaPagar, true, advancePayment);
 
             BillToPayServices.Environment = Environment;
             output = await BillToPayServices.PayBillToPay(request);
 
-            SetOutput(output);
+            return output;
         }
 
-        private static void SetOutput(PayBillToPayOutput? output)
+        private async void SetOutput(PayBillToPayOutput? output)
         {
             if (output == null)
             {
@@ -155,6 +169,22 @@ namespace App.Forms.Forms.Pay
                 foreach (var validation in validations)
                 {
                     mensagem += string.Concat(validation.Key, "-", validation.Value);
+
+                    if (validation.Key == "[34]" && validations.Count == 1)
+                    {
+                        var advancePayment = MessageBox.Show(
+                            string.Concat(mensagem, "\n\n", "Deseja efetuar o pagamento mesmo assim?"),
+                            "Validação de Conta a Pagar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                        if (advancePayment == DialogResult.Yes)
+                        {
+                            // Chamar o método de pagamento com a opção de adiantamento
+
+                            SetOutput(await SendPayment(advancePayment: true));
+
+                            return;
+                        }
+                    }
                 }
 
                 MessageBox.Show(mensagem, "Validação", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -179,7 +209,7 @@ namespace App.Forms.Forms.Pay
             }
         }
 
-        private PayBillToPayViewModel MapPayBillToPayToRequest(Guid? idContaPagar = null, bool sendYearMonthAndAccount = true)
+        private PayBillToPayViewModel MapPayBillToPayToRequest(Guid? idContaPagar = null, bool sendYearMonthAndAccount = true, bool? advancePayment = null)
         {
             var request = new PayBillToPayViewModel()
             {
@@ -189,7 +219,8 @@ namespace App.Forms.Forms.Pay
                 LastChangeDate = DateTime.Now,
                 YearMonth = cboPagamentoMesAno.Text,
                 Account = cboPagamentoConta.Text,
-                ConsiderNairaCreditCard = ckbCartaoCreditoNaira.Checked
+                AdvancePayment = advancePayment,
+                ConsiderNairaCreditCard = ckbCartaoCreditoNaira.Checked,
             };
 
             if (!sendYearMonthAndAccount)
