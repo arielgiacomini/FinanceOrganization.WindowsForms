@@ -34,6 +34,7 @@ namespace App.Forms.Forms
         private readonly Dictionary<int, CreateBillToPayViewModel> _createBillToPayViewModels = new();
         private IList<DgvVisualizarContaPagarDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvVisualizarContaPagarDataSource>();
         private IList<DgvVisualizarEstudoFinanceiroDataSource> _dgvVisuarEstudoFinanceiroDataSource = new List<DgvVisualizarEstudoFinanceiroDataSource>();
+        private IList<DgvVisualizarContaReceberDataSource> _dgvVisualizarContaReceberDataSource = new List<DgvVisualizarContaReceberDataSource>();
         public IHost _host;
         public int _eventRepeat = 0;
 
@@ -82,12 +83,19 @@ namespace App.Forms.Forms
             PreencherContaPagarMelhorDiaPagamento();
             LoadFrequence();
             LoadType();
-            await LoadHistory();
+
+
+            await CarregaContasApagar();
+            await CarregaContasAReceber();
             await SearchMonthlyAverageAnalysis();
-            tbcInitial.SelectedTab = tbcInitial.TabPages[0];
+
+
+            tbcInitial.SelectedTab = tbcInitial.TabPages[1];
             ToolTip tooltipBtnPagamentoAvulso = new();
             tooltipBtnPagamentoAvulso.SetToolTip(this.btnPagamentoAvulso, "Ideal p/ Pagamento em Massa, Ex.: Cartão de Crédito");
             SetColorGrbTemplateContaPagar();
+
+            lblTotalValueGridView.Text = string.Empty;
 
             _billToPayRegistrationRepository.DataProcessed += OnEventNotify;
         }
@@ -432,14 +440,16 @@ namespace App.Forms.Forms
             var yearMonthsArray = yearMonths.Values.ToArray();
 
             cboContaPagarAnoMesInicial.Items.AddRange(yearMonthsArray);
-            cboEfetuarPagamentoAnoMes.Items.AddRange(yearMonthsArray);
+            cboAnoMesContaPagar.Items.AddRange(yearMonthsArray);
+            cboMesAnoContaReceber.Items.AddRange(yearMonthsArray);
 
             var dateTimeNow = DateTime.Now;
             DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
             _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
 
             cboContaPagarAnoMesInicial.SelectedItem = currentYearMonth;
-            cboEfetuarPagamentoAnoMes.SelectedItem = currentYearMonth;
+            cboAnoMesContaPagar.SelectedItem = currentYearMonth;
+            cboMesAnoContaReceber.SelectedItem = currentYearMonth;
 
             PreencherComboBoxcboContaPagarAnoMesFinal();
         }
@@ -634,28 +644,40 @@ namespace App.Forms.Forms
         private async void BtnEfetuarPagamentoBuscar_Click(object sender, EventArgs e)
         {
             lblInfoHeader.Text = AdjusteInfoHeader(DateTime.Now);
-            await LoadHistory();
+            await CarregaContasApagar();
         }
 
-        public async Task LoadHistory()
+        public async Task CarregaContasApagar()
         {
             _dgvEfetuarPagamentoListagemDataSource.Clear();
             cboEfetuarPagamentoCategoria.SelectedItem = "Nenhum";
 
             SearchBillToPayViewModel search = new()
             {
-                YearMonth = cboEfetuarPagamentoAnoMes.Text
+                YearMonth = cboAnoMesContaPagar.Text
             };
 
-            await PreencherEfetuarPagamentoDataGridViewHistory(search);
+            await PreencherContaPagarDataGridView(search);
         }
 
-        private async Task PreencherEfetuarPagamentoDataGridViewHistory(SearchBillToPayViewModel search)
+        public async Task CarregaContasAReceber()
+        {
+            _dgvVisualizarContaReceberDataSource.Clear();
+
+            SearchCashReceivableViewModel search = new()
+            {
+                YearMonth = cboMesAnoContaReceber.Text
+            };
+
+            await PreencherContaReceberDataGridView(search);
+        }
+
+        private async Task PreencherContaPagarDataGridView(SearchBillToPayViewModel search)
         {
             BillToPayServices.Environment = Environment;
             var resultSearch = await BillToPayServices.SearchBillToPay(search);
 
-            var dataSource = MapSearchResultToDataSource(resultSearch);
+            var dataSource = MapSearchResultContaPagarToDataSource(resultSearch);
 
             var dataSourceOrderBy = dataSource
                 .OrderBy(hasPay => hasPay.HasPay)
@@ -664,10 +686,25 @@ namespace App.Forms.Forms
                 .ThenByDescending(purchase => purchase.PurchaseDate)
                 .ToList();
 
-            PreecherDataGridViewContaPagarListar(dataSourceOrderBy);
+            PreencheDataSourceContaPagar(dataSourceOrderBy);
         }
 
-        private void PreecherDataGridViewContaPagarListar(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
+        private async Task PreencherContaReceberDataGridView(SearchCashReceivableViewModel search)
+        {
+            CashReceivableServices.Environment = Environment;
+            var resultService = await CashReceivableServices.SearchCashReceivable(search);
+
+            var dataSource = MapSearchResultContaReceberToDataSource(resultService);
+
+            var dataSourceOrderBy = dataSource
+                .OrderBy(dueDate => dueDate.DueDate)
+                .ThenByDescending(dateReceived => dateReceived.DateReceived)
+                .ToList();
+
+            PreencheDataSourceContaReceber(dataSourceOrderBy);
+        }
+
+        private void PreencheDataSourceContaPagar(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
         {
             ConsolidateContaPagarListagem(dataSourceOrderBy);
 
@@ -712,13 +749,54 @@ namespace App.Forms.Forms
             dgvEfetuarPagamentoListagem.Columns[19].Visible = false;
         }
 
+        private void PreencheDataSourceContaReceber(IList<DgvVisualizarContaReceberDataSource> dataSourceOrderBy)
+        {
+            ConsolidateContaReceberListagem(dataSourceOrderBy);
+
+            _dgvVisualizarContaReceberDataSource = dataSourceOrderBy;
+
+            dgvContaReceber.DataSource = dataSourceOrderBy;
+            dgvContaReceber.Columns[0].HeaderText = "Id";
+            dgvContaReceber.Columns[0].Visible = false;
+            dgvContaReceber.Columns[1].HeaderText = "Id da tabela pai";
+            dgvContaReceber.Columns[1].Visible = false;
+            dgvContaReceber.Columns[2].HeaderText = "Conta";
+            dgvContaReceber.Columns[3].HeaderText = "Descrição";
+            dgvContaReceber.Columns[4].HeaderText = "Categoria";
+
+            dgvContaReceber.Columns[5].HeaderText = "R$ Total";
+            dgvContaReceber.Columns[5].DefaultCellStyle.Format = "C2";
+            dgvContaReceber.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvContaReceber.Columns[6].HeaderText = "R$ Valor Manipulado";
+            dgvContaReceber.Columns[6].DefaultCellStyle.Format = "C2";
+            dgvContaReceber.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            dgvContaReceber.Columns[7].HeaderText = "Vencimento";
+            dgvContaReceber.Columns[8].HeaderText = "Mês/Ano";
+            dgvContaReceber.Columns[9].HeaderText = "Frequência";
+            dgvContaReceber.Columns[10].HeaderText = "Tipo";
+            dgvContaReceber.Columns[11].HeaderText = "Data de Recebimento";
+            dgvContaReceber.Columns[12].HeaderText = "Recebido?";
+            dgvContaReceber.Columns[13].HeaderText = "Mensagem";
+            dgvContaReceber.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvContaReceber.Columns[14].HeaderText = "Data do Acordo";
+            dgvContaReceber.Columns[15].HeaderText = "Habilitado?";
+            dgvContaReceber.Columns[16].HeaderText = "Data de Criação";
+            dgvContaReceber.Columns[16].Visible = false;
+            dgvContaReceber.Columns[17].HeaderText = "Data de Alteração";
+            dgvContaReceber.Columns[17].Visible = false;
+            dgvContaReceber.Columns[18].HeaderText = "Detalhes";
+            dgvContaReceber.Columns[18].Visible = false;
+        }
+
         private void ConsolidateContaPagarListagem(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
         {
             #region TOTAL GERAL
 
             var quantidadeTotal = dataSourceOrderBy.Count();
             var valorTotal = Convert.ToDecimal(dataSourceOrderBy.Sum(x => x.TotalValue));
-            ConsolidatePreencherlblGridViewTotais(quantidadeTotal, valorTotal);
+            PreencheLabels(quantidadeTotal, valorTotal, lblContaPagarGridViewTotais, "Total: ");
 
             #endregion TOTAL GERAL
 
@@ -729,7 +807,7 @@ namespace App.Forms.Forms
                 .ToDecimal(dataSourceOrderBy
                 .Where(pay => pay.HasPay)
                 .Sum(x => x.TotalValue));
-            ConsolidatePreencherlblGridViewTotalPago(quantidadeTotalPago, valorTotalPago);
+            PreencheLabels(quantidadeTotalPago, valorTotalPago, lblContaPagarGridViewTotalPago, "Pago: ");
 
             #endregion TOTAL PAGO
 
@@ -738,6 +816,29 @@ namespace App.Forms.Forms
             ConsolidateCreditCards(dataSourceOrderBy);
 
             #endregion CARTÕES DE CRÉDITOS
+        }
+
+        private void ConsolidateContaReceberListagem(IList<DgvVisualizarContaReceberDataSource> dataSourceOrderBy)
+        {
+            #region TOTAL GERAL
+
+            var quantidadeTotal = dataSourceOrderBy.Count();
+            var valorTotal = Convert.ToDecimal(dataSourceOrderBy.Sum(x => x.Value));
+            PreencheLabels(quantidadeTotal, valorTotal, lblValorTotalContaReceber, "Total: ");
+
+            #endregion TOTAL GERAL
+
+            #region TOTAL RECEBIDO
+
+            var quantidadeTotalPago = dataSourceOrderBy
+                .Count(pay => pay.HasReceived);
+            var valorTotalPago = Convert
+                .ToDecimal(dataSourceOrderBy
+                .Where(pay => pay.HasReceived)
+                .Sum(x => x.Value));
+            PreencheLabels(quantidadeTotalPago, valorTotalPago, lblContaPagarGridViewTotalPago, "Recebido: ");
+
+            #endregion TOTAL RECEBIDO
         }
 
         private void ConsolidateCreditCards(IList<DgvVisualizarContaPagarDataSource> billToPayHist)
@@ -786,21 +887,14 @@ namespace App.Forms.Forms
             lblGridViewCartaoCreditoFamilia.Text = informacaoConsolidate;
         }
 
-        private void ConsolidatePreencherlblGridViewTotalPago(int quantidadeTotalPago, decimal valorTotalPago)
+        private void PreencheLabels(int quantidadeTotal, decimal valorTotal, Label lbl, string prefix)
         {
-            lblGridViewTotalPago.Text = string
-                            .Concat("Pago: ", quantidadeTotalPago, " - ", "R$ ", string
-                            .Format("{0:#,##0.00}", valorTotalPago));
-        }
-
-        private void ConsolidatePreencherlblGridViewTotais(int quantidadeTotal, decimal valorTotal)
-        {
-            lblGridViewTotais.Text = string
-                            .Concat("Total: ", quantidadeTotal, " - ", "R$ ", string
+            lbl.Text = string
+                            .Concat(prefix, quantidadeTotal, " - ", "R$ ", string
                             .Format("{0:#,##0.00}", valorTotal));
         }
 
-        private IList<DgvVisualizarContaPagarDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
+        private IList<DgvVisualizarContaPagarDataSource> MapSearchResultContaPagarToDataSource(SearchBillToPayOutput searchBillToPayOutput)
         {
             IList<DgvVisualizarContaPagarDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvVisualizarContaPagarDataSource>();
 
@@ -836,6 +930,29 @@ namespace App.Forms.Forms
             }
 
             return dgvEfetuarPagamentoListagemDataSources;
+        }
+
+        private IList<DgvVisualizarContaReceberDataSource> MapSearchResultContaReceberToDataSource(SearchCashReceivableOutput search)
+        {
+            IList<DgvVisualizarContaReceberDataSource> dataGridViewDataSource = new List<DgvVisualizarContaReceberDataSource>();
+
+            if (search.Output == null || search.Output.Data == null)
+            {
+                return dataGridViewDataSource;
+            }
+
+            var dados = search.Output.Data;
+
+            var json = JsonConvert.SerializeObject(dados);
+
+            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaReceberDataSource>>(json);
+
+            foreach (var item in conversion!)
+            {
+                dataGridViewDataSource.Add(item);
+            }
+
+            return dataGridViewDataSource;
         }
 
         private void DgvEfetuarPagamentoListagem_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -884,11 +1001,11 @@ namespace App.Forms.Forms
                     .Where(x => x.Category == cboEfetuarPagamentoCategoria.Text)
                     .ToList();
 
-                PreecherDataGridViewContaPagarListar(filterByCategory);
+                PreencheDataSourceContaPagar(filterByCategory);
             }
             else
             {
-                await LoadHistory();
+                await CarregaContasApagar();
             }
         }
 
@@ -992,6 +1109,8 @@ namespace App.Forms.Forms
 
         private void DgvContaPagar_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
+            InformaLabel(dgvContaPagar, lblTotalValueGridView, 7, false);
+
             foreach (DataGridViewRow row in dgvContaPagar.Rows)
             {
                 if (row.Cells[11].Value.ToString() == RegistrationStatus.AwaitRequestAPI.ToString())
@@ -1376,7 +1495,7 @@ namespace App.Forms.Forms
             SetColorGrbTemplateContaPagar();
         }
 
-        private async void btnExcluirInitial_Click(object sender, EventArgs e)
+        private async void BtnExcluirInitial_Click(object sender, EventArgs e)
         {
             var result = MessageBox
                 .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
@@ -1386,7 +1505,6 @@ namespace App.Forms.Forms
             {
                 _ = Task.Run(async () =>
                 {
-
                     List<Guid> guidIds = new();
 
                     foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
@@ -1416,20 +1534,16 @@ namespace App.Forms.Forms
             };
         }
 
-        private async void TratamentoOutput(DeleteBillToPayOutput result)
+        private static void TratamentoOutput(DeleteBillToPayOutput result)
         {
             if (result.Output?.Status == OutputStatus.Success)
             {
                 MessageBox.Show(result.Output.Message,
                     "Exclusão de registro realizado com sucesso.",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                //await PreencherCampos();
             }
             else
             {
-                //await PreencherCampos();
-
                 var information = string.Empty;
 
                 var errors = result.Output?.Errors;
@@ -1457,9 +1571,30 @@ namespace App.Forms.Forms
             }
         }
 
-        private async Task PreencherCampos()
+        private void DgvContaPagar_SelectionChanged(object sender, EventArgs e)
         {
-            await LoadHistory();
+            InformaLabel(dgvContaPagar, lblTotalValueGridView, 7, true);
+        }
+
+        private static void InformaLabel(DataGridView dataGridView, Label label, int positionCellGridView, bool textSelected)
+        {
+            decimal totalValue = 0;
+            int totalQuantity = dataGridView.SelectedRows.Count;
+
+            foreach (DataGridViewRow row in dataGridView.SelectedRows)
+            {
+                bool isOKTotalValue = decimal.TryParse(row.Cells[positionCellGridView].Value.ToString(), out decimal totalValueParsed);
+                totalValue += isOKTotalValue ? totalValueParsed : 0;
+            }
+
+            label.Text = string
+                .Concat("Valor Total dos ", totalQuantity, " itens ", textSelected ? "selecionados: " : "cadastrados: ", totalValue.ToString("C"));
+        }
+
+        private async void BtnBuscarContaReceber_Click(object sender, EventArgs e)
+        {
+            lblInfoHeader.Text = AdjusteInfoHeader(DateTime.Now);
+            await CarregaContasAReceber();
         }
     }
 }

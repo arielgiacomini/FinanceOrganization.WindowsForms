@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Initial));
             tbcInitial = new TabControl();
             tbpCadastroContaPagar = new TabPage();
@@ -39,6 +40,7 @@
             btnContaPagarCadastrar = new Button();
             dgvContaPagar = new DataGridView();
             grbContaPagarHistorico = new GroupBox();
+            lblTotalValueGridView = new Label();
             lblContaPagarDataCriacao = new Label();
             rtbContaPagarMensagemAdicional = new RichTextBox();
             lblContaPagarMensagemAdicional = new Label();
@@ -72,17 +74,26 @@
             btnExcluirInitial = new Button();
             btnExibirDetalhes = new Button();
             lblEfetuarPagamentoItensSelecionadosDataGridView = new Label();
-            lblGridViewTotalPago = new Label();
+            lblContaPagarGridViewTotalPago = new Label();
             lblGridViewCartaoCreditoFamilia = new Label();
-            lblGridViewTotais = new Label();
+            lblContaPagarGridViewTotais = new Label();
             lblEfetuarPagamentoCategoria = new Label();
             cboEfetuarPagamentoCategoria = new ComboBox();
             lblEfetuarPagamentoInformativoDuploCliqueGrid = new Label();
             btnPagamentoAvulso = new Button();
             btnEfetuarPagamentoBuscar = new Button();
             lblEfetuarPagamentoAnoMes = new Label();
-            cboEfetuarPagamentoAnoMes = new ComboBox();
+            cboAnoMesContaPagar = new ComboBox();
             dgvEfetuarPagamentoListagem = new DataGridView();
+            tbpListarContaReceber = new TabPage();
+            label2 = new Label();
+            lblValorRecebido = new Label();
+            lblValorTotalContaReceber = new Label();
+            lblDgvDoubleClick = new Label();
+            btnBuscarContaReceber = new Button();
+            lblAnoMes = new Label();
+            cboMesAnoContaReceber = new ComboBox();
+            dgvContaReceber = new DataGridView();
             tbpEstudosFinanceiros = new TabPage();
             lblEstudoFinanceiroMesesSerAnalisado = new Label();
             cboEstudoFinanceiroMesesAnalises = new ComboBox();
@@ -97,8 +108,11 @@
             tbpCadastroContaPagar.SuspendLayout();
             grbTemplateContaPagar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContaPagar).BeginInit();
+            grbContaPagarHistorico.SuspendLayout();
             tbpListarContaPagar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).BeginInit();
+            tbpListarContaReceber.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvContaReceber).BeginInit();
             tbpEstudosFinanceiros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSearchMonthlyAverageAnalysis).BeginInit();
             SuspendLayout();
@@ -108,6 +122,7 @@
             tbcInitial.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tbcInitial.Controls.Add(tbpCadastroContaPagar);
             tbcInitial.Controls.Add(tbpListarContaPagar);
+            tbcInitial.Controls.Add(tbpListarContaReceber);
             tbcInitial.Controls.Add(tbpEstudosFinanceiros);
             tbcInitial.Location = new Point(0, 21);
             tbcInitial.Name = "tbcInitial";
@@ -124,7 +139,7 @@
             tbpCadastroContaPagar.Padding = new Padding(3);
             tbpCadastroContaPagar.Size = new Size(1208, 501);
             tbpCadastroContaPagar.TabIndex = 0;
-            tbpCadastroContaPagar.Text = "Conta a Pagar - Cadastro";
+            tbpCadastroContaPagar.Text = "Cadastro de Contas";
             tbpCadastroContaPagar.UseVisualStyleBackColor = true;
             // 
             // grbTemplateContaPagar
@@ -162,7 +177,7 @@
             grbTemplateContaPagar.Controls.Add(cboContaPagarTipoConta);
             grbTemplateContaPagar.Location = new Point(16, 6);
             grbTemplateContaPagar.Name = "grbTemplateContaPagar";
-            grbTemplateContaPagar.Size = new Size(1173, 449);
+            grbTemplateContaPagar.Size = new Size(1173, 487);
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
             grbTemplateContaPagar.Text = "Cadastro de Conta a Pagar - Livre";
@@ -223,22 +238,37 @@
             dgvContaPagar.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             dgvContaPagar.BackgroundColor = SystemColors.AppWorkspace;
             dgvContaPagar.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvContaPagar.Location = new Point(25, 240);
+            dgvContaPagar.Location = new Point(25, 275);
             dgvContaPagar.Name = "dgvContaPagar";
             dgvContaPagar.RowTemplate.Height = 25;
-            dgvContaPagar.Size = new Size(1128, 197);
+            dgvContaPagar.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvContaPagar.Size = new Size(1128, 200);
             dgvContaPagar.TabIndex = 15;
             dgvContaPagar.RowsAdded += DgvContaPagar_RowsAdded;
+            dgvContaPagar.SelectionChanged += DgvContaPagar_SelectionChanged;
             // 
             // grbContaPagarHistorico
             // 
             grbContaPagarHistorico.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            grbContaPagarHistorico.Location = new Point(8, 218);
+            grbContaPagarHistorico.Controls.Add(lblTotalValueGridView);
+            grbContaPagarHistorico.Location = new Point(8, 240);
             grbContaPagarHistorico.Name = "grbContaPagarHistorico";
-            grbContaPagarHistorico.Size = new Size(1159, 225);
+            grbContaPagarHistorico.Size = new Size(1159, 241);
             grbContaPagarHistorico.TabIndex = 28;
             grbContaPagarHistorico.TabStop = false;
             grbContaPagarHistorico.Text = "Últimos cadastros realizados...";
+            // 
+            // lblTotalValueGridView
+            // 
+            lblTotalValueGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblTotalValueGridView.AutoSize = true;
+            lblTotalValueGridView.Location = new Point(833, 17);
+            lblTotalValueGridView.Name = "lblTotalValueGridView";
+            lblTotalValueGridView.RightToLeft = RightToLeft.Yes;
+            lblTotalValueGridView.Size = new Size(312, 15);
+            lblTotalValueGridView.TabIndex = 39;
+            lblTotalValueGridView.Text = "Valor Total dos 900 itens cadastrados abaixo: R$ 100.400,00";
+            lblTotalValueGridView.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblContaPagarDataCriacao
             // 
@@ -468,16 +498,16 @@
             tbpListarContaPagar.Controls.Add(btnExcluirInitial);
             tbpListarContaPagar.Controls.Add(btnExibirDetalhes);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoItensSelecionadosDataGridView);
-            tbpListarContaPagar.Controls.Add(lblGridViewTotalPago);
+            tbpListarContaPagar.Controls.Add(lblContaPagarGridViewTotalPago);
             tbpListarContaPagar.Controls.Add(lblGridViewCartaoCreditoFamilia);
-            tbpListarContaPagar.Controls.Add(lblGridViewTotais);
+            tbpListarContaPagar.Controls.Add(lblContaPagarGridViewTotais);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoCategoria);
             tbpListarContaPagar.Controls.Add(cboEfetuarPagamentoCategoria);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoInformativoDuploCliqueGrid);
             tbpListarContaPagar.Controls.Add(btnPagamentoAvulso);
             tbpListarContaPagar.Controls.Add(btnEfetuarPagamentoBuscar);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoAnoMes);
-            tbpListarContaPagar.Controls.Add(cboEfetuarPagamentoAnoMes);
+            tbpListarContaPagar.Controls.Add(cboAnoMesContaPagar);
             tbpListarContaPagar.Controls.Add(dgvEfetuarPagamentoListagem);
             tbpListarContaPagar.Location = new Point(4, 24);
             tbpListarContaPagar.Name = "tbpListarContaPagar";
@@ -492,7 +522,7 @@
             lblEventRepeat.AutoSize = true;
             lblEventRepeat.Font = new Font("Segoe UI", 6.75F, FontStyle.Regular, GraphicsUnit.Point);
             lblEventRepeat.ForeColor = SystemColors.ButtonShadow;
-            lblEventRepeat.Location = new Point(551, 65);
+            lblEventRepeat.Location = new Point(551, 64);
             lblEventRepeat.Name = "lblEventRepeat";
             lblEventRepeat.Size = new Size(351, 12);
             lblEventRepeat.TabIndex = 22;
@@ -502,11 +532,11 @@
             // lblQtdItensParaFinalizarCadastro
             // 
             lblQtdItensParaFinalizarCadastro.AutoSize = true;
-            lblQtdItensParaFinalizarCadastro.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            lblQtdItensParaFinalizarCadastro.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             lblQtdItensParaFinalizarCadastro.ForeColor = Color.OrangeRed;
-            lblQtdItensParaFinalizarCadastro.Location = new Point(547, 44);
+            lblQtdItensParaFinalizarCadastro.Location = new Point(570, 44);
             lblQtdItensParaFinalizarCadastro.Name = "lblQtdItensParaFinalizarCadastro";
-            lblQtdItensParaFinalizarCadastro.Size = new Size(375, 20);
+            lblQtdItensParaFinalizarCadastro.Size = new Size(330, 17);
             lblQtdItensParaFinalizarCadastro.TabIndex = 21;
             lblQtdItensParaFinalizarCadastro.Text = "Existem 900 itens para serem finalizados o cadastro.";
             lblQtdItensParaFinalizarCadastro.TextAlign = ContentAlignment.MiddleCenter;
@@ -559,7 +589,7 @@
             btnExcluirInitial.TabIndex = 17;
             btnExcluirInitial.Text = "Excluir Registro(s)";
             btnExcluirInitial.UseVisualStyleBackColor = false;
-            btnExcluirInitial.Click += btnExcluirInitial_Click;
+            btnExcluirInitial.Click += BtnExcluirInitial_Click;
             // 
             // btnExibirDetalhes
             // 
@@ -589,41 +619,41 @@
             // 
             // lblGridViewTotalPago
             // 
-            lblGridViewTotalPago.AutoSize = true;
-            lblGridViewTotalPago.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            lblGridViewTotalPago.ForeColor = Color.Green;
-            lblGridViewTotalPago.Location = new Point(10, 65);
-            lblGridViewTotalPago.Name = "lblGridViewTotalPago";
-            lblGridViewTotalPago.Size = new Size(164, 17);
-            lblGridViewTotalPago.TabIndex = 13;
-            lblGridViewTotalPago.Text = "Pago: 100 - R$ 100.000,00";
+            lblContaPagarGridViewTotalPago.AutoSize = true;
+            lblContaPagarGridViewTotalPago.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            lblContaPagarGridViewTotalPago.ForeColor = Color.Green;
+            lblContaPagarGridViewTotalPago.Location = new Point(10, 65);
+            lblContaPagarGridViewTotalPago.Name = "lblGridViewTotalPago";
+            lblContaPagarGridViewTotalPago.Size = new Size(164, 17);
+            lblContaPagarGridViewTotalPago.TabIndex = 13;
+            lblContaPagarGridViewTotalPago.Text = "Pago: 100 - R$ 100.000,00";
             // 
             // lblGridViewCartaoCreditoFamilia
             // 
             lblGridViewCartaoCreditoFamilia.AutoSize = true;
-            lblGridViewCartaoCreditoFamilia.Font = new Font("Calibri", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblGridViewCartaoCreditoFamilia.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point);
             lblGridViewCartaoCreditoFamilia.ForeColor = SystemColors.ActiveCaptionText;
-            lblGridViewCartaoCreditoFamilia.Location = new Point(203, 46);
+            lblGridViewCartaoCreditoFamilia.Location = new Point(197, 43);
             lblGridViewCartaoCreditoFamilia.Name = "lblGridViewCartaoCreditoFamilia";
-            lblGridViewCartaoCreditoFamilia.Size = new Size(328, 39);
+            lblGridViewCartaoCreditoFamilia.Size = new Size(371, 42);
             lblGridViewCartaoCreditoFamilia.TabIndex = 11;
             lblGridViewCartaoCreditoFamilia.Text = "Cartão de Crédito Itaú Personnalité Black Cashback: 10 - R$ 17.00,00\r\nCartão de Crédito Nubank: 10 - R$ 17.00,00\r\nCartão de Crédito: 10 - R$ 17.00,00\r\n";
             // 
             // lblGridViewTotais
             // 
-            lblGridViewTotais.AutoSize = true;
-            lblGridViewTotais.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            lblGridViewTotais.ForeColor = Color.OrangeRed;
-            lblGridViewTotais.Location = new Point(10, 42);
-            lblGridViewTotais.Name = "lblGridViewTotais";
-            lblGridViewTotais.Size = new Size(187, 20);
-            lblGridViewTotais.TabIndex = 9;
-            lblGridViewTotais.Text = "Total: 134 - R$ 33.300,00";
+            lblContaPagarGridViewTotais.AutoSize = true;
+            lblContaPagarGridViewTotais.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            lblContaPagarGridViewTotais.ForeColor = Color.OrangeRed;
+            lblContaPagarGridViewTotais.Location = new Point(10, 42);
+            lblContaPagarGridViewTotais.Name = "lblGridViewTotais";
+            lblContaPagarGridViewTotais.Size = new Size(187, 20);
+            lblContaPagarGridViewTotais.TabIndex = 9;
+            lblContaPagarGridViewTotais.Text = "Total: 134 - R$ 33.300,00";
             // 
             // lblEfetuarPagamentoCategoria
             // 
             lblEfetuarPagamentoCategoria.AutoSize = true;
-            lblEfetuarPagamentoCategoria.Location = new Point(354, 17);
+            lblEfetuarPagamentoCategoria.Location = new Point(354, 11);
             lblEfetuarPagamentoCategoria.Name = "lblEfetuarPagamentoCategoria";
             lblEfetuarPagamentoCategoria.Size = new Size(61, 15);
             lblEfetuarPagamentoCategoria.TabIndex = 7;
@@ -632,7 +662,7 @@
             // cboEfetuarPagamentoCategoria
             // 
             cboEfetuarPagamentoCategoria.FormattingEnabled = true;
-            cboEfetuarPagamentoCategoria.Location = new Point(421, 14);
+            cboEfetuarPagamentoCategoria.Location = new Point(421, 8);
             cboEfetuarPagamentoCategoria.Name = "cboEfetuarPagamentoCategoria";
             cboEfetuarPagamentoCategoria.Size = new Size(188, 23);
             cboEfetuarPagamentoCategoria.TabIndex = 8;
@@ -666,7 +696,7 @@
             // 
             // btnEfetuarPagamentoBuscar
             // 
-            btnEfetuarPagamentoBuscar.Location = new Point(244, 14);
+            btnEfetuarPagamentoBuscar.Location = new Point(244, 8);
             btnEfetuarPagamentoBuscar.Name = "btnEfetuarPagamentoBuscar";
             btnEfetuarPagamentoBuscar.Size = new Size(99, 23);
             btnEfetuarPagamentoBuscar.TabIndex = 3;
@@ -677,7 +707,7 @@
             // lblEfetuarPagamentoAnoMes
             // 
             lblEfetuarPagamentoAnoMes.AutoSize = true;
-            lblEfetuarPagamentoAnoMes.Location = new Point(8, 18);
+            lblEfetuarPagamentoAnoMes.Location = new Point(8, 12);
             lblEfetuarPagamentoAnoMes.Name = "lblEfetuarPagamentoAnoMes";
             lblEfetuarPagamentoAnoMes.Size = new Size(59, 15);
             lblEfetuarPagamentoAnoMes.TabIndex = 2;
@@ -685,11 +715,11 @@
             // 
             // cboEfetuarPagamentoAnoMes
             // 
-            cboEfetuarPagamentoAnoMes.FormattingEnabled = true;
-            cboEfetuarPagamentoAnoMes.Location = new Point(73, 15);
-            cboEfetuarPagamentoAnoMes.Name = "cboEfetuarPagamentoAnoMes";
-            cboEfetuarPagamentoAnoMes.Size = new Size(156, 23);
-            cboEfetuarPagamentoAnoMes.TabIndex = 1;
+            cboAnoMesContaPagar.FormattingEnabled = true;
+            cboAnoMesContaPagar.Location = new Point(73, 9);
+            cboAnoMesContaPagar.Name = "cboEfetuarPagamentoAnoMes";
+            cboAnoMesContaPagar.Size = new Size(156, 23);
+            cboAnoMesContaPagar.TabIndex = 1;
             // 
             // dgvEfetuarPagamentoListagem
             // 
@@ -723,6 +753,123 @@
             dgvEfetuarPagamentoListagem.ColumnSortModeChanged += DgvEfetuarPagamentoListagem_ColumnSortModeChanged;
             dgvEfetuarPagamentoListagem.RowsAdded += DgvEfetuarPagamentoListagem_RowsAdded;
             dgvEfetuarPagamentoListagem.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
+            // 
+            // tbpListarContaReceber
+            // 
+            tbpListarContaReceber.Controls.Add(label2);
+            tbpListarContaReceber.Controls.Add(lblValorRecebido);
+            tbpListarContaReceber.Controls.Add(lblValorTotalContaReceber);
+            tbpListarContaReceber.Controls.Add(lblDgvDoubleClick);
+            tbpListarContaReceber.Controls.Add(btnBuscarContaReceber);
+            tbpListarContaReceber.Controls.Add(lblAnoMes);
+            tbpListarContaReceber.Controls.Add(cboMesAnoContaReceber);
+            tbpListarContaReceber.Controls.Add(dgvContaReceber);
+            tbpListarContaReceber.Location = new Point(4, 24);
+            tbpListarContaReceber.Name = "tbpListarContaReceber";
+            tbpListarContaReceber.Padding = new Padding(3);
+            tbpListarContaReceber.Size = new Size(1208, 501);
+            tbpListarContaReceber.TabIndex = 4;
+            tbpListarContaReceber.Text = "Conra a Receber - Listar";
+            tbpListarContaReceber.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label2.AutoSize = true;
+            label2.ForeColor = SystemColors.ButtonShadow;
+            label2.Location = new Point(399, 95);
+            label2.Name = "label2";
+            label2.Size = new Size(523, 15);
+            label2.TabIndex = 25;
+            label2.Text = "Ao efetuar clique único com botão direito na linha do grid será aberto a tela de edição do registro.\r\n";
+            label2.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblValorRecebido
+            // 
+            lblValorRecebido.AutoSize = true;
+            lblValorRecebido.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            lblValorRecebido.ForeColor = Color.Green;
+            lblValorRecebido.Location = new Point(10, 69);
+            lblValorRecebido.Name = "lblValorRecebido";
+            lblValorRecebido.Size = new Size(189, 17);
+            lblValorRecebido.TabIndex = 24;
+            lblValorRecebido.Text = "Recebido: 100 - R$ 100.000,00";
+            // 
+            // lblValorTotalContaReceber
+            // 
+            lblValorTotalContaReceber.AutoSize = true;
+            lblValorTotalContaReceber.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            lblValorTotalContaReceber.ForeColor = Color.DarkOrange;
+            lblValorTotalContaReceber.Location = new Point(10, 46);
+            lblValorTotalContaReceber.Name = "lblValorTotalContaReceber";
+            lblValorTotalContaReceber.Size = new Size(187, 20);
+            lblValorTotalContaReceber.TabIndex = 23;
+            lblValorTotalContaReceber.Text = "Total: 134 - R$ 33.300,00";
+            // 
+            // lblDgvDoubleClick
+            // 
+            lblDgvDoubleClick.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblDgvDoubleClick.AutoSize = true;
+            lblDgvDoubleClick.ForeColor = SystemColors.ButtonShadow;
+            lblDgvDoubleClick.Location = new Point(10, 95);
+            lblDgvDoubleClick.Name = "lblDgvDoubleClick";
+            lblDgvDoubleClick.Size = new Size(378, 15);
+            lblDgvDoubleClick.TabIndex = 22;
+            lblDgvDoubleClick.Text = "Ao efetuar duplo clique na linha do Grid abre para Recebimento Conta\r\n";
+            lblDgvDoubleClick.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // btnBuscarContaReceber
+            // 
+            btnBuscarContaReceber.Location = new Point(245, 6);
+            btnBuscarContaReceber.Name = "btnBuscarContaReceber";
+            btnBuscarContaReceber.Size = new Size(99, 23);
+            btnBuscarContaReceber.TabIndex = 21;
+            btnBuscarContaReceber.Text = "Buscar Dados";
+            btnBuscarContaReceber.UseVisualStyleBackColor = true;
+            btnBuscarContaReceber.Click += BtnBuscarContaReceber_Click;
+            // 
+            // lblAnoMes
+            // 
+            lblAnoMes.AutoSize = true;
+            lblAnoMes.Location = new Point(9, 10);
+            lblAnoMes.Name = "lblAnoMes";
+            lblAnoMes.Size = new Size(59, 15);
+            lblAnoMes.TabIndex = 20;
+            lblAnoMes.Text = "Ano/Mês:";
+            // 
+            // cboMesAnoContaReceber
+            // 
+            cboMesAnoContaReceber.FormattingEnabled = true;
+            cboMesAnoContaReceber.Location = new Point(74, 7);
+            cboMesAnoContaReceber.Name = "cboMesAnoContaReceber";
+            cboMesAnoContaReceber.Size = new Size(156, 23);
+            cboMesAnoContaReceber.TabIndex = 19;
+            // 
+            // dgvContaReceber
+            // 
+            dgvContaReceber.AllowUserToAddRows = false;
+            dgvContaReceber.AllowUserToDeleteRows = false;
+            dgvContaReceber.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvContaReceber.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dgvContaReceber.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            dgvContaReceber.BackgroundColor = SystemColors.AppWorkspace;
+            dgvContaReceber.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvContaReceber.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvContaReceber.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dgvContaReceber.Location = new Point(8, 113);
+            dgvContaReceber.Name = "dgvContaReceber";
+            dgvContaReceber.ReadOnly = true;
+            dgvContaReceber.RowTemplate.Height = 25;
+            dgvContaReceber.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvContaReceber.Size = new Size(1193, 382);
+            dgvContaReceber.TabIndex = 1;
             // 
             // tbpEstudosFinanceiros
             // 
@@ -870,9 +1017,14 @@
             grbTemplateContaPagar.ResumeLayout(false);
             grbTemplateContaPagar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContaPagar).EndInit();
+            grbContaPagarHistorico.ResumeLayout(false);
+            grbContaPagarHistorico.PerformLayout();
             tbpListarContaPagar.ResumeLayout(false);
             tbpListarContaPagar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).EndInit();
+            tbpListarContaReceber.ResumeLayout(false);
+            tbpListarContaReceber.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvContaReceber).EndInit();
             tbpEstudosFinanceiros.ResumeLayout(false);
             tbpEstudosFinanceiros.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSearchMonthlyAverageAnalysis).EndInit();
@@ -913,15 +1065,15 @@
         private TabPage tbpListarContaPagar;
         private DataGridView dgvEfetuarPagamentoListagem;
         private Label lblEfetuarPagamentoAnoMes;
-        private ComboBox cboEfetuarPagamentoAnoMes;
+        private ComboBox cboAnoMesContaPagar;
         private Button btnEfetuarPagamentoBuscar;
         private Button btnPagamentoAvulso;
         private Label lblEfetuarPagamentoInformativoDuploCliqueGrid;
         private Label lblEfetuarPagamentoCategoria;
         private ComboBox cboEfetuarPagamentoCategoria;
-        private Label lblGridViewTotais;
+        private Label lblContaPagarGridViewTotais;
         private Label lblGridViewCartaoCreditoFamilia;
-        private Label lblGridViewTotalPago;
+        private Label lblContaPagarGridViewTotalPago;
         private Label lblVersion;
         private Label lblInfoHeader;
         private RadioButton rdbAmbienteLocal;
@@ -946,5 +1098,15 @@
         private Label lblGridViewSelectedRowsCompleted;
         private Label lblQtdItensParaFinalizarCadastro;
         private Label lblEventRepeat;
+        private Label lblTotalValueGridView;
+        private TabPage tbpListarContaReceber;
+        private Label label2;
+        private Label lblValorRecebido;
+        private Label lblValorTotalContaReceber;
+        private Label lblDgvDoubleClick;
+        private Button btnBuscarContaReceber;
+        private Label lblAnoMes;
+        private ComboBox cboMesAnoContaReceber;
+        private DataGridView dgvContaReceber;
     }
 }
