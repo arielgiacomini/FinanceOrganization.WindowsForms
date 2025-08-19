@@ -1,6 +1,6 @@
 ﻿namespace App.Forms.DataSource
 {
-    public class DgvContaPagarDataSource
+    public class DgvCadastroContaDataSource
     {
         /// <summary>
         /// Descrição da Conta a Pagar

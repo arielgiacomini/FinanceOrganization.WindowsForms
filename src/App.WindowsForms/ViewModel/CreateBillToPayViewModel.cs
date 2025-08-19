@@ -1,4 +1,5 @@
 ﻿using App.Forms.Enums;
+using App.WindowsForms.Enums;
 
 namespace App.Forms.ViewModel
 {
@@ -24,5 +25,6 @@ namespace App.Forms.ViewModel
         public DateTime? LastChangeDate { get; set; }
         public bool RegistrationSuccess { get; set; }
         public RegistrationStatus Status { get; set; } = RegistrationStatus.AwaitRequestAPI;
+        public AccountType? AccountType { get; set; }
     }
 }

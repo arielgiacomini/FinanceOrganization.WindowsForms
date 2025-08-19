@@ -20,8 +20,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Serilog;
+using System.Collections.Concurrent;
 using System.Configuration;
 using System.Data;
+using System.Reflection;
 
 namespace App.Forms.Forms
 {
@@ -32,8 +34,7 @@ namespace App.Forms.Forms
         private const string TAB_PAGE_ESTUDO_FINANCEIRO = "tbpEstudosFinanceiros";
         private const string DESCRICAO_GROUP_BOX = "Cadastro de Conta a Pagar";
         private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra: ";
-        private readonly Dictionary<int, CreateBillToPayViewModel> _createBillToPayViewModels = new();
-        private readonly Dictionary<int, CreateCashReceivableViewModel> _createCashReceivableViewModels = new();
+        private readonly ConcurrentDictionary<int, object> _cadastroContaViewModels = new();
         private IList<DgvVisualizarContaPagarDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvVisualizarContaPagarDataSource>();
         private IList<DgvVisualizarEstudoFinanceiroDataSource> _dgvVisuarEstudoFinanceiroDataSource = new List<DgvVisualizarEstudoFinanceiroDataSource>();
         private IList<DgvVisualizarContaReceberDataSource> _dgvVisualizarContaReceberDataSource = new List<DgvVisualizarContaReceberDataSource>();
@@ -42,7 +43,7 @@ namespace App.Forms.Forms
 
         public static int CurrentIndex { get; set; } = 0;
         public decimal ValorContaPagarDigitadoTextBox { get; set; } = 0;
-        public int Identifier { get; set; } = 0;
+        public int IdDgvCadastroConta { get; set; } = 0;
         public InfoHeader InfoHeader { get; set; } = new InfoHeader();
         public string? Environment { get; set; }
 
@@ -77,7 +78,7 @@ namespace App.Forms.Forms
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
             await PreencherComboBoxContaPagarCategoriaAsync();
-            await PreencherComboBoxContaPagarAccount();
+            await PreencherComboBoxCadastroContaAccount();
             PreencherComboBoxAnoMes();
             PreencherComboBoxEstudoFinanceiroQuantideMeses();
             RegraCamposAnoMes();
@@ -212,44 +213,41 @@ namespace App.Forms.Forms
 
             if (accountType == AccountType.ContaAPagar)
             {
-                Identifier++;
+                IdDgvCadastroConta++;
 
                 var accountWithoutNumbers = cboCadastroContaAccount.Text.Split(" - ");
 
-                var createBillToPay = new CreateBillToPayViewModel
-                {
-                    Name = txtCadastroContaName.Text,
-                    Account = accountWithoutNumbers[0],
-                    Frequence = cboCadastroContaFrequence.Text,
-                    RegistrationType = cboCadastroContaRegistrationType.Text,
-                    InitialMonthYear = cboCadastroContaInititalMonthYear.Text,
-                    FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null,
-                    Category = cboCadastroContaCategory.Text,
-                    Value = Convert.ToDecimal(txtCadastroContaValue.Text.Replace("R$ ", "")),
-                    PurchaseDate = cboCadastroContaHabilitarDate.Checked ? DateServiceUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null,
-                    BestPayDay = Convert.ToInt32(cboCadastroContaBestDay.Text),
-                    AdditionalMessage = rtbCadastroContaMensagemAdicional.Text,
-                    CreationDate = DateTime.Now,
-                    LastChangeDate = null,
-                    Status = RegistrationStatus.AwaitRequestAPI
-                };
+                CreateBillToPayViewModel createBillToPay = new();
+                createBillToPay.Name = txtCadastroContaName.Text;
+                createBillToPay.Account = accountWithoutNumbers[0];
+                createBillToPay.Frequence = cboCadastroContaFrequence.Text;
+                createBillToPay.RegistrationType = cboCadastroContaRegistrationType.Text;
+                createBillToPay.InitialMonthYear = cboCadastroContaInititalMonthYear.Text;
+                createBillToPay.FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null;
+                createBillToPay.Category = cboCadastroContaCategory.Text;
+                createBillToPay.Value = Convert.ToDecimal(txtCadastroContaValue.Text.Replace("R$ ", ""));
+                createBillToPay.PurchaseDate = cboCadastroContaHabilitarDate.Checked ? DateServiceUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null;
+                createBillToPay.BestPayDay = Convert.ToInt32(cboCadastroContaBestDay.Text);
+                createBillToPay.AdditionalMessage = rtbCadastroContaMensagemAdicional.Text;
+                createBillToPay.CreationDate = DateTime.Now;
+                createBillToPay.LastChangeDate = null;
+                createBillToPay.Status = RegistrationStatus.AwaitRequestAPI;
+                createBillToPay.AccountType = AccountType.ContaAPagar;
 
-                _createBillToPayViewModels.Add(Identifier, createBillToPay);
+                _cadastroContaViewModels.TryAdd(IdDgvCadastroConta, createBillToPay);
 
-                UpdateDataGridView();
+                UpdateDataGridView(accountType);
 
                 BillToPayServices.Environment = Environment;
                 var result = await BillToPayServices.CreateBillToPay(createBillToPay);
 
-                _createBillToPayViewModels[Identifier].Status = RegistrationStatus.AwaitResponseAPI;
+                UpdateDataGridView(accountType);
 
-                UpdateDataGridView();
-
-                TratamentoOutput(Identifier, result.Output, accountType);
+                TratamentoOutput(IdDgvCadastroConta, result.Output, accountType);
             }
             else if (accountType == AccountType.ContaAReceber)
             {
-                Identifier++;
+                IdDgvCadastroConta++;
 
                 var accountWithoutNumbers = cboCadastroContaAccount.Text.Split(" - ");
 
@@ -268,21 +266,20 @@ namespace App.Forms.Forms
                     AdditionalMessage = rtbCadastroContaMensagemAdicional.Text,
                     CreationDate = DateTime.Now,
                     LastChangeDate = null,
-                    Status = RegistrationStatus.AwaitRequestAPI
+                    Status = RegistrationStatus.AwaitRequestAPI,
+                    AccountType = AccountType.ContaAReceber
                 };
 
-                _createCashReceivableViewModels.Add(Identifier, createCashReceivable);
+                _cadastroContaViewModels.TryAdd(IdDgvCadastroConta, createCashReceivable);
 
-                UpdateDataGridView();
+                UpdateDataGridView(accountType);
 
                 CashReceivableServices.Environment = Environment;
                 var result = await CashReceivableServices.CreateCashReceivable(createCashReceivable);
 
-                _createCashReceivableViewModels[Identifier].Status = RegistrationStatus.AwaitResponseAPI;
+                UpdateDataGridView(accountType);
 
-                UpdateDataGridView();
-
-                TratamentoOutput(Identifier, result.Output, accountType);
+                TratamentoOutput(IdDgvCadastroConta, result.Output, accountType);
             }
         }
 
@@ -310,26 +307,50 @@ namespace App.Forms.Forms
 
                 if (accountType == AccountType.ContaAPagar)
                 {
-                    _createBillToPayViewModels[identifier].Status = RegistrationStatus.Created;
+                    var billToPay = _cadastroContaViewModels[identifier];
+                    CreateBillToPayViewModel createBillToPayViewModel = billToPay as CreateBillToPayViewModel;
+                    if (createBillToPayViewModel != null)
+                    {
+                        createBillToPayViewModel.Status = RegistrationStatus.Created;
+                        _cadastroContaViewModels[identifier] = createBillToPayViewModel;
+                    }
                 }
                 else
                 {
-                    _createCashReceivableViewModels[identifier].Status = RegistrationStatus.Created;
+                    var cashReceivable = _cadastroContaViewModels[identifier];
+                    CreateCashReceivableViewModel createCashReceivable = cashReceivable as CreateCashReceivableViewModel;
+                    if (createCashReceivable != null)
+                    {
+                        createCashReceivable.Status = RegistrationStatus.Created;
+                        _cadastroContaViewModels[identifier] = createCashReceivable;
+                    }
                 }
-                UpdateDataGridView();
+                UpdateDataGridView(accountType);
             }
             else
             {
                 if (accountType == AccountType.ContaAPagar)
                 {
-                    _createBillToPayViewModels[identifier].Status = RegistrationStatus.RegistrationError;
+                    var billToPay = _cadastroContaViewModels[identifier];
+                    CreateBillToPayViewModel createBillToPayViewModel = billToPay as CreateBillToPayViewModel;
+                    if (createBillToPayViewModel != null)
+                    {
+                        createBillToPayViewModel.Status = RegistrationStatus.RegistrationError;
+                        _cadastroContaViewModels[identifier] = createBillToPayViewModel;
+                    }
                 }
                 else
                 {
-                    _createCashReceivableViewModels[identifier].Status = RegistrationStatus.RegistrationError;
+                    var cashReceivable = _cadastroContaViewModels[identifier];
+                    CreateCashReceivableViewModel createCashReceivable = cashReceivable as CreateCashReceivableViewModel;
+                    if (createCashReceivable != null)
+                    {
+                        createCashReceivable.Status = RegistrationStatus.RegistrationError;
+                        _cadastroContaViewModels[identifier] = createCashReceivable;
+                    }
                 }
 
-                UpdateDataGridView();
+                UpdateDataGridView(accountType);
 
                 var information = string.Empty;
 
@@ -352,9 +373,9 @@ namespace App.Forms.Forms
             }
         }
 
-        private void UpdateDataGridView()
+        private void UpdateDataGridView(AccountType accountType)
         {
-            dgvCadastroConta.DataSource = MapCreateBillToPayViewModelToDataSource(_createBillToPayViewModels);
+            dgvCadastroConta.DataSource = MapCadastroContaViewModelToDataSource(_cadastroContaViewModels);
             dgvCadastroConta.Columns[0].HeaderText = "Descrição";
             dgvCadastroConta.Columns[1].HeaderText = "Conta";
             dgvCadastroConta.Columns[2].HeaderText = "Frequência";
@@ -369,31 +390,86 @@ namespace App.Forms.Forms
             dgvCadastroConta.Columns[11].HeaderText = "Status";
         }
 
-        private static IList<DgvContaPagarDataSource> MapCreateBillToPayViewModelToDataSource(Dictionary<int, CreateBillToPayViewModel> billToPayViewModel)
+        private static IList<DgvCadastroContaDataSource> MapCadastroContaViewModelToDataSource(
+            ConcurrentDictionary<int, object> listViewModels, int? idDgvCadastroConta = null)
         {
-            IList<DgvContaPagarDataSource> list = new List<DgvContaPagarDataSource>();
-            foreach (var item in billToPayViewModel.Values)
-            {
-                var dgvContaPagarDataSource = new DgvContaPagarDataSource()
-                {
-                    Name = item.Name,
-                    Account = item.Account,
-                    Frequence = item.Frequence,
-                    RegistrationType = item.RegistrationType,
-                    InitialMonthYear = item.InitialMonthYear,
-                    FynallyMonthYear = item.FynallyMonthYear,
-                    Category = item.Category,
-                    Value = item.Value,
-                    PurchaseDate = item.PurchaseDate,
-                    BestPayDay = item.BestPayDay,
-                    AdditionalMessage = item.AdditionalMessage,
-                    Status = item.Status.ToString()
-                };
+            var dgvCadastroContaDataSource = new DgvCadastroContaDataSource();
+            IList<DgvCadastroContaDataSource> list = new List<DgvCadastroContaDataSource>();
 
-                list.Add(dgvContaPagarDataSource);
+            if (idDgvCadastroConta != null)
+            {
+                listViewModels
+                    .Where(x => x.Key != idDgvCadastroConta)
+                    .ToList()
+                    .ForEach(x => listViewModels.Remove(x.Key, out object test));
+            }
+
+            foreach (var objectViewModel in listViewModels.Values)
+            {
+                var accountType = GetAccountType(objectViewModel);
+
+                if (accountType == AccountType.ContaAPagar)
+                {
+                    var createBillToPayViewModel = (CreateBillToPayViewModel?)objectViewModel;
+                    if (createBillToPayViewModel != null)
+                    {
+                        dgvCadastroContaDataSource = new DgvCadastroContaDataSource()
+                        {
+                            Name = createBillToPayViewModel.Name,
+                            Account = createBillToPayViewModel.Account,
+                            Frequence = createBillToPayViewModel.Frequence,
+                            RegistrationType = createBillToPayViewModel.RegistrationType,
+                            InitialMonthYear = createBillToPayViewModel.InitialMonthYear,
+                            FynallyMonthYear = createBillToPayViewModel.FynallyMonthYear,
+                            Category = createBillToPayViewModel.Category,
+                            Value = createBillToPayViewModel.Value,
+                            PurchaseDate = createBillToPayViewModel.PurchaseDate,
+                            BestPayDay = createBillToPayViewModel.BestPayDay,
+                            AdditionalMessage = createBillToPayViewModel.AdditionalMessage,
+                            Status = createBillToPayViewModel.Status.ToString()
+                        };
+                    }
+                }
+                else if (accountType == AccountType.ContaAReceber)
+                {
+                    var createCashReceivableViewModel = (CreateCashReceivableViewModel?)objectViewModel;
+                    if (createCashReceivableViewModel != null)
+                    {
+                        dgvCadastroContaDataSource = new DgvCadastroContaDataSource()
+                        {
+                            Name = createCashReceivableViewModel.Name,
+                            Account = createCashReceivableViewModel.Account,
+                            Frequence = createCashReceivableViewModel.Frequence,
+                            RegistrationType = createCashReceivableViewModel.RegistrationType,
+                            InitialMonthYear = createCashReceivableViewModel.InitialMonthYear,
+                            FynallyMonthYear = createCashReceivableViewModel.FynallyMonthYear,
+                            Category = createCashReceivableViewModel.Category,
+                            Value = createCashReceivableViewModel.Value,
+                            PurchaseDate = createCashReceivableViewModel.AgreementDate,
+                            BestPayDay = createCashReceivableViewModel.BestReceivingDay,
+                            AdditionalMessage = createCashReceivableViewModel.AdditionalMessage,
+                            Status = createCashReceivableViewModel.Status.ToString()
+                        };
+                    }
+                }
+
+                list.Add(dgvCadastroContaDataSource);
             }
 
             return list;
+        }
+
+        private static AccountType? GetAccountType(object objectViewModel)
+        {
+            // Obtém todas as propriedades do tipo
+            PropertyInfo[] propriedades = objectViewModel.GetType().GetProperties();
+
+            var accountTypeByObject = propriedades.FirstOrDefault(x => x.Name == "AccountType");
+
+            AccountType? accountType = (AccountType?)(accountTypeByObject?
+                .GetValue(objectViewModel));
+
+            return accountType;
         }
 
         private void PreencherLabelDataCriacao()
@@ -412,20 +488,28 @@ namespace App.Forms.Forms
             Dictionary<int, string> categoriasContaPagar = new() { };
 
             int cont = 0;
-            foreach (var item in resultSearch.Categories)
-            {
-                if (cont == 0)
-                {
-                    categoriasContaPagar.Add(cont, "Nenhum");
-                    cont++;
-                    categoriasContaPagar.Add(cont, item);
-                }
-                else
-                {
-                    categoriasContaPagar.Add(cont, item);
-                }
 
-                cont++;
+            if (resultSearch.Categories != null)
+            {
+                foreach (var item in resultSearch.Categories)
+                {
+                    if (cont == 0)
+                    {
+                        categoriasContaPagar.Add(cont, "Nenhum");
+                        cont++;
+                        categoriasContaPagar.Add(cont, item);
+                    }
+                    else
+                    {
+                        categoriasContaPagar.Add(cont, item);
+                    }
+
+                    cont++;
+                }
+            }
+            else
+            {
+                categoriasContaPagar.Add(cont, "Nenhum");
             }
 
             var categoriasContaPagarOrderBy = categoriasContaPagar
@@ -470,7 +554,7 @@ namespace App.Forms.Forms
             }
         }
 
-        private async Task PreencherComboBoxContaPagarAccount(string tabPageName = null, string accountSelected = null)
+        private async Task PreencherComboBoxCadastroContaAccount(string tabPageName = null, string accountSelected = null)
         {
             AccountServices.Environment = Environment;
             var accounts = await AccountServices.SearchAccounts(new SearchAccountViewModel());
@@ -717,7 +801,7 @@ namespace App.Forms.Forms
             cboCadastroContaCategory.Items.Clear();
             cboCadastroContaAccount.Items.Clear();
             PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
-            PreencherComboBoxContaPagarAccount(tabPageName, account).GetAwaiter().GetResult();
+            PreencherComboBoxCadastroContaAccount(tabPageName, account).GetAwaiter().GetResult();
         }
 
         private async void BtnEfetuarPagamentoBuscar_Click(object sender, EventArgs e)
@@ -1159,22 +1243,15 @@ namespace App.Forms.Forms
         {
             foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.Rows)
             {
+                var account = _accountRepository.GetAccountByName(row?.Cells[2]?.Value?.ToString());
+
+                SetColorRows(row,
+                    ColorTranslator.FromHtml(account!.Colors!.BackgroundColorHexadecimal),
+                    ColorTranslator.FromHtml(account!.Colors!.FonteColorHexadecimal));
+
                 if (Convert.ToBoolean(row.Cells[15].Value))
                 {
                     SetColorRows(row, Color.DarkGreen, Color.White);
-                }
-
-                var account = _accountRepository.GetAccountByName(row?.Cells[2]?.Value?.ToString());
-
-                if (account.IsCreditCard && !Convert.ToBoolean(row?.Cells[15]?.Value))
-                {
-                    SetColorRows(row, Color.DarkOrange, Color.Black);
-                }
-
-                if (!string.IsNullOrWhiteSpace(row?.Cells[16]?.Value?.ToString())
-                    && (bool)(row?.Cells[16]?.Value?.ToString().StartsWith(EH_CARTAO_CREDITO_NAIRA)))
-                {
-                    SetColorRows(row, Color.DimGray, Color.White);
                 }
 
                 var projection = row?.Cells[3]?.Value?.ToString().Contains("Projetado") ?? false;
