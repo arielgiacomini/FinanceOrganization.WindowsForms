@@ -1,4 +1,5 @@
 ﻿using App.Forms.Config;
+using App.WindowsForms.Enums;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ namespace App.WindowsForms.Services
         public static async Task<SearchCategoryOutput> SearchCategories(SearchCategoryViewModel searchCategory)
         {
             using var client = new HttpClient();
-
+            client.DefaultRequestHeaders.Add("accountType", searchCategory.AccountType?.GetDescription());
             var result = client.GetAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/category/search").Result;
 
             if (!result.IsSuccessStatusCode)
