@@ -2,6 +2,8 @@
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using App.WindowsForms.Repository;
+using App.WindowsForms.Services;
+using App.WindowsForms.ViewModel;
 using Domain.Utils;
 
 namespace App.Forms.Forms.Edição
@@ -9,10 +11,12 @@ namespace App.Forms.Forms.Edição
     public partial class FrmEdit : Form
     {
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
+        public EditCashReceivableViewModel EditCashReceivableViewModel { get; set; } = new EditCashReceivableViewModel();
         public IList<EditBillToPayViewModel> BasketEditBillToPayViewModel { get; set; } = new List<EditBillToPayViewModel>();
         public decimal valorContaPagarDigitadoTextBox = 0;
         public string? Environment { get; set; }
         public bool EditInLote { get; set; } = false;
+        public Type MyProperty { get; set; }
 
         private AccountRepository _accountRepository;
 
@@ -28,7 +32,7 @@ namespace App.Forms.Forms.Edição
             PreencherCampos();
         }
 
-        private void PreencherCampos()
+        private async void PreencherCampos()
         {
             txtContaPagarNameDescription.Text = EditBillToPayViewModel.Name;
             PreencherComboBoxContaPagarAccount(EditBillToPayViewModel.Account!);
@@ -36,7 +40,7 @@ namespace App.Forms.Forms.Edição
             cboContaPagarTipoCadastro.Text = EditBillToPayViewModel.RegistrationType;
             PreencherComboBoxAnoMes(EditBillToPayViewModel.YearMonth!);
             cboContaPagarAnoMesInicial.Text = EditBillToPayViewModel.YearMonth;
-            cboContaPagarCategory.Text = EditBillToPayViewModel.Category;
+            await PreencherComboBoxCadastroContaCategoriaAsync(EditBillToPayViewModel?.Category!);
             txtContaPagarValor.Text = EditBillToPayViewModel.Value.ToString("C");
 
             if (EditBillToPayViewModel.PurchaseDate == null)
@@ -97,6 +101,72 @@ namespace App.Forms.Forms.Edição
             _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
 
             cboContaPagarAnoMesInicial.SelectedItem = current;
+        }
+
+        private async Task PreencherComboBoxCadastroContaCategoriaAsync(string currentCategory = null)
+        {
+            CategoryServices.Environment = Environment;
+            var resultSearch = await CategoryServices.SearchCategories(new SearchCategoryViewModel());
+
+            Dictionary<int, string> categoriasContaPagar = new() { };
+
+            int cont = 0;
+            foreach (var item in resultSearch.Categories)
+            {
+                if (cont == 0)
+                {
+                    categoriasContaPagar.Add(cont, "Nenhum");
+                    cont++;
+                    categoriasContaPagar.Add(cont, item);
+                }
+                else
+                {
+                    categoriasContaPagar.Add(cont, item);
+                }
+
+                cont++;
+            }
+
+            var categoriasContaPagarOrderBy = categoriasContaPagar
+                .OrderBy(x => x.Value)
+                .Where(x => x.Key != 0)
+                .ToList();
+
+            var first = categoriasContaPagar.FirstOrDefault(x => x.Key == 0);
+
+            cboContaPagarCategory.Items.Add(first.Value);
+
+            foreach (var item in categoriasContaPagarOrderBy)
+            {
+                cboContaPagarCategory.Items.Add(item.Value);
+            }
+
+            if (currentCategory == null)
+            {
+                cboContaPagarCategory.SelectedItem = first.Value;
+            }
+            else
+            {
+                var theChoise = categoriasContaPagarOrderBy
+                    .FirstOrDefault(x => x.Value == currentCategory);
+
+                if (theChoise.Value?.Length > 0)
+                {
+                    cboContaPagarCategory.SelectedItem = theChoise.Value;
+                }
+                else if (currentCategory != null)
+                {
+                    cboContaPagarCategory.Items.Add(currentCategory);
+                    cboContaPagarCategory.SelectedItem = currentCategory;
+                }
+                else
+                {
+                    var dado = categoriasContaPagarOrderBy
+                        .FirstOrDefault().Value;
+
+                    cboContaPagarCategory.SelectedItem = dado;
+                }
+            }
         }
 
         private void PreencherComboBoxContaPagarAccount(string current)

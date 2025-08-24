@@ -617,13 +617,13 @@
             lblEfetuarPagamentoItensSelecionadosDataGridView.Text = "Valor Total dos 900 itens selecionados: R$ 100.400,00";
             lblEfetuarPagamentoItensSelecionadosDataGridView.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // lblGridViewTotalPago
+            // lblContaPagarGridViewTotalPago
             // 
             lblContaPagarGridViewTotalPago.AutoSize = true;
             lblContaPagarGridViewTotalPago.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             lblContaPagarGridViewTotalPago.ForeColor = Color.Green;
             lblContaPagarGridViewTotalPago.Location = new Point(10, 65);
-            lblContaPagarGridViewTotalPago.Name = "lblGridViewTotalPago";
+            lblContaPagarGridViewTotalPago.Name = "lblContaPagarGridViewTotalPago";
             lblContaPagarGridViewTotalPago.Size = new Size(164, 17);
             lblContaPagarGridViewTotalPago.TabIndex = 13;
             lblContaPagarGridViewTotalPago.Text = "Pago: 100 - R$ 100.000,00";
@@ -639,13 +639,13 @@
             lblGridViewCartaoCreditoFamilia.TabIndex = 11;
             lblGridViewCartaoCreditoFamilia.Text = "Cartão de Crédito Itaú Personnalité Black Cashback: 10 - R$ 17.00,00\r\nCartão de Crédito Nubank: 10 - R$ 17.00,00\r\nCartão de Crédito: 10 - R$ 17.00,00\r\n";
             // 
-            // lblGridViewTotais
+            // lblContaPagarGridViewTotais
             // 
             lblContaPagarGridViewTotais.AutoSize = true;
             lblContaPagarGridViewTotais.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
             lblContaPagarGridViewTotais.ForeColor = Color.OrangeRed;
             lblContaPagarGridViewTotais.Location = new Point(10, 42);
-            lblContaPagarGridViewTotais.Name = "lblGridViewTotais";
+            lblContaPagarGridViewTotais.Name = "lblContaPagarGridViewTotais";
             lblContaPagarGridViewTotais.Size = new Size(187, 20);
             lblContaPagarGridViewTotais.TabIndex = 9;
             lblContaPagarGridViewTotais.Text = "Total: 134 - R$ 33.300,00";
@@ -713,11 +713,11 @@
             lblEfetuarPagamentoAnoMes.TabIndex = 2;
             lblEfetuarPagamentoAnoMes.Text = "Ano/Mês:";
             // 
-            // cboEfetuarPagamentoAnoMes
+            // cboAnoMesContaPagar
             // 
             cboAnoMesContaPagar.FormattingEnabled = true;
             cboAnoMesContaPagar.Location = new Point(73, 9);
-            cboAnoMesContaPagar.Name = "cboEfetuarPagamentoAnoMes";
+            cboAnoMesContaPagar.Name = "cboAnoMesContaPagar";
             cboAnoMesContaPagar.Size = new Size(156, 23);
             cboAnoMesContaPagar.TabIndex = 1;
             // 
@@ -870,6 +870,7 @@
             dgvContaReceber.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvContaReceber.Size = new Size(1193, 382);
             dgvContaReceber.TabIndex = 1;
+            dgvContaReceber.CellMouseDown += EditarRegistroSelecionadoContaReceber_CellMouseDown;
             // 
             // tbpEstudosFinanceiros
             // 

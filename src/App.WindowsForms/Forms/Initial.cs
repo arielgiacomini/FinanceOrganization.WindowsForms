@@ -73,7 +73,7 @@ namespace App.Forms.Forms
             lblVersion.Text = InfoHeader.Version;
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
-            await PreencherComboBoxContaPagarCategoriaAsync();
+            await PreencherComboBoxCadastroContaCategoriaAsync();
             await PreencherComboBoxContaPagarAccount();
             PreencherComboBoxAnoMes();
             PreencherComboBoxEstudoFinanceiroQuantideMeses();
@@ -325,7 +325,7 @@ namespace App.Forms.Forms
             lblContaPagarDataCriacao.Text = string.Concat(texto, DateTime.Now);
         }
 
-        private async Task PreencherComboBoxContaPagarCategoriaAsync(string tabPageName = null, string categorySelected = null)
+        private async Task PreencherComboBoxCadastroContaCategoriaAsync(string tabPageName = null, string categorySelected = null)
         {
             CategoryServices.Environment = Environment;
             var resultSearch = await CategoryServices.SearchCategories(new SearchCategoryViewModel());
@@ -637,7 +637,7 @@ namespace App.Forms.Forms
         {
             cboContaPagarCategory.Items.Clear();
             cboContaPagarTipoConta.Items.Clear();
-            PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
+            PreencherComboBoxCadastroContaCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
             PreencherComboBoxContaPagarAccount(tabPageName, account).GetAwaiter().GetResult();
         }
 
@@ -1595,6 +1595,55 @@ namespace App.Forms.Forms
         {
             lblInfoHeader.Text = AdjusteInfoHeader(DateTime.Now);
             await CarregaContasAReceber();
+        }
+
+        private void EditarRegistroSelecionadoContaReceber_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
+            {
+                dgvContaReceber.Rows[e.RowIndex].Cells[0].Selected = true;
+                _ = Guid.TryParse(dgvContaReceber.Rows[e.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaReceber);
+
+                if (identificadorContaReceber == Guid.Empty)
+                {
+                    MessageBox.Show("Não encontramos o Identificador da Conta pagar conseguir editar.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (dgvContaReceber == null)
+                {
+                    MessageBox.Show("Registro no gridview inválido.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var editBillToPayViewModel = new EditCashReceivableViewModel
+                {
+                    Id = identificadorContaReceber,
+                    IdCashReceivableRegistration = Convert.ToInt32(dgvContaReceber.Rows[e.RowIndex].Cells[1].Value?.ToString()),
+                    Name = dgvContaReceber.Rows[e.RowIndex].Cells[3].Value?.ToString(),
+                    Account = dgvContaReceber.Rows[e.RowIndex].Cells[2].Value?.ToString(),
+                    Frequence = dgvContaReceber.Rows[e.RowIndex].Cells[9].Value?.ToString(),
+                    RegistrationType = dgvContaReceber.Rows[e.RowIndex].Cells[10].Value?.ToString(),
+                    AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[14].Value?.ToString()),
+                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[7].Value?.ToString())!.Value,
+                    YearMonth = dgvContaReceber.Rows[e.RowIndex].Cells[8].Value?.ToString(),
+                    Category = dgvContaReceber.Rows[e.RowIndex].Cells[4].Value?.ToString(),
+                    Value = Convert.ToDecimal(dgvContaReceber.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
+                    ManipulatedValue = Convert.ToDecimal(dgvContaReceber.Rows[e.RowIndex].Cells[6].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
+                    DateReceived = dgvContaReceber.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                    HasReceived = Convert.ToBoolean(dgvContaReceber.Rows[e.RowIndex].Cells[12].Value?.ToString()),
+                    AdditionalMessage = dgvContaReceber.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                    LastChangeDate = DateTime.Now
+                };
+
+                FrmEdit frmPagamento = new()
+                {
+                    EditCashReceivableViewModel = editBillToPayViewModel,
+                    Environment = Environment
+                };
+
+                frmPagamento.ShowDialog();
+            }
         }
     }
 }
