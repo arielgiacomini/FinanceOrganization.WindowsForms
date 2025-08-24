@@ -158,6 +158,7 @@ namespace App.Forms.Forms
 
             if (InfoHeader.IsProductionEnvironment || InfoHeader.Environment == "Produção")
             {
+                rdbAmbienteProducao.Checked = true;
                 lblInfoHeader.BackColor = Color.OrangeRed;
                 lblInfoHeader.ForeColor = Color.White;
                 lblVersion.BackColor = Color.OrangeRed;
@@ -172,6 +173,7 @@ namespace App.Forms.Forms
             }
             else if (!InfoHeader.IsProductionEnvironment && InfoHeader.Environment == "Homologação")
             {
+                rdbAmbienteHomologacao.Checked = true;
                 var colorDarkGreen = Color.DarkGreen;
                 lblInfoHeader.BackColor = colorDarkGreen;
                 lblInfoHeader.ForeColor = Color.White;
@@ -187,6 +189,7 @@ namespace App.Forms.Forms
             }
             else if (!InfoHeader.IsProductionEnvironment && InfoHeader.Environment == "Local")
             {
+                rdbAmbienteLocal.Checked = true;
                 lblInfoHeader.BackColor = Color.DarkGray;
                 lblInfoHeader.ForeColor = Color.White;
                 lblVersion.BackColor = Color.DarkGray;
@@ -873,43 +876,43 @@ namespace App.Forms.Forms
 
             _dgvEfetuarPagamentoListagemDataSource = dataSourceOrderBy;
 
-            dgvEfetuarPagamentoListagem.DataSource = dataSourceOrderBy;
-            dgvEfetuarPagamentoListagem.Columns[0].HeaderText = "Id";
-            dgvEfetuarPagamentoListagem.Columns[0].Visible = false;
-            dgvEfetuarPagamentoListagem.Columns[1].HeaderText = "Id da tabela pai";
-            dgvEfetuarPagamentoListagem.Columns[1].Visible = false;
-            dgvEfetuarPagamentoListagem.Columns[2].HeaderText = "Conta";
-            dgvEfetuarPagamentoListagem.Columns[3].HeaderText = "Descrição";
-            dgvEfetuarPagamentoListagem.Columns[4].HeaderText = "Categoria";
+            dgvContaPagar.DataSource = dataSourceOrderBy;
+            dgvContaPagar.Columns[0].HeaderText = "Id";
+            dgvContaPagar.Columns[0].Visible = false;
+            dgvContaPagar.Columns[1].HeaderText = "Id da tabela pai";
+            dgvContaPagar.Columns[1].Visible = false;
+            dgvContaPagar.Columns[2].HeaderText = "Conta";
+            dgvContaPagar.Columns[3].HeaderText = "Descrição";
+            dgvContaPagar.Columns[4].HeaderText = "Categoria";
 
-            dgvEfetuarPagamentoListagem.Columns[5].HeaderText = "R$ Restante";
-            dgvEfetuarPagamentoListagem.Columns[5].DefaultCellStyle.Format = "C2";
-            dgvEfetuarPagamentoListagem.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvContaPagar.Columns[5].HeaderText = "R$ Restante";
+            dgvContaPagar.Columns[5].DefaultCellStyle.Format = "C2";
+            dgvContaPagar.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvEfetuarPagamentoListagem.Columns[6].HeaderText = "R$ Realizado";
-            dgvEfetuarPagamentoListagem.Columns[6].DefaultCellStyle.Format = "C2";
-            dgvEfetuarPagamentoListagem.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvContaPagar.Columns[6].HeaderText = "R$ Realizado";
+            dgvContaPagar.Columns[6].DefaultCellStyle.Format = "C2";
+            dgvContaPagar.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvEfetuarPagamentoListagem.Columns[7].HeaderText = "R$ Total";
-            dgvEfetuarPagamentoListagem.Columns[7].DefaultCellStyle.Format = "C2";
-            dgvEfetuarPagamentoListagem.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvContaPagar.Columns[7].HeaderText = "R$ Total";
+            dgvContaPagar.Columns[7].DefaultCellStyle.Format = "C2";
+            dgvContaPagar.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvEfetuarPagamentoListagem.Columns[8].HeaderText = "Qtd Compras";
-            dgvEfetuarPagamentoListagem.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
-            dgvEfetuarPagamentoListagem.Columns[9].HeaderText = "Data de Compra";
-            dgvEfetuarPagamentoListagem.Columns[10].HeaderText = "Vencimento";
-            dgvEfetuarPagamentoListagem.Columns[11].HeaderText = "Mês/Ano";
-            dgvEfetuarPagamentoListagem.Columns[12].HeaderText = "Frequência";
-            dgvEfetuarPagamentoListagem.Columns[13].HeaderText = "Tipo";
-            dgvEfetuarPagamentoListagem.Columns[14].HeaderText = "Data de Pagamento";
-            dgvEfetuarPagamentoListagem.Columns[15].HeaderText = "Pago?";
-            dgvEfetuarPagamentoListagem.Columns[16].HeaderText = "Mensagem";
-            dgvEfetuarPagamentoListagem.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvEfetuarPagamentoListagem.Columns[17].HeaderText = "Data de Criação";
-            dgvEfetuarPagamentoListagem.Columns[17].Visible = false;
-            dgvEfetuarPagamentoListagem.Columns[18].HeaderText = "Data de Alteração";
-            dgvEfetuarPagamentoListagem.Columns[18].Visible = false;
-            dgvEfetuarPagamentoListagem.Columns[19].Visible = false;
+            dgvContaPagar.Columns[8].HeaderText = "Qtd Compras";
+            dgvContaPagar.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
+            dgvContaPagar.Columns[9].HeaderText = "Data de Compra";
+            dgvContaPagar.Columns[10].HeaderText = "Vencimento";
+            dgvContaPagar.Columns[11].HeaderText = "Mês/Ano";
+            dgvContaPagar.Columns[12].HeaderText = "Frequência";
+            dgvContaPagar.Columns[13].HeaderText = "Tipo";
+            dgvContaPagar.Columns[14].HeaderText = "Data de Pagamento";
+            dgvContaPagar.Columns[15].HeaderText = "Pago?";
+            dgvContaPagar.Columns[16].HeaderText = "Mensagem";
+            dgvContaPagar.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvContaPagar.Columns[17].HeaderText = "Data de Criação";
+            dgvContaPagar.Columns[17].Visible = false;
+            dgvContaPagar.Columns[18].HeaderText = "Data de Alteração";
+            dgvContaPagar.Columns[18].Visible = false;
+            dgvContaPagar.Columns[19].Visible = false;
         }
 
         private void PreencheDataSourceContaReceber(IList<DgvVisualizarContaReceberDataSource> dataSourceOrderBy)
@@ -1122,13 +1125,13 @@ namespace App.Forms.Forms
         {
             if (e.RowIndex >= 0)
             {
-                _ = Guid.TryParse(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaPagar);
-                var conta = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[2].Value.ToString();
-                var descricao = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[3].Value.ToString();
-                var valorOfDgv = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0";
+                _ = Guid.TryParse(dgvContaPagar.Rows[e.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaPagar);
+                var conta = dgvContaPagar.Rows[e.RowIndex].Cells[2].Value.ToString();
+                var descricao = dgvContaPagar.Rows[e.RowIndex].Cells[3].Value.ToString();
+                var valorOfDgv = dgvContaPagar.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0";
                 var valor = Convert.ToDecimal(valorOfDgv);
-                var mesAno = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[8].Value.ToString();
-                var additionalMessage = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[13].Value?.ToString();
+                var mesAno = dgvContaPagar.Rows[e.RowIndex].Cells[8].Value.ToString();
+                var additionalMessage = dgvContaPagar.Rows[e.RowIndex].Cells[13].Value?.ToString();
 
                 FrmPagamento frmPagamento = new()
                 {
@@ -1190,8 +1193,8 @@ namespace App.Forms.Forms
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
             {
-                dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[0].Selected = true;
-                _ = Guid.TryParse(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaPagar);
+                dgvContaPagar.Rows[e.RowIndex].Cells[0].Selected = true;
+                _ = Guid.TryParse(dgvContaPagar.Rows[e.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaPagar);
 
                 if (identificadorContaPagar == Guid.Empty)
                 {
@@ -1202,19 +1205,19 @@ namespace App.Forms.Forms
                 var editBillToPayViewModel = new EditBillToPayViewModel
                 {
                     Id = identificadorContaPagar,
-                    IdFixedInvoice = Convert.ToInt32(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[1].Value?.ToString()),
-                    Account = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[2].Value?.ToString(),
-                    Name = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[3].Value?.ToString(),
-                    Category = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                    Value = Convert.ToDecimal(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
-                    PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
-                    YearMonth = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[11].Value?.ToString(),
-                    Frequence = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[12].Value?.ToString(),
-                    RegistrationType = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[13].Value?.ToString(),
-                    PayDay = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[14].Value?.ToString(),
-                    HasPay = Convert.ToBoolean(dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[15].Value?.ToString()),
-                    AdditionalMessage = dgvEfetuarPagamentoListagem.Rows[e.RowIndex].Cells[16].Value?.ToString(),
+                    IdFixedInvoice = Convert.ToInt32(dgvContaPagar.Rows[e.RowIndex].Cells[1].Value?.ToString()),
+                    Account = dgvContaPagar.Rows[e.RowIndex].Cells[2].Value?.ToString(),
+                    Name = dgvContaPagar.Rows[e.RowIndex].Cells[3].Value?.ToString(),
+                    Category = dgvContaPagar.Rows[e.RowIndex].Cells[4].Value?.ToString(),
+                    Value = Convert.ToDecimal(dgvContaPagar.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
+                    PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
+                    YearMonth = dgvContaPagar.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                    Frequence = dgvContaPagar.Rows[e.RowIndex].Cells[12].Value?.ToString(),
+                    RegistrationType = dgvContaPagar.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                    PayDay = dgvContaPagar.Rows[e.RowIndex].Cells[14].Value?.ToString(),
+                    HasPay = Convert.ToBoolean(dgvContaPagar.Rows[e.RowIndex].Cells[15].Value?.ToString()),
+                    AdditionalMessage = dgvContaPagar.Rows[e.RowIndex].Cells[16].Value?.ToString(),
                     LastChangeDate = DateTime.Now
                 };
 
@@ -1239,9 +1242,9 @@ namespace App.Forms.Forms
             }
         }
 
-        private void DgvEfetuarPagamentoListagem_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void DgvContaPagar_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.Rows)
+            foreach (DataGridViewRow row in dgvContaPagar.Rows)
             {
                 var account = _accountRepository.GetAccountByName(row?.Cells[2]?.Value?.ToString());
 
@@ -1263,7 +1266,7 @@ namespace App.Forms.Forms
             }
         }
 
-        private void DgvContaPagar_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void DgvCadastroContaPagar_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             InformaLabel(dgvCadastroConta, lblTotalValueGridView, 7, false);
 
@@ -1353,9 +1356,9 @@ namespace App.Forms.Forms
             decimal valorTotalItensSelecionados = 0;
             decimal valorRestanteItensSelecionados = 0;
             decimal valorRealizadoItensSelecionados = 0;
-            int quantidadeTotalItensSelecionados = dgvEfetuarPagamentoListagem.SelectedRows.Count;
+            int quantidadeTotalItensSelecionados = dgvContaPagar.SelectedRows.Count;
 
-            foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
+            foreach (DataGridViewRow row in dgvContaPagar.SelectedRows)
             {
                 bool isOKTotalValue = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal totalValue);
                 valorTotalItensSelecionados += isOKTotalValue ? totalValue : 0;
@@ -1383,7 +1386,7 @@ namespace App.Forms.Forms
             List<int> idsFixedInvoices = new();
             var searchBillToPayViewModel = new SearchBillToPayViewModel();
 
-            foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
+            foreach (DataGridViewRow row in dgvContaPagar.SelectedRows)
             {
                 _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid id);
                 _ = int.TryParse(row.Cells[1].Value.ToString(), out int idFixedInvoice);
@@ -1635,7 +1638,7 @@ namespace App.Forms.Forms
                 {
                     List<Guid> guidIds = new();
 
-                    foreach (DataGridViewRow row in dgvEfetuarPagamentoListagem.SelectedRows)
+                    foreach (DataGridViewRow row in dgvContaPagar.SelectedRows)
                     {
                         bool isOk = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid guidId);
 
@@ -1856,10 +1859,28 @@ namespace App.Forms.Forms
                 FrmEdit frmPagamento = new()
                 {
                     EditCashReceivableViewModel = editBillToPayViewModel,
-                    Environment = Environment
+                    Environment = Environment,
+                    AccountType = AccountType.ContaAReceber
                 };
 
                 frmPagamento.ShowDialog();
+            }
+        }
+
+        private void DgvContaReceber_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            foreach (DataGridViewRow row in dgvContaReceber.Rows)
+            {
+                var account = _accountRepository.GetAccountByName(row?.Cells[2]?.Value?.ToString());
+
+                SetColorRows(row,
+                    ColorTranslator.FromHtml(account!.Colors!.BackgroundColorHexadecimal),
+                    ColorTranslator.FromHtml(account!.Colors!.FonteColorHexadecimal));
+
+                if (Convert.ToBoolean(row.Cells[12].Value))
+                {
+                    SetColorRows(row, Color.DarkGreen, Color.White);
+                }
             }
         }
     }
