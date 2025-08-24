@@ -28,46 +28,48 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Initial));
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             tbcInitial = new TabControl();
             tbpCadastroContaPagar = new TabPage();
             grbTemplateContaPagar = new GroupBox();
-            ckbCartaoCreditoNaira = new CheckBox();
-            cboHabilitarDataCompra = new CheckBox();
+            rdbCadastroContaReceber = new RadioButton();
+            rdbCadastroContaPagar = new RadioButton();
+            cboCadastroContaHabilitarDate = new CheckBox();
             cboNaoEnviarMesAnoFinal = new CheckBox();
-            btnContaPagarCadastrar = new Button();
-            dgvContaPagar = new DataGridView();
-            grbContaPagarHistorico = new GroupBox();
+            btnEfetuarCadastroConta = new Button();
+            dgvCadastroConta = new DataGridView();
+            grbCadastroContaHistorico = new GroupBox();
             lblTotalValueGridView = new Label();
-            lblContaPagarDataCriacao = new Label();
-            rtbContaPagarMensagemAdicional = new RichTextBox();
-            lblContaPagarMensagemAdicional = new Label();
-            cboContaPagarTipoCadastro = new ComboBox();
-            lblContaPagarTipoCadastro = new Label();
-            cboContaPagarFrequencia = new ComboBox();
-            lblContaPagarFrequencia = new Label();
-            cboContaPagarMelhorDiaPagamento = new ComboBox();
-            lblContaPagarMelhorDiaPagamento = new Label();
-            dtpContaPagarDataCompra = new DateTimePicker();
-            lblContaPagarDataCompra = new Label();
-            txtContaPagarValor = new TextBox();
-            lblContaPagarValor = new Label();
-            lblContaPagarNameDescription = new Label();
-            cboContaPagarAnoMesFinal = new ComboBox();
-            txtContaPagarNameDescription = new TextBox();
-            lblContaPagarAnoMesFinal = new Label();
-            lblContaPagarCategory = new Label();
-            ckbContaPagarConsideraMesmoMes = new CheckBox();
-            cboContaPagarCategory = new ComboBox();
-            cboContaPagarAnoMesInicial = new ComboBox();
-            lblContaPagarTipoConta = new Label();
-            lblContaPagarAnoMesInicial = new Label();
-            cboContaPagarTipoConta = new ComboBox();
+            lblCadastroContaDataCriacao = new Label();
+            rtbCadastroContaMensagemAdicional = new RichTextBox();
+            lblCadastroContaMensagemAdicional = new Label();
+            cboCadastroContaRegistrationType = new ComboBox();
+            lblCadastroContaTipoCadastro = new Label();
+            cboCadastroContaFrequence = new ComboBox();
+            lblCadastroContaFrequencia = new Label();
+            cboCadastroContaBestDay = new ComboBox();
+            lblCadastroContaBestDay = new Label();
+            dtpCadastroContaDate = new DateTimePicker();
+            lblCadastroContaDataCompra = new Label();
+            txtCadastroContaValue = new TextBox();
+            lblCadastroContaValor = new Label();
+            lblCadastroContaNameDescription = new Label();
+            cboCadastroContaFinallyMonthYear = new ComboBox();
+            txtCadastroContaName = new TextBox();
+            lblCadastroContaAnoMesFinal = new Label();
+            lblCadastroContaCategory = new Label();
+            ckbCadastroContaConsideraMesmoMes = new CheckBox();
+            cboCadastroContaCategory = new ComboBox();
+            cboCadastroContaInititalMonthYear = new ComboBox();
+            lblCadastroContaTipoConta = new Label();
+            lblCadastroContaAnoMesInicial = new Label();
+            cboCadastroContaAccount = new ComboBox();
             tbpListarContaPagar = new TabPage();
-            lblEventRepeat = new Label();
+            grbAlerta = new GroupBox();
             lblQtdItensParaFinalizarCadastro = new Label();
+            lblEventRepeat = new Label();
             lblGridViewSelectedRowsCompleted = new Label();
             lblGridViewSelectedRowsRemainingValue = new Label();
             label1 = new Label();
@@ -107,9 +109,10 @@
             tbcInitial.SuspendLayout();
             tbpCadastroContaPagar.SuspendLayout();
             grbTemplateContaPagar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvContaPagar).BeginInit();
-            grbContaPagarHistorico.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvCadastroConta).BeginInit();
+            grbCadastroContaHistorico.SuspendLayout();
             tbpListarContaPagar.SuspendLayout();
+            grbAlerta.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).BeginInit();
             tbpListarContaReceber.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContaReceber).BeginInit();
@@ -145,73 +148,84 @@
             // grbTemplateContaPagar
             // 
             grbTemplateContaPagar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            grbTemplateContaPagar.Controls.Add(ckbCartaoCreditoNaira);
-            grbTemplateContaPagar.Controls.Add(cboHabilitarDataCompra);
+            grbTemplateContaPagar.Controls.Add(rdbCadastroContaReceber);
+            grbTemplateContaPagar.Controls.Add(rdbCadastroContaPagar);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaHabilitarDate);
             grbTemplateContaPagar.Controls.Add(cboNaoEnviarMesAnoFinal);
-            grbTemplateContaPagar.Controls.Add(btnContaPagarCadastrar);
-            grbTemplateContaPagar.Controls.Add(dgvContaPagar);
-            grbTemplateContaPagar.Controls.Add(grbContaPagarHistorico);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarDataCriacao);
-            grbTemplateContaPagar.Controls.Add(rtbContaPagarMensagemAdicional);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarMensagemAdicional);
-            grbTemplateContaPagar.Controls.Add(cboContaPagarTipoCadastro);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarTipoCadastro);
-            grbTemplateContaPagar.Controls.Add(cboContaPagarFrequencia);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarFrequencia);
-            grbTemplateContaPagar.Controls.Add(cboContaPagarMelhorDiaPagamento);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarMelhorDiaPagamento);
-            grbTemplateContaPagar.Controls.Add(dtpContaPagarDataCompra);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarDataCompra);
-            grbTemplateContaPagar.Controls.Add(txtContaPagarValor);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarValor);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarNameDescription);
-            grbTemplateContaPagar.Controls.Add(cboContaPagarAnoMesFinal);
-            grbTemplateContaPagar.Controls.Add(txtContaPagarNameDescription);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarAnoMesFinal);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarCategory);
-            grbTemplateContaPagar.Controls.Add(ckbContaPagarConsideraMesmoMes);
-            grbTemplateContaPagar.Controls.Add(cboContaPagarCategory);
-            grbTemplateContaPagar.Controls.Add(cboContaPagarAnoMesInicial);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarTipoConta);
-            grbTemplateContaPagar.Controls.Add(lblContaPagarAnoMesInicial);
-            grbTemplateContaPagar.Controls.Add(cboContaPagarTipoConta);
+            grbTemplateContaPagar.Controls.Add(btnEfetuarCadastroConta);
+            grbTemplateContaPagar.Controls.Add(dgvCadastroConta);
+            grbTemplateContaPagar.Controls.Add(grbCadastroContaHistorico);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaDataCriacao);
+            grbTemplateContaPagar.Controls.Add(rtbCadastroContaMensagemAdicional);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaMensagemAdicional);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaRegistrationType);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaTipoCadastro);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaFrequence);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaFrequencia);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaBestDay);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaBestDay);
+            grbTemplateContaPagar.Controls.Add(dtpCadastroContaDate);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaDataCompra);
+            grbTemplateContaPagar.Controls.Add(txtCadastroContaValue);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaValor);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaNameDescription);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaFinallyMonthYear);
+            grbTemplateContaPagar.Controls.Add(txtCadastroContaName);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaAnoMesFinal);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaCategory);
+            grbTemplateContaPagar.Controls.Add(ckbCadastroContaConsideraMesmoMes);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaCategory);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaInititalMonthYear);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaTipoConta);
+            grbTemplateContaPagar.Controls.Add(lblCadastroContaAnoMesInicial);
+            grbTemplateContaPagar.Controls.Add(cboCadastroContaAccount);
             grbTemplateContaPagar.Location = new Point(16, 6);
             grbTemplateContaPagar.Name = "grbTemplateContaPagar";
             grbTemplateContaPagar.Size = new Size(1173, 487);
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
-            grbTemplateContaPagar.Text = "Cadastro de Conta a Pagar - Livre";
+            grbTemplateContaPagar.Text = "Cadastro de Contas Pagar/Receber";
             // 
-            // ckbCartaoCreditoNaira
+            // rdbCadastroContaReceber
             // 
-            ckbCartaoCreditoNaira.AutoSize = true;
-            ckbCartaoCreditoNaira.Enabled = false;
-            ckbCartaoCreditoNaira.Location = new Point(305, 134);
-            ckbCartaoCreditoNaira.Name = "ckbCartaoCreditoNaira";
-            ckbCartaoCreditoNaira.Size = new Size(155, 19);
-            ckbCartaoCreditoNaira.TabIndex = 38;
-            ckbCartaoCreditoNaira.Text = "Cartão de Crédito Naíra?";
-            ckbCartaoCreditoNaira.UseVisualStyleBackColor = true;
-            ckbCartaoCreditoNaira.CheckedChanged += CkbCartaoCreditoNaira_CheckedChanged;
+            rdbCadastroContaReceber.AutoSize = true;
+            rdbCadastroContaReceber.Location = new Point(116, 22);
+            rdbCadastroContaReceber.Name = "rdbCadastroContaReceber";
+            rdbCadastroContaReceber.Size = new Size(111, 19);
+            rdbCadastroContaReceber.TabIndex = 40;
+            rdbCadastroContaReceber.TabStop = true;
+            rdbCadastroContaReceber.Text = "Conta a Receber";
+            rdbCadastroContaReceber.UseVisualStyleBackColor = true;
+            rdbCadastroContaReceber.CheckedChanged += RdbCadastroContaReceber_CheckedChanged;
             // 
-            // cboHabilitarDataCompra
+            // rdbCadastroContaPagar
             // 
-            cboHabilitarDataCompra.AutoSize = true;
-            cboHabilitarDataCompra.Checked = true;
-            cboHabilitarDataCompra.CheckState = CheckState.Checked;
-            cboHabilitarDataCompra.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            cboHabilitarDataCompra.Location = new Point(728, 60);
-            cboHabilitarDataCompra.Name = "cboHabilitarDataCompra";
-            cboHabilitarDataCompra.Size = new Size(161, 17);
-            cboHabilitarDataCompra.TabIndex = 37;
-            cboHabilitarDataCompra.Text = "Habilitar Data de Compra?";
-            cboHabilitarDataCompra.UseVisualStyleBackColor = true;
-            cboHabilitarDataCompra.CheckedChanged += CboHabilitarDataCompra_CheckedChanged;
+            rdbCadastroContaPagar.AutoSize = true;
+            rdbCadastroContaPagar.Location = new Point(13, 22);
+            rdbCadastroContaPagar.Name = "rdbCadastroContaPagar";
+            rdbCadastroContaPagar.Size = new Size(99, 19);
+            rdbCadastroContaPagar.TabIndex = 39;
+            rdbCadastroContaPagar.Text = "Conta a Pagar";
+            rdbCadastroContaPagar.UseVisualStyleBackColor = true;
+            // 
+            // cboCadastroContaHabilitarDate
+            // 
+            cboCadastroContaHabilitarDate.AutoSize = true;
+            cboCadastroContaHabilitarDate.Checked = true;
+            cboCadastroContaHabilitarDate.CheckState = CheckState.Checked;
+            cboCadastroContaHabilitarDate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            cboCadastroContaHabilitarDate.Location = new Point(728, 60);
+            cboCadastroContaHabilitarDate.Name = "cboCadastroContaHabilitarDate";
+            cboCadastroContaHabilitarDate.Size = new Size(161, 17);
+            cboCadastroContaHabilitarDate.TabIndex = 37;
+            cboCadastroContaHabilitarDate.Text = "Habilitar Data de Compra?";
+            cboCadastroContaHabilitarDate.UseVisualStyleBackColor = true;
+            cboCadastroContaHabilitarDate.CheckedChanged += CboHabilitarDataCompra_CheckedChanged;
             // 
             // cboNaoEnviarMesAnoFinal
             // 
             cboNaoEnviarMesAnoFinal.AutoSize = true;
-            cboNaoEnviarMesAnoFinal.Location = new Point(283, 199);
+            cboNaoEnviarMesAnoFinal.Location = new Point(283, 214);
             cboNaoEnviarMesAnoFinal.Name = "cboNaoEnviarMesAnoFinal";
             cboNaoEnviarMesAnoFinal.Size = new Size(166, 19);
             cboNaoEnviarMesAnoFinal.TabIndex = 30;
@@ -219,44 +233,46 @@
             cboNaoEnviarMesAnoFinal.UseVisualStyleBackColor = true;
             cboNaoEnviarMesAnoFinal.CheckedChanged += CboNaoEnviarMesAnoFinal_CheckedChanged;
             // 
-            // btnContaPagarCadastrar
+            // btnEfetuarCadastroConta
             // 
-            btnContaPagarCadastrar.AutoSize = true;
-            btnContaPagarCadastrar.FlatStyle = FlatStyle.System;
-            btnContaPagarCadastrar.Location = new Point(960, 187);
-            btnContaPagarCadastrar.Name = "btnContaPagarCadastrar";
-            btnContaPagarCadastrar.Size = new Size(176, 34);
-            btnContaPagarCadastrar.TabIndex = 29;
-            btnContaPagarCadastrar.Text = "Cadastrar (Conta a Pagar)";
-            btnContaPagarCadastrar.UseVisualStyleBackColor = true;
-            btnContaPagarCadastrar.Click += BtnContaPagarCadastrar_Click;
+            btnEfetuarCadastroConta.AutoSize = true;
+            btnEfetuarCadastroConta.BackColor = Color.SeaGreen;
+            btnEfetuarCadastroConta.FlatStyle = FlatStyle.System;
+            btnEfetuarCadastroConta.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            btnEfetuarCadastroConta.Location = new Point(960, 187);
+            btnEfetuarCadastroConta.Name = "btnEfetuarCadastroConta";
+            btnEfetuarCadastroConta.Size = new Size(176, 34);
+            btnEfetuarCadastroConta.TabIndex = 29;
+            btnEfetuarCadastroConta.Text = "Efetuar Cadastro";
+            btnEfetuarCadastroConta.UseVisualStyleBackColor = false;
+            btnEfetuarCadastroConta.Click += BtnEfetuarCadastroConta_Click;
             // 
-            // dgvContaPagar
+            // dgvCadastroConta
             // 
-            dgvContaPagar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvContaPagar.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            dgvContaPagar.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dgvContaPagar.BackgroundColor = SystemColors.AppWorkspace;
-            dgvContaPagar.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvContaPagar.Location = new Point(25, 275);
-            dgvContaPagar.Name = "dgvContaPagar";
-            dgvContaPagar.RowTemplate.Height = 25;
-            dgvContaPagar.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvContaPagar.Size = new Size(1128, 200);
-            dgvContaPagar.TabIndex = 15;
-            dgvContaPagar.RowsAdded += DgvContaPagar_RowsAdded;
-            dgvContaPagar.SelectionChanged += DgvContaPagar_SelectionChanged;
+            dgvCadastroConta.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvCadastroConta.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dgvCadastroConta.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
+            dgvCadastroConta.BackgroundColor = SystemColors.AppWorkspace;
+            dgvCadastroConta.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvCadastroConta.Location = new Point(25, 275);
+            dgvCadastroConta.Name = "dgvCadastroConta";
+            dgvCadastroConta.RowTemplate.Height = 25;
+            dgvCadastroConta.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvCadastroConta.Size = new Size(1128, 200);
+            dgvCadastroConta.TabIndex = 15;
+            dgvCadastroConta.RowsAdded += DgvContaPagar_RowsAdded;
+            dgvCadastroConta.SelectionChanged += DgvContaPagar_SelectionChanged;
             // 
-            // grbContaPagarHistorico
+            // grbCadastroContaHistorico
             // 
-            grbContaPagarHistorico.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            grbContaPagarHistorico.Controls.Add(lblTotalValueGridView);
-            grbContaPagarHistorico.Location = new Point(8, 240);
-            grbContaPagarHistorico.Name = "grbContaPagarHistorico";
-            grbContaPagarHistorico.Size = new Size(1159, 241);
-            grbContaPagarHistorico.TabIndex = 28;
-            grbContaPagarHistorico.TabStop = false;
-            grbContaPagarHistorico.Text = "Últimos cadastros realizados...";
+            grbCadastroContaHistorico.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            grbCadastroContaHistorico.Controls.Add(lblTotalValueGridView);
+            grbCadastroContaHistorico.Location = new Point(8, 240);
+            grbCadastroContaHistorico.Name = "grbCadastroContaHistorico";
+            grbCadastroContaHistorico.Size = new Size(1159, 241);
+            grbCadastroContaHistorico.TabIndex = 28;
+            grbCadastroContaHistorico.TabStop = false;
+            grbCadastroContaHistorico.Text = "Últimos cadastros realizados...";
             // 
             // lblTotalValueGridView
             // 
@@ -270,228 +286,227 @@
             lblTotalValueGridView.Text = "Valor Total dos 900 itens cadastrados abaixo: R$ 100.400,00";
             lblTotalValueGridView.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // lblContaPagarDataCriacao
+            // lblCadastroContaDataCriacao
             // 
-            lblContaPagarDataCriacao.AutoSize = true;
-            lblContaPagarDataCriacao.Location = new Point(940, 159);
-            lblContaPagarDataCriacao.Name = "lblContaPagarDataCriacao";
-            lblContaPagarDataCriacao.Size = new Size(213, 15);
-            lblContaPagarDataCriacao.TabIndex = 27;
-            lblContaPagarDataCriacao.Text = "Data de Criação: 15/03/1995 às 05:35:01";
+            lblCadastroContaDataCriacao.AutoSize = true;
+            lblCadastroContaDataCriacao.Location = new Point(940, 159);
+            lblCadastroContaDataCriacao.Name = "lblCadastroContaDataCriacao";
+            lblCadastroContaDataCriacao.Size = new Size(213, 15);
+            lblCadastroContaDataCriacao.TabIndex = 27;
+            lblCadastroContaDataCriacao.Text = "Data de Criação: 15/03/1995 às 05:35:01";
             // 
-            // rtbContaPagarMensagemAdicional
+            // rtbCadastroContaMensagemAdicional
             // 
-            rtbContaPagarMensagemAdicional.Location = new Point(925, 48);
-            rtbContaPagarMensagemAdicional.Name = "rtbContaPagarMensagemAdicional";
-            rtbContaPagarMensagemAdicional.Size = new Size(242, 96);
-            rtbContaPagarMensagemAdicional.TabIndex = 26;
-            rtbContaPagarMensagemAdicional.Text = "";
+            rtbCadastroContaMensagemAdicional.Location = new Point(925, 48);
+            rtbCadastroContaMensagemAdicional.Name = "rtbCadastroContaMensagemAdicional";
+            rtbCadastroContaMensagemAdicional.Size = new Size(242, 96);
+            rtbCadastroContaMensagemAdicional.TabIndex = 26;
+            rtbCadastroContaMensagemAdicional.Text = "";
             // 
-            // lblContaPagarMensagemAdicional
+            // lblCadastroContaMensagemAdicional
             // 
-            lblContaPagarMensagemAdicional.AutoSize = true;
-            lblContaPagarMensagemAdicional.Location = new Point(922, 30);
-            lblContaPagarMensagemAdicional.Name = "lblContaPagarMensagemAdicional";
-            lblContaPagarMensagemAdicional.Size = new Size(122, 15);
-            lblContaPagarMensagemAdicional.TabIndex = 24;
-            lblContaPagarMensagemAdicional.Text = "Mensagem Adicional:";
+            lblCadastroContaMensagemAdicional.AutoSize = true;
+            lblCadastroContaMensagemAdicional.Location = new Point(922, 30);
+            lblCadastroContaMensagemAdicional.Name = "lblCadastroContaMensagemAdicional";
+            lblCadastroContaMensagemAdicional.Size = new Size(122, 15);
+            lblCadastroContaMensagemAdicional.TabIndex = 24;
+            lblCadastroContaMensagemAdicional.Text = "Mensagem Adicional:";
             // 
-            // cboContaPagarTipoCadastro
+            // cboCadastroContaRegistrationType
             // 
-            cboContaPagarTipoCadastro.FormattingEnabled = true;
-            cboContaPagarTipoCadastro.Location = new Point(652, 195);
-            cboContaPagarTipoCadastro.Name = "cboContaPagarTipoCadastro";
-            cboContaPagarTipoCadastro.Size = new Size(204, 23);
-            cboContaPagarTipoCadastro.TabIndex = 23;
+            cboCadastroContaRegistrationType.FormattingEnabled = true;
+            cboCadastroContaRegistrationType.Location = new Point(652, 195);
+            cboCadastroContaRegistrationType.Name = "cboCadastroContaRegistrationType";
+            cboCadastroContaRegistrationType.Size = new Size(204, 23);
+            cboCadastroContaRegistrationType.TabIndex = 23;
             // 
-            // lblContaPagarTipoCadastro
+            // lblCadastroContaTipoCadastro
             // 
-            lblContaPagarTipoCadastro.AutoSize = true;
-            lblContaPagarTipoCadastro.Location = new Point(547, 198);
-            lblContaPagarTipoCadastro.Name = "lblContaPagarTipoCadastro";
-            lblContaPagarTipoCadastro.Size = new Size(99, 15);
-            lblContaPagarTipoCadastro.TabIndex = 22;
-            lblContaPagarTipoCadastro.Text = "Tipo de Cadastro:";
+            lblCadastroContaTipoCadastro.AutoSize = true;
+            lblCadastroContaTipoCadastro.Location = new Point(547, 198);
+            lblCadastroContaTipoCadastro.Name = "lblCadastroContaTipoCadastro";
+            lblCadastroContaTipoCadastro.Size = new Size(99, 15);
+            lblCadastroContaTipoCadastro.TabIndex = 22;
+            lblCadastroContaTipoCadastro.Text = "Tipo de Cadastro:";
             // 
-            // cboContaPagarFrequencia
+            // cboCadastroContaFrequence
             // 
-            cboContaPagarFrequencia.FormattingEnabled = true;
-            cboContaPagarFrequencia.Location = new Point(652, 157);
-            cboContaPagarFrequencia.Name = "cboContaPagarFrequencia";
-            cboContaPagarFrequencia.Size = new Size(161, 23);
-            cboContaPagarFrequencia.TabIndex = 21;
+            cboCadastroContaFrequence.FormattingEnabled = true;
+            cboCadastroContaFrequence.Location = new Point(652, 157);
+            cboCadastroContaFrequence.Name = "cboCadastroContaFrequence";
+            cboCadastroContaFrequence.Size = new Size(161, 23);
+            cboCadastroContaFrequence.TabIndex = 21;
             // 
-            // lblContaPagarFrequencia
+            // lblCadastroContaFrequencia
             // 
-            lblContaPagarFrequencia.AutoSize = true;
-            lblContaPagarFrequencia.Location = new Point(578, 160);
-            lblContaPagarFrequencia.Name = "lblContaPagarFrequencia";
-            lblContaPagarFrequencia.Size = new Size(68, 15);
-            lblContaPagarFrequencia.TabIndex = 20;
-            lblContaPagarFrequencia.Text = "Frequência:";
+            lblCadastroContaFrequencia.AutoSize = true;
+            lblCadastroContaFrequencia.Location = new Point(578, 160);
+            lblCadastroContaFrequencia.Name = "lblCadastroContaFrequencia";
+            lblCadastroContaFrequencia.Size = new Size(68, 15);
+            lblCadastroContaFrequencia.TabIndex = 20;
+            lblCadastroContaFrequencia.Text = "Frequência:";
             // 
-            // cboContaPagarMelhorDiaPagamento
+            // cboCadastroContaBestDay
             // 
-            cboContaPagarMelhorDiaPagamento.BackColor = SystemColors.Window;
-            cboContaPagarMelhorDiaPagamento.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            cboContaPagarMelhorDiaPagamento.FormatString = "N0";
-            cboContaPagarMelhorDiaPagamento.FormattingEnabled = true;
-            cboContaPagarMelhorDiaPagamento.Location = new Point(652, 119);
-            cboContaPagarMelhorDiaPagamento.Name = "cboContaPagarMelhorDiaPagamento";
-            cboContaPagarMelhorDiaPagamento.Size = new Size(62, 27);
-            cboContaPagarMelhorDiaPagamento.TabIndex = 19;
+            cboCadastroContaBestDay.BackColor = SystemColors.Window;
+            cboCadastroContaBestDay.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            cboCadastroContaBestDay.FormatString = "N0";
+            cboCadastroContaBestDay.FormattingEnabled = true;
+            cboCadastroContaBestDay.Location = new Point(656, 119);
+            cboCadastroContaBestDay.Name = "cboCadastroContaBestDay";
+            cboCadastroContaBestDay.Size = new Size(62, 27);
+            cboCadastroContaBestDay.TabIndex = 19;
             // 
-            // lblContaPagarMelhorDiaPagamento
+            // lblCadastroContaBestDay
             // 
-            lblContaPagarMelhorDiaPagamento.AutoSize = true;
-            lblContaPagarMelhorDiaPagamento.Location = new Point(499, 122);
-            lblContaPagarMelhorDiaPagamento.Name = "lblContaPagarMelhorDiaPagamento";
-            lblContaPagarMelhorDiaPagamento.Size = new Size(147, 15);
-            lblContaPagarMelhorDiaPagamento.TabIndex = 18;
-            lblContaPagarMelhorDiaPagamento.Text = "Melhor dia de Pagamento:";
+            lblCadastroContaBestDay.AutoSize = true;
+            lblCadastroContaBestDay.Location = new Point(499, 122);
+            lblCadastroContaBestDay.Name = "lblCadastroContaBestDay";
+            lblCadastroContaBestDay.Size = new Size(147, 15);
+            lblCadastroContaBestDay.TabIndex = 18;
+            lblCadastroContaBestDay.Text = "Melhor dia de Pagamento:";
             // 
-            // dtpContaPagarDataCompra
+            // dtpCadastroContaDate
             // 
-            dtpContaPagarDataCompra.Location = new Point(652, 83);
-            dtpContaPagarDataCompra.Name = "dtpContaPagarDataCompra";
-            dtpContaPagarDataCompra.Size = new Size(237, 23);
-            dtpContaPagarDataCompra.TabIndex = 17;
-            dtpContaPagarDataCompra.ValueChanged += DtpContaPagarDataCompra_ValueChanged;
+            dtpCadastroContaDate.Location = new Point(676, 83);
+            dtpCadastroContaDate.Name = "dtpCadastroContaDate";
+            dtpCadastroContaDate.Size = new Size(237, 23);
+            dtpCadastroContaDate.TabIndex = 17;
+            dtpCadastroContaDate.ValueChanged += DtpContaPagarDataCompra_ValueChanged;
             // 
-            // lblContaPagarDataCompra
+            // lblCadastroContaDataCompra
             // 
-            lblContaPagarDataCompra.AutoSize = true;
-            lblContaPagarDataCompra.Location = new Point(553, 89);
-            lblContaPagarDataCompra.Name = "lblContaPagarDataCompra";
-            lblContaPagarDataCompra.Size = new Size(96, 15);
-            lblContaPagarDataCompra.TabIndex = 16;
-            lblContaPagarDataCompra.Text = "Data da Compra:";
+            lblCadastroContaDataCompra.AutoSize = true;
+            lblCadastroContaDataCompra.Location = new Point(553, 89);
+            lblCadastroContaDataCompra.Name = "lblCadastroContaDataCompra";
+            lblCadastroContaDataCompra.Size = new Size(96, 15);
+            lblCadastroContaDataCompra.TabIndex = 16;
+            lblCadastroContaDataCompra.Text = "Data da Compra:";
             // 
-            // txtContaPagarValor
+            // txtCadastroContaValue
             // 
-            txtContaPagarValor.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            txtContaPagarValor.ForeColor = Color.OrangeRed;
-            txtContaPagarValor.Location = new Point(652, 27);
-            txtContaPagarValor.Name = "txtContaPagarValor";
-            txtContaPagarValor.Size = new Size(133, 27);
-            txtContaPagarValor.TabIndex = 13;
-            txtContaPagarValor.TextAlign = HorizontalAlignment.Right;
-            txtContaPagarValor.Enter += TxtContaPagarValor_Enter;
-            txtContaPagarValor.Leave += TxtContaPagarValor_Leave;
+            txtCadastroContaValue.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            txtCadastroContaValue.ForeColor = Color.OrangeRed;
+            txtCadastroContaValue.Location = new Point(652, 27);
+            txtCadastroContaValue.Name = "txtCadastroContaValue";
+            txtCadastroContaValue.Size = new Size(133, 27);
+            txtCadastroContaValue.TabIndex = 13;
+            txtCadastroContaValue.TextAlign = HorizontalAlignment.Right;
+            txtCadastroContaValue.Enter += TxtContaPagarValor_Enter;
+            txtCadastroContaValue.Leave += TxtContaPagarValor_Leave;
             // 
-            // lblContaPagarValor
+            // lblCadastroContaValor
             // 
-            lblContaPagarValor.AutoSize = true;
-            lblContaPagarValor.Location = new Point(594, 30);
-            lblContaPagarValor.Name = "lblContaPagarValor";
-            lblContaPagarValor.Size = new Size(52, 15);
-            lblContaPagarValor.TabIndex = 12;
-            lblContaPagarValor.Text = "Valor R$:";
+            lblCadastroContaValor.AutoSize = true;
+            lblCadastroContaValor.Location = new Point(594, 30);
+            lblCadastroContaValor.Name = "lblCadastroContaValor";
+            lblCadastroContaValor.Size = new Size(52, 15);
+            lblCadastroContaValor.TabIndex = 12;
+            lblCadastroContaValor.Text = "Valor R$:";
             // 
-            // lblContaPagarNameDescription
+            // lblCadastroContaNameDescription
             // 
-            lblContaPagarNameDescription.AutoSize = true;
-            lblContaPagarNameDescription.Location = new Point(11, 35);
-            lblContaPagarNameDescription.Name = "lblContaPagarNameDescription";
-            lblContaPagarNameDescription.Size = new Size(99, 15);
-            lblContaPagarNameDescription.TabIndex = 0;
-            lblContaPagarNameDescription.Text = "Nome/Descrição:";
+            lblCadastroContaNameDescription.AutoSize = true;
+            lblCadastroContaNameDescription.Location = new Point(11, 50);
+            lblCadastroContaNameDescription.Name = "lblCadastroContaNameDescription";
+            lblCadastroContaNameDescription.Size = new Size(99, 15);
+            lblCadastroContaNameDescription.TabIndex = 0;
+            lblCadastroContaNameDescription.Text = "Nome/Descrição:";
             // 
-            // cboContaPagarAnoMesFinal
+            // cboCadastroContaFinallyMonthYear
             // 
-            cboContaPagarAnoMesFinal.FormattingEnabled = true;
-            cboContaPagarAnoMesFinal.Location = new Point(116, 187);
-            cboContaPagarAnoMesFinal.Name = "cboContaPagarAnoMesFinal";
-            cboContaPagarAnoMesFinal.Size = new Size(161, 23);
-            cboContaPagarAnoMesFinal.TabIndex = 11;
+            cboCadastroContaFinallyMonthYear.FormattingEnabled = true;
+            cboCadastroContaFinallyMonthYear.Location = new Point(116, 202);
+            cboCadastroContaFinallyMonthYear.Name = "cboCadastroContaFinallyMonthYear";
+            cboCadastroContaFinallyMonthYear.Size = new Size(161, 23);
+            cboCadastroContaFinallyMonthYear.TabIndex = 11;
             // 
-            // txtContaPagarNameDescription
+            // txtCadastroContaName
             // 
-            txtContaPagarNameDescription.Location = new Point(116, 32);
-            txtContaPagarNameDescription.Name = "txtContaPagarNameDescription";
-            txtContaPagarNameDescription.Size = new Size(445, 23);
-            txtContaPagarNameDescription.TabIndex = 1;
+            txtCadastroContaName.Location = new Point(116, 47);
+            txtCadastroContaName.Name = "txtCadastroContaName";
+            txtCadastroContaName.Size = new Size(445, 23);
+            txtCadastroContaName.TabIndex = 1;
             // 
-            // lblContaPagarAnoMesFinal
+            // lblCadastroContaAnoMesFinal
             // 
-            lblContaPagarAnoMesFinal.AutoSize = true;
-            lblContaPagarAnoMesFinal.Location = new Point(23, 190);
-            lblContaPagarAnoMesFinal.Name = "lblContaPagarAnoMesFinal";
-            lblContaPagarAnoMesFinal.Size = new Size(87, 15);
-            lblContaPagarAnoMesFinal.TabIndex = 10;
-            lblContaPagarAnoMesFinal.Text = "Ano/Mês Final:";
+            lblCadastroContaAnoMesFinal.AutoSize = true;
+            lblCadastroContaAnoMesFinal.Location = new Point(23, 205);
+            lblCadastroContaAnoMesFinal.Name = "lblCadastroContaAnoMesFinal";
+            lblCadastroContaAnoMesFinal.Size = new Size(87, 15);
+            lblCadastroContaAnoMesFinal.TabIndex = 10;
+            lblCadastroContaAnoMesFinal.Text = "Ano/Mês Final:";
             // 
-            // lblContaPagarCategory
+            // lblCadastroContaCategory
             // 
-            lblContaPagarCategory.AutoSize = true;
-            lblContaPagarCategory.Location = new Point(49, 72);
-            lblContaPagarCategory.Name = "lblContaPagarCategory";
-            lblContaPagarCategory.Size = new Size(61, 15);
-            lblContaPagarCategory.TabIndex = 2;
-            lblContaPagarCategory.Text = "Categoria:";
+            lblCadastroContaCategory.AutoSize = true;
+            lblCadastroContaCategory.Location = new Point(49, 87);
+            lblCadastroContaCategory.Name = "lblCadastroContaCategory";
+            lblCadastroContaCategory.Size = new Size(61, 15);
+            lblCadastroContaCategory.TabIndex = 2;
+            lblCadastroContaCategory.Text = "Categoria:";
             // 
-            // ckbContaPagarConsideraMesmoMes
+            // ckbCadastroContaConsideraMesmoMes
             // 
-            ckbContaPagarConsideraMesmoMes.AutoSize = true;
-            ckbContaPagarConsideraMesmoMes.Checked = true;
-            ckbContaPagarConsideraMesmoMes.CheckState = CheckState.Checked;
-            ckbContaPagarConsideraMesmoMes.Location = new Point(283, 159);
-            ckbContaPagarConsideraMesmoMes.Name = "ckbContaPagarConsideraMesmoMes";
-            ckbContaPagarConsideraMesmoMes.Size = new Size(124, 34);
-            ckbContaPagarConsideraMesmoMes.TabIndex = 9;
-            ckbContaPagarConsideraMesmoMes.Text = "Considera como \r\nMês Inicial e Final?";
-            ckbContaPagarConsideraMesmoMes.UseVisualStyleBackColor = true;
-            ckbContaPagarConsideraMesmoMes.CheckedChanged += CkbContaPagarConsideraMesmoMes_CheckedChanged;
+            ckbCadastroContaConsideraMesmoMes.AutoSize = true;
+            ckbCadastroContaConsideraMesmoMes.Checked = true;
+            ckbCadastroContaConsideraMesmoMes.CheckState = CheckState.Checked;
+            ckbCadastroContaConsideraMesmoMes.Location = new Point(283, 174);
+            ckbCadastroContaConsideraMesmoMes.Name = "ckbCadastroContaConsideraMesmoMes";
+            ckbCadastroContaConsideraMesmoMes.Size = new Size(124, 34);
+            ckbCadastroContaConsideraMesmoMes.TabIndex = 9;
+            ckbCadastroContaConsideraMesmoMes.Text = "Considera como \r\nMês Inicial e Final?";
+            ckbCadastroContaConsideraMesmoMes.UseVisualStyleBackColor = true;
+            ckbCadastroContaConsideraMesmoMes.CheckedChanged += CkbContaPagarConsideraMesmoMes_CheckedChanged;
             // 
-            // cboContaPagarCategory
+            // cboCadastroContaCategory
             // 
-            cboContaPagarCategory.FormattingEnabled = true;
-            cboContaPagarCategory.Location = new Point(116, 69);
-            cboContaPagarCategory.Name = "cboContaPagarCategory";
-            cboContaPagarCategory.Size = new Size(263, 23);
-            cboContaPagarCategory.TabIndex = 3;
+            cboCadastroContaCategory.FormattingEnabled = true;
+            cboCadastroContaCategory.Location = new Point(116, 84);
+            cboCadastroContaCategory.Name = "cboCadastroContaCategory";
+            cboCadastroContaCategory.Size = new Size(263, 23);
+            cboCadastroContaCategory.TabIndex = 3;
             // 
-            // cboContaPagarAnoMesInicial
+            // cboCadastroContaInititalMonthYear
             // 
-            cboContaPagarAnoMesInicial.FormattingEnabled = true;
-            cboContaPagarAnoMesInicial.Location = new Point(116, 151);
-            cboContaPagarAnoMesInicial.Name = "cboContaPagarAnoMesInicial";
-            cboContaPagarAnoMesInicial.Size = new Size(161, 23);
-            cboContaPagarAnoMesInicial.TabIndex = 8;
-            cboContaPagarAnoMesInicial.SelectedValueChanged += CboContaPagarAnoMesInicial_SelectedValueChanged;
-            cboContaPagarAnoMesInicial.Leave += CboContaPagarAnoMesInicial_Leave;
+            cboCadastroContaInititalMonthYear.FormattingEnabled = true;
+            cboCadastroContaInititalMonthYear.Location = new Point(116, 166);
+            cboCadastroContaInititalMonthYear.Name = "cboCadastroContaInititalMonthYear";
+            cboCadastroContaInititalMonthYear.Size = new Size(161, 23);
+            cboCadastroContaInititalMonthYear.TabIndex = 8;
+            cboCadastroContaInititalMonthYear.SelectedValueChanged += CboContaPagarAnoMesInicial_SelectedValueChanged;
+            cboCadastroContaInititalMonthYear.Leave += CboContaPagarAnoMesInicial_Leave;
             // 
-            // lblContaPagarTipoConta
+            // lblCadastroContaTipoConta
             // 
-            lblContaPagarTipoConta.AutoSize = true;
-            lblContaPagarTipoConta.Location = new Point(28, 111);
-            lblContaPagarTipoConta.Name = "lblContaPagarTipoConta";
-            lblContaPagarTipoConta.Size = new Size(42, 15);
-            lblContaPagarTipoConta.TabIndex = 4;
-            lblContaPagarTipoConta.Text = "Conta:";
+            lblCadastroContaTipoConta.AutoSize = true;
+            lblCadastroContaTipoConta.Location = new Point(28, 126);
+            lblCadastroContaTipoConta.Name = "lblCadastroContaTipoConta";
+            lblCadastroContaTipoConta.Size = new Size(42, 15);
+            lblCadastroContaTipoConta.TabIndex = 4;
+            lblCadastroContaTipoConta.Text = "Conta:";
             // 
-            // lblContaPagarAnoMesInicial
+            // lblCadastroContaAnoMesInicial
             // 
-            lblContaPagarAnoMesInicial.AutoSize = true;
-            lblContaPagarAnoMesInicial.Location = new Point(19, 154);
-            lblContaPagarAnoMesInicial.Name = "lblContaPagarAnoMesInicial";
-            lblContaPagarAnoMesInicial.Size = new Size(93, 15);
-            lblContaPagarAnoMesInicial.TabIndex = 7;
-            lblContaPagarAnoMesInicial.Text = "Ano/Mês Inicial:";
+            lblCadastroContaAnoMesInicial.AutoSize = true;
+            lblCadastroContaAnoMesInicial.Location = new Point(19, 169);
+            lblCadastroContaAnoMesInicial.Name = "lblCadastroContaAnoMesInicial";
+            lblCadastroContaAnoMesInicial.Size = new Size(93, 15);
+            lblCadastroContaAnoMesInicial.TabIndex = 7;
+            lblCadastroContaAnoMesInicial.Text = "Ano/Mês Inicial:";
             // 
-            // cboContaPagarTipoConta
+            // cboCadastroContaAccount
             // 
-            cboContaPagarTipoConta.FormattingEnabled = true;
-            cboContaPagarTipoConta.Location = new Point(76, 108);
-            cboContaPagarTipoConta.Name = "cboContaPagarTipoConta";
-            cboContaPagarTipoConta.Size = new Size(384, 23);
-            cboContaPagarTipoConta.TabIndex = 5;
-            cboContaPagarTipoConta.SelectedValueChanged += CboContaPagarTipoConta_SelectedValueChanged;
+            cboCadastroContaAccount.FormattingEnabled = true;
+            cboCadastroContaAccount.Location = new Point(76, 123);
+            cboCadastroContaAccount.Name = "cboCadastroContaAccount";
+            cboCadastroContaAccount.Size = new Size(384, 23);
+            cboCadastroContaAccount.TabIndex = 5;
+            cboCadastroContaAccount.SelectedValueChanged += CboContaPagarTipoConta_SelectedValueChanged;
             // 
             // tbpListarContaPagar
             // 
-            tbpListarContaPagar.Controls.Add(lblEventRepeat);
-            tbpListarContaPagar.Controls.Add(lblQtdItensParaFinalizarCadastro);
+            tbpListarContaPagar.Controls.Add(grbAlerta);
             tbpListarContaPagar.Controls.Add(lblGridViewSelectedRowsCompleted);
             tbpListarContaPagar.Controls.Add(lblGridViewSelectedRowsRemainingValue);
             tbpListarContaPagar.Controls.Add(label1);
@@ -513,8 +528,32 @@
             tbpListarContaPagar.Name = "tbpListarContaPagar";
             tbpListarContaPagar.Size = new Size(1208, 501);
             tbpListarContaPagar.TabIndex = 2;
-            tbpListarContaPagar.Text = "Conta a Pagar - Listar";
+            tbpListarContaPagar.Text = "Contas a Pagar";
             tbpListarContaPagar.UseVisualStyleBackColor = true;
+            // 
+            // grbAlerta
+            // 
+            grbAlerta.Controls.Add(lblQtdItensParaFinalizarCadastro);
+            grbAlerta.Controls.Add(lblEventRepeat);
+            grbAlerta.Location = new Point(840, 88);
+            grbAlerta.Name = "grbAlerta";
+            grbAlerta.Size = new Size(363, 51);
+            grbAlerta.TabIndex = 23;
+            grbAlerta.TabStop = false;
+            grbAlerta.Text = "Alertas";
+            grbAlerta.Visible = false;
+            // 
+            // lblQtdItensParaFinalizarCadastro
+            // 
+            lblQtdItensParaFinalizarCadastro.AutoSize = true;
+            lblQtdItensParaFinalizarCadastro.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            lblQtdItensParaFinalizarCadastro.ForeColor = Color.OrangeRed;
+            lblQtdItensParaFinalizarCadastro.Location = new Point(6, 14);
+            lblQtdItensParaFinalizarCadastro.Name = "lblQtdItensParaFinalizarCadastro";
+            lblQtdItensParaFinalizarCadastro.Size = new Size(330, 17);
+            lblQtdItensParaFinalizarCadastro.TabIndex = 21;
+            lblQtdItensParaFinalizarCadastro.Text = "Existem 900 itens para serem finalizados o cadastro.";
+            lblQtdItensParaFinalizarCadastro.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblEventRepeat
             // 
@@ -522,30 +561,18 @@
             lblEventRepeat.AutoSize = true;
             lblEventRepeat.Font = new Font("Segoe UI", 6.75F, FontStyle.Regular, GraphicsUnit.Point);
             lblEventRepeat.ForeColor = SystemColors.ButtonShadow;
-            lblEventRepeat.Location = new Point(551, 64);
+            lblEventRepeat.Location = new Point(6, 31);
             lblEventRepeat.Name = "lblEventRepeat";
             lblEventRepeat.Size = new Size(351, 12);
             lblEventRepeat.TabIndex = 22;
             lblEventRepeat.Text = "A cada 10 segundo(s) é efetuado uma consulta. Evento Repetido: 1000x até o momento.";
             lblEventRepeat.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // lblQtdItensParaFinalizarCadastro
-            // 
-            lblQtdItensParaFinalizarCadastro.AutoSize = true;
-            lblQtdItensParaFinalizarCadastro.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            lblQtdItensParaFinalizarCadastro.ForeColor = Color.OrangeRed;
-            lblQtdItensParaFinalizarCadastro.Location = new Point(570, 44);
-            lblQtdItensParaFinalizarCadastro.Name = "lblQtdItensParaFinalizarCadastro";
-            lblQtdItensParaFinalizarCadastro.Size = new Size(330, 17);
-            lblQtdItensParaFinalizarCadastro.TabIndex = 21;
-            lblQtdItensParaFinalizarCadastro.Text = "Existem 900 itens para serem finalizados o cadastro.";
-            lblQtdItensParaFinalizarCadastro.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // lblGridViewSelectedRowsCompleted
             // 
             lblGridViewSelectedRowsCompleted.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblGridViewSelectedRowsCompleted.AutoSize = true;
-            lblGridViewSelectedRowsCompleted.Location = new Point(898, 89);
+            lblGridViewSelectedRowsCompleted.Location = new Point(899, 73);
             lblGridViewSelectedRowsCompleted.Name = "lblGridViewSelectedRowsCompleted";
             lblGridViewSelectedRowsCompleted.RightToLeft = RightToLeft.Yes;
             lblGridViewSelectedRowsCompleted.Size = new Size(304, 15);
@@ -557,7 +584,7 @@
             // 
             lblGridViewSelectedRowsRemainingValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblGridViewSelectedRowsRemainingValue.AutoSize = true;
-            lblGridViewSelectedRowsRemainingValue.Location = new Point(903, 67);
+            lblGridViewSelectedRowsRemainingValue.Location = new Point(904, 58);
             lblGridViewSelectedRowsRemainingValue.Name = "lblGridViewSelectedRowsRemainingValue";
             lblGridViewSelectedRowsRemainingValue.RightToLeft = RightToLeft.Yes;
             lblGridViewSelectedRowsRemainingValue.Size = new Size(299, 15);
@@ -570,7 +597,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.AutoSize = true;
             label1.ForeColor = SystemColors.ButtonShadow;
-            label1.Location = new Point(352, 91);
+            label1.Location = new Point(10, 112);
             label1.Name = "label1";
             label1.Size = new Size(523, 15);
             label1.TabIndex = 18;
@@ -609,7 +636,7 @@
             // 
             lblEfetuarPagamentoItensSelecionadosDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblEfetuarPagamentoItensSelecionadosDataGridView.AutoSize = true;
-            lblEfetuarPagamentoItensSelecionadosDataGridView.Location = new Point(923, 45);
+            lblEfetuarPagamentoItensSelecionadosDataGridView.Location = new Point(924, 43);
             lblEfetuarPagamentoItensSelecionadosDataGridView.Name = "lblEfetuarPagamentoItensSelecionadosDataGridView";
             lblEfetuarPagamentoItensSelecionadosDataGridView.RightToLeft = RightToLeft.Yes;
             lblEfetuarPagamentoItensSelecionadosDataGridView.Size = new Size(279, 15);
@@ -622,7 +649,7 @@
             lblContaPagarGridViewTotalPago.AutoSize = true;
             lblContaPagarGridViewTotalPago.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             lblContaPagarGridViewTotalPago.ForeColor = Color.Green;
-            lblContaPagarGridViewTotalPago.Location = new Point(10, 65);
+            lblContaPagarGridViewTotalPago.Location = new Point(10, 73);
             lblContaPagarGridViewTotalPago.Name = "lblContaPagarGridViewTotalPago";
             lblContaPagarGridViewTotalPago.Size = new Size(164, 17);
             lblContaPagarGridViewTotalPago.TabIndex = 13;
@@ -631,13 +658,14 @@
             // lblGridViewCartaoCreditoFamilia
             // 
             lblGridViewCartaoCreditoFamilia.AutoSize = true;
-            lblGridViewCartaoCreditoFamilia.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            lblGridViewCartaoCreditoFamilia.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             lblGridViewCartaoCreditoFamilia.ForeColor = SystemColors.ActiveCaptionText;
-            lblGridViewCartaoCreditoFamilia.Location = new Point(197, 43);
+            lblGridViewCartaoCreditoFamilia.Location = new Point(244, 46);
             lblGridViewCartaoCreditoFamilia.Name = "lblGridViewCartaoCreditoFamilia";
-            lblGridViewCartaoCreditoFamilia.Size = new Size(371, 42);
+            lblGridViewCartaoCreditoFamilia.Size = new Size(594, 45);
             lblGridViewCartaoCreditoFamilia.TabIndex = 11;
-            lblGridViewCartaoCreditoFamilia.Text = "Cartão de Crédito Itaú Personnalité Black Cashback: 10 - R$ 17.00,00\r\nCartão de Crédito Nubank: 10 - R$ 17.00,00\r\nCartão de Crédito: 10 - R$ 17.00,00\r\n";
+            lblGridViewCartaoCreditoFamilia.Text = resources.GetString("lblGridViewCartaoCreditoFamilia.Text");
+            lblGridViewCartaoCreditoFamilia.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblContaPagarGridViewTotais
             // 
@@ -673,7 +701,7 @@
             lblEfetuarPagamentoInformativoDuploCliqueGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblEfetuarPagamentoInformativoDuploCliqueGrid.AutoSize = true;
             lblEfetuarPagamentoInformativoDuploCliqueGrid.ForeColor = SystemColors.ButtonShadow;
-            lblEfetuarPagamentoInformativoDuploCliqueGrid.Location = new Point(10, 91);
+            lblEfetuarPagamentoInformativoDuploCliqueGrid.Location = new Point(10, 127);
             lblEfetuarPagamentoInformativoDuploCliqueGrid.Name = "lblEfetuarPagamentoInformativoDuploCliqueGrid";
             lblEfetuarPagamentoInformativoDuploCliqueGrid.Size = new Size(334, 15);
             lblEfetuarPagamentoInformativoDuploCliqueGrid.TabIndex = 6;
@@ -730,21 +758,21 @@
             dgvEfetuarPagamentoListagem.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             dgvEfetuarPagamentoListagem.BackgroundColor = SystemColors.AppWorkspace;
             dgvEfetuarPagamentoListagem.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = SystemColors.Window;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
-            dgvEfetuarPagamentoListagem.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = SystemColors.Window;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvEfetuarPagamentoListagem.DefaultCellStyle = dataGridViewCellStyle3;
             dgvEfetuarPagamentoListagem.EditMode = DataGridViewEditMode.EditProgrammatically;
-            dgvEfetuarPagamentoListagem.Location = new Point(10, 111);
+            dgvEfetuarPagamentoListagem.Location = new Point(10, 145);
             dgvEfetuarPagamentoListagem.Name = "dgvEfetuarPagamentoListagem";
             dgvEfetuarPagamentoListagem.ReadOnly = true;
             dgvEfetuarPagamentoListagem.RowTemplate.Height = 25;
             dgvEfetuarPagamentoListagem.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvEfetuarPagamentoListagem.Size = new Size(1193, 382);
+            dgvEfetuarPagamentoListagem.Size = new Size(1193, 348);
             dgvEfetuarPagamentoListagem.TabIndex = 0;
             dgvEfetuarPagamentoListagem.MultiSelectChanged += DgvEfetuarPagamentoListagem_MultiSelectChanged;
             dgvEfetuarPagamentoListagem.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
@@ -769,7 +797,7 @@
             tbpListarContaReceber.Padding = new Padding(3);
             tbpListarContaReceber.Size = new Size(1208, 501);
             tbpListarContaReceber.TabIndex = 4;
-            tbpListarContaReceber.Text = "Conra a Receber - Listar";
+            tbpListarContaReceber.Text = "Contas a Receber";
             tbpListarContaReceber.UseVisualStyleBackColor = true;
             // 
             // label2
@@ -854,14 +882,14 @@
             dgvContaReceber.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             dgvContaReceber.BackgroundColor = SystemColors.AppWorkspace;
             dgvContaReceber.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvContaReceber.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvContaReceber.DefaultCellStyle = dataGridViewCellStyle4;
             dgvContaReceber.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvContaReceber.Location = new Point(8, 113);
             dgvContaReceber.Name = "dgvContaReceber";
@@ -1012,16 +1040,19 @@
             Name = "Initial";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Tela inicial - Organização Financeira";
+            WindowState = FormWindowState.Maximized;
             Load += Initial_Load;
             tbcInitial.ResumeLayout(false);
             tbpCadastroContaPagar.ResumeLayout(false);
             grbTemplateContaPagar.ResumeLayout(false);
             grbTemplateContaPagar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvContaPagar).EndInit();
-            grbContaPagarHistorico.ResumeLayout(false);
-            grbContaPagarHistorico.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvCadastroConta).EndInit();
+            grbCadastroContaHistorico.ResumeLayout(false);
+            grbCadastroContaHistorico.PerformLayout();
             tbpListarContaPagar.ResumeLayout(false);
             tbpListarContaPagar.PerformLayout();
+            grbAlerta.ResumeLayout(false);
+            grbAlerta.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).EndInit();
             tbpListarContaReceber.ResumeLayout(false);
             tbpListarContaReceber.PerformLayout();
@@ -1036,33 +1067,33 @@
         private TabControl tbcInitial;
         private TabPage tbpCadastroContaPagar;
         private GroupBox grbTemplateContaPagar;
-        private TextBox txtContaPagarValor;
-        private Label lblContaPagarValor;
-        private Label lblContaPagarNameDescription;
-        private ComboBox cboContaPagarAnoMesFinal;
-        private TextBox txtContaPagarNameDescription;
-        private Label lblContaPagarAnoMesFinal;
-        private Label lblContaPagarCategory;
-        private CheckBox ckbContaPagarConsideraMesmoMes;
-        private ComboBox cboContaPagarCategory;
-        private ComboBox cboContaPagarAnoMesInicial;
-        private Label lblContaPagarTipoConta;
-        private Label lblContaPagarAnoMesInicial;
-        private ComboBox cboContaPagarTipoConta;
-        private DataGridView dgvContaPagar;
-        private DateTimePicker dtpContaPagarDataCompra;
-        private Label lblContaPagarDataCompra;
-        private Label lblContaPagarMelhorDiaPagamento;
-        private ComboBox cboContaPagarMelhorDiaPagamento;
-        private ComboBox cboContaPagarFrequencia;
-        private Label lblContaPagarFrequencia;
-        private ComboBox cboContaPagarTipoCadastro;
-        private Label lblContaPagarTipoCadastro;
-        private RichTextBox rtbContaPagarMensagemAdicional;
-        private Label lblContaPagarMensagemAdicional;
-        private Label lblContaPagarDataCriacao;
-        private GroupBox grbContaPagarHistorico;
-        private Button btnContaPagarCadastrar;
+        private TextBox txtCadastroContaValue;
+        private Label lblCadastroContaValor;
+        private Label lblCadastroContaNameDescription;
+        private ComboBox cboCadastroContaFinallyMonthYear;
+        private TextBox txtCadastroContaName;
+        private Label lblCadastroContaAnoMesFinal;
+        private Label lblCadastroContaCategory;
+        private CheckBox ckbCadastroContaConsideraMesmoMes;
+        private ComboBox cboCadastroContaCategory;
+        private ComboBox cboCadastroContaInititalMonthYear;
+        private Label lblCadastroContaTipoConta;
+        private Label lblCadastroContaAnoMesInicial;
+        private ComboBox cboCadastroContaAccount;
+        private DataGridView dgvCadastroConta;
+        private DateTimePicker dtpCadastroContaDate;
+        private Label lblCadastroContaDataCompra;
+        private Label lblCadastroContaBestDay;
+        private ComboBox cboCadastroContaBestDay;
+        private ComboBox cboCadastroContaFrequence;
+        private Label lblCadastroContaFrequencia;
+        private ComboBox cboCadastroContaRegistrationType;
+        private Label lblCadastroContaTipoCadastro;
+        private RichTextBox rtbCadastroContaMensagemAdicional;
+        private Label lblCadastroContaMensagemAdicional;
+        private Label lblCadastroContaDataCriacao;
+        private GroupBox grbCadastroContaHistorico;
+        private Button btnEfetuarCadastroConta;
         private TabPage tbpListarContaPagar;
         private DataGridView dgvEfetuarPagamentoListagem;
         private Label lblEfetuarPagamentoAnoMes;
@@ -1086,13 +1117,12 @@
         private CheckBox cboApenasNaoPagos;
         private Button btnExibirDetalhes;
         private CheckBox cboNaoEnviarMesAnoFinal;
-        private CheckBox cboHabilitarDataCompra;
+        private CheckBox cboCadastroContaHabilitarDate;
         private TabPage tbpEstudosFinanceiros;
         private DataGridView dgvSearchMonthlyAverageAnalysis;
         private Button btnSearchMonthlyAverageAnalysis;
         private ComboBox cboEstudoFinanceiroMesesAnalises;
         private Label lblEstudoFinanceiroMesesSerAnalisado;
-        private CheckBox ckbCartaoCreditoNaira;
         private Button btnExcluirInitial;
         private Label label1;
         private Label lblGridViewSelectedRowsRemainingValue;
@@ -1109,5 +1139,8 @@
         private Label lblAnoMes;
         private ComboBox cboMesAnoContaReceber;
         private DataGridView dgvContaReceber;
+        private GroupBox grbAlerta;
+        private RadioButton rdbCadastroContaReceber;
+        private RadioButton rdbCadastroContaPagar;
     }
 }
