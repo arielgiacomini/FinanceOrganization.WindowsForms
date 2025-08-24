@@ -10,6 +10,24 @@ namespace App.WindowsForms.Services
     {
         public static string? Environment { get; set; } = string.Empty;
 
+        public static async Task<CreateCashReceivableOutput> CreateCashReceivable(CreateCashReceivableViewModel createViewModel)
+        {
+            using var client = new HttpClient();
+
+            var content = new StringContent(JsonConvert.SerializeObject(createViewModel), Encoding.UTF8, "application/json");
+
+            var result = client.PostAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/cash-receivable/register", content).Result;
+
+            if (!result.IsSuccessStatusCode)
+            {
+                return new CreateCashReceivableOutput();
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<CreateCashReceivableOutput>(response) ?? new CreateCashReceivableOutput();
+        }
+
         public static async Task<SearchCashReceivableOutput> SearchCashReceivable(SearchCashReceivableViewModel viewModel)
         {
             using var client = new HttpClient();

@@ -1,29 +1,33 @@
 ﻿using App.Forms.Enums;
 using App.WindowsForms.Enums;
 
-namespace App.Forms.ViewModel
+namespace App.WindowsForms.ViewModel
 {
-    public class CreateBillToPayViewModel
+    public class CreateCashReceivableViewModel
     {
         public string? Name { get; set; }
         public string? Account { get; set; }
         public string? Frequence { get; set; }
-
-        /// <summary>
-        /// Este campo faz parte do processo de identificação do item, deixando as opções de compra livre ou conta fixa.
-        /// </summary>
         public string? RegistrationType { get; set; }
-
+        /// <summary>
+        /// Data do acordo de recebimento
+        /// </summary>
+        public DateTime? AgreementDate { get; set; }
         public string? InitialMonthYear { get; set; }
         public string? FynallyMonthYear { get; set; }
         public string? Category { get; set; }
         public decimal Value { get; set; }
-        public DateTime? PurchaseDate { get; set; }
-        public int? BestPayDay { get; set; }
+        /// <summary>
+        /// Dia escolhido para recebimento
+        /// </summary>
+        public int BestReceivingDay { get; set; }
         public string? AdditionalMessage { get; set; }
+        /// <summary>
+        /// Inativação - Delete Lógico da Tabela
+        /// </summary>
+        public bool? Enabled { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime? LastChangeDate { get; set; }
-        public bool RegistrationSuccess { get; set; }
         public RegistrationStatus Status { get; set; } = RegistrationStatus.AwaitRequestAPI;
         public AccountType? AccountType { get; set; }
     }
