@@ -1,4 +1,5 @@
-﻿using App.Forms.Services;
+﻿using App.Forms.Enums;
+using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using App.WindowsForms.Repository;
@@ -16,7 +17,6 @@ namespace App.Forms.Forms.Edição
         public decimal valorContaPagarDigitadoTextBox = 0;
         public string? Environment { get; set; }
         public bool EditInLote { get; set; } = false;
-        public Type MyProperty { get; set; }
 
         private AccountRepository _accountRepository;
 

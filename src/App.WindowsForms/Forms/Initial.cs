@@ -77,10 +77,8 @@ namespace App.Forms.Forms
             lblVersion.Text = InfoHeader.Version;
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
-            await PreencherComboBoxContaPagarCategoriaAsync();
             await PreencherComboBoxCadastroContaAccount();
             await PreencherComboBoxCadastroContaCategoriaAsync();
-            await PreencherComboBoxContaPagarAccount();
             PreencherComboBoxAnoMes();
             PreencherComboBoxEstudoFinanceiroQuantideMeses();
             RegraCamposAnoMes();
@@ -802,12 +800,8 @@ namespace App.Forms.Forms
         {
             cboCadastroContaCategory.Items.Clear();
             cboCadastroContaAccount.Items.Clear();
-            PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
             PreencherComboBoxCadastroContaAccount(tabPageName, account).GetAwaiter().GetResult();
-            cboContaPagarCategory.Items.Clear();
-            cboContaPagarTipoConta.Items.Clear();
             PreencherComboBoxCadastroContaCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
-            PreencherComboBoxContaPagarAccount(tabPageName, account).GetAwaiter().GetResult();
         }
 
         private async void BtnEfetuarPagamentoBuscar_Click(object sender, EventArgs e)
@@ -1747,7 +1741,7 @@ namespace App.Forms.Forms
                 lblCadastroContaDataCompra.Text = "Data de Compra: ";
                 lblCadastroContaBestDay.Text = "Melhor Dia de Pagamento: ";
 
-                PreencherComboBoxContaPagarCategoriaAsync();
+                PreencherComboBoxContaReceberCategoriaAsync();
             }
         }
 
