@@ -43,7 +43,6 @@
         /// </summary>
         public bool? Enabled { get; set; }
         public DateTime? LastChangeDate { get; set; }
-
         /// <summary>
         /// Deve editar a conta de registro (pai) desta.
         /// </summary>
