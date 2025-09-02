@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Initial));
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             tbcInitial = new TabControl();
             tbpCadastroContaPagar = new TabPage();
             grbTemplateContaPagar = new GroupBox();
@@ -86,7 +86,7 @@
             btnEfetuarPagamentoBuscar = new Button();
             lblEfetuarPagamentoAnoMes = new Label();
             cboAnoMesContaPagar = new ComboBox();
-            dgvEfetuarPagamentoListagem = new DataGridView();
+            dgvContaPagar = new DataGridView();
             tbpListarContaReceber = new TabPage();
             label2 = new Label();
             lblValorRecebido = new Label();
@@ -113,7 +113,7 @@
             grbCadastroContaHistorico.SuspendLayout();
             tbpListarContaPagar.SuspendLayout();
             grbAlerta.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvContaPagar).BeginInit();
             tbpListarContaReceber.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContaReceber).BeginInit();
             tbpEstudosFinanceiros.SuspendLayout();
@@ -260,7 +260,7 @@
             dgvCadastroConta.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvCadastroConta.Size = new Size(1128, 200);
             dgvCadastroConta.TabIndex = 15;
-            dgvCadastroConta.RowsAdded += DgvContaPagar_RowsAdded;
+            dgvCadastroConta.RowsAdded += DgvCadastroContaPagar_RowsAdded;
             dgvCadastroConta.SelectionChanged += DgvContaPagar_SelectionChanged;
             // 
             // grbCadastroContaHistorico
@@ -523,7 +523,7 @@
             tbpListarContaPagar.Controls.Add(btnEfetuarPagamentoBuscar);
             tbpListarContaPagar.Controls.Add(lblEfetuarPagamentoAnoMes);
             tbpListarContaPagar.Controls.Add(cboAnoMesContaPagar);
-            tbpListarContaPagar.Controls.Add(dgvEfetuarPagamentoListagem);
+            tbpListarContaPagar.Controls.Add(dgvContaPagar);
             tbpListarContaPagar.Location = new Point(4, 24);
             tbpListarContaPagar.Name = "tbpListarContaPagar";
             tbpListarContaPagar.Size = new Size(1208, 501);
@@ -749,38 +749,38 @@
             cboAnoMesContaPagar.Size = new Size(156, 23);
             cboAnoMesContaPagar.TabIndex = 1;
             // 
-            // dgvEfetuarPagamentoListagem
+            // dgvContaPagar
             // 
-            dgvEfetuarPagamentoListagem.AllowUserToAddRows = false;
-            dgvEfetuarPagamentoListagem.AllowUserToDeleteRows = false;
-            dgvEfetuarPagamentoListagem.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvEfetuarPagamentoListagem.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dgvEfetuarPagamentoListagem.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
-            dgvEfetuarPagamentoListagem.BackgroundColor = SystemColors.AppWorkspace;
-            dgvEfetuarPagamentoListagem.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = SystemColors.Window;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
-            dgvEfetuarPagamentoListagem.DefaultCellStyle = dataGridViewCellStyle3;
-            dgvEfetuarPagamentoListagem.EditMode = DataGridViewEditMode.EditProgrammatically;
-            dgvEfetuarPagamentoListagem.Location = new Point(10, 145);
-            dgvEfetuarPagamentoListagem.Name = "dgvEfetuarPagamentoListagem";
-            dgvEfetuarPagamentoListagem.ReadOnly = true;
-            dgvEfetuarPagamentoListagem.RowTemplate.Height = 25;
-            dgvEfetuarPagamentoListagem.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvEfetuarPagamentoListagem.Size = new Size(1193, 348);
-            dgvEfetuarPagamentoListagem.TabIndex = 0;
-            dgvEfetuarPagamentoListagem.MultiSelectChanged += DgvEfetuarPagamentoListagem_MultiSelectChanged;
-            dgvEfetuarPagamentoListagem.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
-            dgvEfetuarPagamentoListagem.CellMouseClick += DgvEfetuarPagamentoListagem_CellMouseClick;
-            dgvEfetuarPagamentoListagem.CellMouseDown += EditarRegistroSelecionado_DgvEfetuarPagamentoListagem_CellMouseDown;
-            dgvEfetuarPagamentoListagem.ColumnSortModeChanged += DgvEfetuarPagamentoListagem_ColumnSortModeChanged;
-            dgvEfetuarPagamentoListagem.RowsAdded += DgvEfetuarPagamentoListagem_RowsAdded;
-            dgvEfetuarPagamentoListagem.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
+            dgvContaPagar.AllowUserToAddRows = false;
+            dgvContaPagar.AllowUserToDeleteRows = false;
+            dgvContaPagar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvContaPagar.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dgvContaPagar.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            dgvContaPagar.BackgroundColor = SystemColors.AppWorkspace;
+            dgvContaPagar.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Window;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgvContaPagar.DefaultCellStyle = dataGridViewCellStyle1;
+            dgvContaPagar.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dgvContaPagar.Location = new Point(10, 145);
+            dgvContaPagar.Name = "dgvContaPagar";
+            dgvContaPagar.ReadOnly = true;
+            dgvContaPagar.RowTemplate.Height = 25;
+            dgvContaPagar.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvContaPagar.Size = new Size(1193, 348);
+            dgvContaPagar.TabIndex = 0;
+            dgvContaPagar.MultiSelectChanged += DgvEfetuarPagamentoListagem_MultiSelectChanged;
+            dgvContaPagar.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
+            dgvContaPagar.CellMouseClick += DgvEfetuarPagamentoListagem_CellMouseClick;
+            dgvContaPagar.CellMouseDown += EditarRegistroSelecionado_DgvEfetuarPagamentoListagem_CellMouseDown;
+            dgvContaPagar.ColumnSortModeChanged += DgvEfetuarPagamentoListagem_ColumnSortModeChanged;
+            dgvContaPagar.RowsAdded += DgvContaPagar_RowsAdded;
+            dgvContaPagar.SelectionChanged += DgvEfetuarPagamentoListagem_SelectionChanged;
             // 
             // tbpListarContaReceber
             // 
@@ -882,14 +882,14 @@
             dgvContaReceber.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             dgvContaReceber.BackgroundColor = SystemColors.AppWorkspace;
             dgvContaReceber.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = SystemColors.Window;
-            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
-            dgvContaReceber.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvContaReceber.DefaultCellStyle = dataGridViewCellStyle2;
             dgvContaReceber.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvContaReceber.Location = new Point(8, 113);
             dgvContaReceber.Name = "dgvContaReceber";
@@ -898,6 +898,8 @@
             dgvContaReceber.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvContaReceber.Size = new Size(1193, 382);
             dgvContaReceber.TabIndex = 1;
+            dgvContaReceber.CellMouseDown += EditarRegistroSelecionadoContaReceber_CellMouseDown;
+            dgvContaReceber.RowsAdded += DgvContaReceber_RowsAdded;
             // 
             // tbpEstudosFinanceiros
             // 
@@ -1052,7 +1054,7 @@
             tbpListarContaPagar.PerformLayout();
             grbAlerta.ResumeLayout(false);
             grbAlerta.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvEfetuarPagamentoListagem).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvContaPagar).EndInit();
             tbpListarContaReceber.ResumeLayout(false);
             tbpListarContaReceber.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContaReceber).EndInit();
@@ -1094,7 +1096,7 @@
         private GroupBox grbCadastroContaHistorico;
         private Button btnEfetuarCadastroConta;
         private TabPage tbpListarContaPagar;
-        private DataGridView dgvEfetuarPagamentoListagem;
+        private DataGridView dgvContaPagar;
         private Label lblEfetuarPagamentoAnoMes;
         private ComboBox cboAnoMesContaPagar;
         private Button btnEfetuarPagamentoBuscar;

@@ -45,5 +45,18 @@ namespace App.WindowsForms.Services
 
             return JsonConvert.DeserializeObject<SearchCashReceivableOutput>(response) ?? new SearchCashReceivableOutput();
         }
+
+        public static async Task<EditCashReceivableOutput> UpdateCashReceivable(EditCashReceivableViewModel viewModel)
+        {
+            using var client = new HttpClient();
+            var content = new StringContent(JsonConvert.SerializeObject(viewModel), Encoding.UTF8, "application/json");
+            var result = client.PutAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/cash-receivable/edit", content).Result;
+            if (!result.IsSuccessStatusCode)
+            {
+                return new EditCashReceivableOutput();
+            }
+            var response = await result.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<EditCashReceivableOutput>(response) ?? new EditCashReceivableOutput();
+        }
     }
 }
