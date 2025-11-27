@@ -924,10 +924,14 @@ namespace App.Forms.Forms
             dgvContaReceber.DataSource = dataSourceOrderBy;
             dgvContaReceber.Columns[0].HeaderText = "Id";
             dgvContaReceber.Columns[0].Visible = false;
+
             dgvContaReceber.Columns[1].HeaderText = "Id da tabela pai";
             dgvContaReceber.Columns[1].Visible = false;
+
             dgvContaReceber.Columns[2].HeaderText = "Conta";
+
             dgvContaReceber.Columns[3].HeaderText = "Descrição";
+
             dgvContaReceber.Columns[4].HeaderText = "Categoria";
 
             dgvContaReceber.Columns[5].HeaderText = "R$ Total";
@@ -938,21 +942,36 @@ namespace App.Forms.Forms
             dgvContaReceber.Columns[6].DefaultCellStyle.Format = "C2";
             dgvContaReceber.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvContaReceber.Columns[7].HeaderText = "Vencimento";
-            dgvContaReceber.Columns[8].HeaderText = "Mês/Ano";
-            dgvContaReceber.Columns[9].HeaderText = "Frequência";
-            dgvContaReceber.Columns[10].HeaderText = "Tipo";
-            dgvContaReceber.Columns[11].HeaderText = "Data de Recebimento";
-            dgvContaReceber.Columns[12].HeaderText = "Recebido?";
-            dgvContaReceber.Columns[13].HeaderText = "Mensagem";
-            dgvContaReceber.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvContaReceber.Columns[14].HeaderText = "Data do Acordo";
-            dgvContaReceber.Columns[15].HeaderText = "Habilitado?";
-            dgvContaReceber.Columns[16].HeaderText = "Data de Criação";
-            dgvContaReceber.Columns[16].Visible = false;
-            dgvContaReceber.Columns[17].HeaderText = "Data de Alteração";
+            dgvContaReceber.Columns[7].HeaderText = "R$ Valor Total";
+            dgvContaReceber.Columns[7].DefaultCellStyle.Format = "C2";
+            dgvContaReceber.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvContaReceber.Columns[7].Visible = false;
+
+            dgvContaReceber.Columns[8].HeaderText = "Qtd Compras";
+            dgvContaReceber.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
+            dgvContaReceber.Columns[8].Visible = false;
+
+            dgvContaReceber.Columns[9].HeaderText = "Data do Acordo";
+
+            dgvContaReceber.Columns[10].HeaderText = "Vencimento";
+
+            dgvContaReceber.Columns[11].HeaderText = "Mês/Ano";
+
+            dgvContaReceber.Columns[12].HeaderText = "Frequência";
+
+            dgvContaReceber.Columns[13].HeaderText = "Tipo";
+
+            dgvContaReceber.Columns[14].HeaderText = "Data de Recebimento";
+
+            dgvContaReceber.Columns[15].HeaderText = "Recebido?";
+
+            dgvContaReceber.Columns[16].HeaderText = "Mensagem";
+            dgvContaReceber.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+            dgvContaReceber.Columns[17].HeaderText = "Data de Criação";
             dgvContaReceber.Columns[17].Visible = false;
-            dgvContaReceber.Columns[18].HeaderText = "Detalhes";
+
+            dgvContaReceber.Columns[18].HeaderText = "Data de Alteração";
             dgvContaReceber.Columns[18].Visible = false;
         }
 
@@ -1840,20 +1859,25 @@ namespace App.Forms.Forms
                 {
                     Id = identificadorContaReceber,
                     IdCashReceivableRegistration = Convert.ToInt32(dgvContaReceber.Rows[e.RowIndex].Cells[1].Value?.ToString()),
-                    Name = dgvContaReceber.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                     Account = dgvContaReceber.Rows[e.RowIndex].Cells[2].Value?.ToString(),
-                    Frequence = dgvContaReceber.Rows[e.RowIndex].Cells[9].Value?.ToString(),
-                    RegistrationType = dgvContaReceber.Rows[e.RowIndex].Cells[10].Value?.ToString(),
-                    AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[14].Value?.ToString()),
-                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[7].Value?.ToString())!.Value,
-                    YearMonth = dgvContaReceber.Rows[e.RowIndex].Cells[8].Value?.ToString(),
+                    Name = dgvContaReceber.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                     Category = dgvContaReceber.Rows[e.RowIndex].Cells[4].Value?.ToString(),
                     Value = Convert.ToDecimal(dgvContaReceber.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
                     ManipulatedValue = Convert.ToDecimal(dgvContaReceber.Rows[e.RowIndex].Cells[6].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
-                    DateReceived = dgvContaReceber.Rows[e.RowIndex].Cells[11].Value?.ToString(),
-                    HasReceived = Convert.ToBoolean(dgvContaReceber.Rows[e.RowIndex].Cells[12].Value?.ToString()),
-                    AdditionalMessage = dgvContaReceber.Rows[e.RowIndex].Cells[13].Value?.ToString(),
-                    LastChangeDate = DateTime.Now
+                    /*Cells[7] - TotalValue*/
+                    /*Cells[8] - DetailsQuantity*/
+                    AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
+                    YearMonth = dgvContaReceber.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                    Frequence = dgvContaReceber.Rows[e.RowIndex].Cells[12].Value?.ToString(),
+                    RegistrationType = dgvContaReceber.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                    DateReceived = dgvContaReceber.Rows[e.RowIndex].Cells[14].Value?.ToString(),
+                    HasReceived = Convert.ToBoolean(dgvContaReceber.Rows[e.RowIndex].Cells[15].Value?.ToString()),
+                    AdditionalMessage = dgvContaReceber.Rows[e.RowIndex].Cells[16].Value?.ToString(),
+                    /*Cells[17] - CreationDate*/
+                    LastChangeDate = DateTime.Now /*Cells[18] - LastChangeDate*/
+                    /*Cells[19] - Details*/
+                    /*Cells[20] - AccountObject*/
                 };
 
                 FrmEdit frmPagamento = new()
@@ -1877,11 +1901,64 @@ namespace App.Forms.Forms
                     ColorTranslator.FromHtml(account!.Colors!.BackgroundColorHexadecimal),
                     ColorTranslator.FromHtml(account!.Colors!.FonteColorHexadecimal));
 
-                if (Convert.ToBoolean(row.Cells[12].Value))
+                if (Convert.ToBoolean(row.Cells[15].Value))
                 {
                     SetColorRows(row, Color.DarkGreen, Color.White);
                 }
             }
+        }
+
+        private void BtnContaReceberExibirDetalhes_Click(object sender, EventArgs e)
+        {
+            List<Guid> idsContaReceber = new();
+            List<int> idCashReceivableRegistrations = new();
+            var searchContaReceberViewModel = new SearchCashReceivableViewModel();
+
+            foreach (DataGridViewRow row in dgvContaReceber.SelectedRows)
+            {
+                _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid id);
+                _ = int.TryParse(row.Cells[1].Value.ToString(), out int idFixedInvoice);
+
+                idsContaReceber.Add(id);
+                idCashReceivableRegistrations.Add(idFixedInvoice);
+            }
+
+            searchContaReceberViewModel.IdCashReceivableRegistrations = idCashReceivableRegistrations.ToArray();
+
+            FrmExibirDetalhes frmExcluirDetalhes = new()
+            {
+                PostSearchCashReceivableViewModel = searchContaReceberViewModel,
+                Environment = Environment,
+                CreditCard = _accountRepository.GetAccountsOnlyCreditCard()
+            };
+
+            frmExcluirDetalhes.ShowDialog();
+        }
+
+        private void DgvContaReceber_SelectionChange(object sender, EventArgs e)
+        {
+            decimal valorTotalItensSelecionados = 0;
+            decimal valorManipuladoItensSelecionados = 0;
+            decimal valorRealizadoItensSelecionados = 0;
+            int quantidadeTotalItensSelecionados = dgvContaReceber.SelectedRows.Count;
+
+            foreach (DataGridViewRow row in dgvContaReceber.SelectedRows)
+            {
+                bool isOKTotalValue = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal totalValue);
+                valorTotalItensSelecionados += isOKTotalValue ? totalValue : 0;
+
+                bool isOKRemainingValue = decimal.TryParse(row.Cells[6].Value.ToString(), out decimal remainingValue);
+                valorManipuladoItensSelecionados += isOKRemainingValue ? remainingValue : 0;
+
+                bool isOKCompletedValue = decimal.TryParse(row.Cells[6].Value.ToString(), out decimal completedValue);
+                valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
+            }
+
+            lblContaReceberTotalItensSelecionados.Text = string
+                .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
+
+            lblContaReceberValorRestanteItensSelecionados.Text = string
+                .Concat("Valor Manipulado dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorManipuladoItensSelecionados.ToString("C"));
         }
     }
 }

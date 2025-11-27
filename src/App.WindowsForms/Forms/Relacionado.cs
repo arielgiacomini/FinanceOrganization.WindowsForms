@@ -5,7 +5,7 @@ namespace App.WindowsForms.Forms.Excluir
     public partial class Relacionado : Form
     {
         public string? Environment { get; set; }
-        public Dictionary<string, IList<DgvVisualizarContaPagarDataSource>> LastSearch = new();
+        public Dictionary<string, IList<object>> LastSearch = new();
         public Guid Identificador;
 
         public Relacionado()
@@ -15,16 +15,21 @@ namespace App.WindowsForms.Forms.Excluir
 
         private void FrmRegistroRelacionado_Load(object sender, EventArgs e)
         {
-            var lastSearch = LastSearch
-                .FirstOrDefault().Value
+            // Fix: Remove incorrect access to 'Details' property, use the list of Details directly
+            var firstList = LastSearch.FirstOrDefault().Value;
+            if (firstList == null || firstList.Count == 0)
+                return;
+
+            // Filter the list for Details with matching Id
+            var lastSearch = firstList
+                .OfType<Details>() // Only consider items of type Details
                 .Where(x => x.Id == Identificador)
-                .Select(show => show.Details!.ToList())
-                .FirstOrDefault()!
-                .OrderBy(order => order.PurchaseDate)
                 .ToList();
 
-            if (lastSearch != null)
+            if (lastSearch.Count > 0)
             {
+                lastSearch = lastSearch.OrderBy(order => order.PurchaseDate).ToList();
+
                 PreecherDataGridViewExcluirDetalhes(lastSearch);
 
                 PreecherPrecoMedio();

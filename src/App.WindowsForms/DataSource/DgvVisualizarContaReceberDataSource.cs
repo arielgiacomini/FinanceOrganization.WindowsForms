@@ -1,4 +1,6 @@
-﻿namespace App.WindowsForms.DataSource
+﻿using App.WindowsForms.Entities;
+
+namespace App.WindowsForms.DataSource
 {
     public class DgvVisualizarContaReceberDataSource
     {
@@ -16,12 +18,35 @@
         /// </summary>
         public decimal ManipulatedValue { get; set; }
         /// <summary>
+        /// Valor total somado
+        /// </summary>
+        ///
+        public decimal TotalValue
+        {
+            get
+            {
+                return Value + ManipulatedValue;
+            }
+            private set { }
+        }
+        /// <summary>
+        /// Quantidade de SubContas a Receber relacionadas a este gasto
+        /// </summary>
+        public int DetailsQuantity { get; set; } = 0;
+        /// <summary>
+        /// Data do acordo de recebimento
+        /// </summary>
+        public DateTime? AgreementDate { get; set; }
+        /// <summary>
         /// Data de Vencimento da Conta a Receber
         /// </summary>
         public DateTime? DueDate { get; set; }
         public string YearMonth { get; set; }
         public string Frequence { get; set; }
-        public string RegistrationType { get; set; }
+        /// <summary>
+        /// Este campo faz parte do processo de identificação do item, deixando as opções de compra livre ou conta fixa.
+        /// </summary>
+        public string? RegistrationType { get; set; }
         /// <summary>
         /// Data de Recebimento
         /// </summary>
@@ -34,17 +59,10 @@
         /// Informações adicionais
         /// </summary>
         public string AdditionalMessage { get; set; }
-        /// <summary>
-        /// Data do acordo de recebimento
-        /// </summary>
-        public DateTime? AgreementDate { get; set; }
-        /// <summary>
-        /// Inativação - Delete Lógico da Tabela
-        /// </summary>
-        public bool? Enabled { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime? LastChangeDate { get; set; }
         public IList<SearchCashReceivableDataDetails> Details { get; set; }
+        public Account? AccountObject { get; set; }
     }
 
     public class SearchCashReceivableDataDetails

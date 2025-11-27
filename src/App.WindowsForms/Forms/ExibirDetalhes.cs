@@ -3,8 +3,11 @@ using App.Forms.Forms.Edição;
 using App.Forms.Services;
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
+using App.WindowsForms.DataSource;
 using App.WindowsForms.Entities;
+using App.WindowsForms.Enums;
 using App.WindowsForms.Forms.Excluir;
+using App.WindowsForms.Services;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
 using Domain.Utils;
@@ -19,8 +22,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
     {
         public DeleteBillToPayViewModel DeleteBillToPayViewModel { get; set; } = new DeleteBillToPayViewModel();
         public SearchBillToPayViewModel PostSearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
+        public SearchCashReceivableViewModel PostSearchCashReceivableViewModel { get; set; } = new SearchCashReceivableViewModel();
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
-        public Dictionary<string, IList<DgvVisualizarContaPagarDataSource>> LastSearch = new();
+
+        public Dictionary<string, IList<object>> LastSearch = new();
         public string? Environment { get; set; }
         public IList<Account>? CreditCard
         {
@@ -34,6 +39,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private static List<Account>? _creditCard;
         private static List<string>? _listCreditCard;
 
+        private bool EH_CONTA_PAGAR = true;
+
         public FrmExibirDetalhes()
         {
             InitializeComponent();
@@ -41,6 +48,16 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async void FrmExcluirDetalhes_Load(object sender, EventArgs e)
         {
+            if (PostSearchBillToPayViewModel.IdBillToPayRegistrations != null)
+            {
+                EH_CONTA_PAGAR = true;
+            }
+            else if (PostSearchCashReceivableViewModel.IdCashReceivableRegistrations != null)
+            {
+                EH_CONTA_PAGAR = false;
+                btnShowDetails.Visible = false;
+            }
+
             await CarregamentoTelaAgain();
         }
 
@@ -58,32 +75,39 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private void PreecherPrecoMedio()
         {
-            decimal valorTotalItens = 0;
-            int quantidadeItensPagos = 0;
-
-            foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
+            try
             {
-                bool isOkValue = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
-                bool isOkPay = bool.TryParse(row.Cells[15].Value.ToString(), out bool hasPay);
+                decimal valorTotalItens = 0;
+                int quantidadeItensPagos = 0;
+
+                foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
+                {
+                    bool isOkValue = decimal.TryParse(row.Cells[7]?.Value?.ToString(), out decimal valor);
+                    bool isOkPay = bool.TryParse(row.Cells[15]?.Value?.ToString(), out bool hasPay);
 
 
-                valorTotalItens += isOkValue && hasPay ? valor : 0;
-                quantidadeItensPagos += isOkPay & hasPay ? 1 : 0;
+                    valorTotalItens += isOkValue && hasPay ? valor : 0;
+                    quantidadeItensPagos += isOkPay & hasPay ? 1 : 0;
+                }
+
+                string descricaoConta = dgvExcluirDetalhes
+                    .Rows[dgvExcluirDetalhes
+                    .Rows.GetFirstRow(DataGridViewElementStates.Selected)]
+                    .Cells[3].Value?.ToString() ?? string.Empty;
+
+                decimal avgPrice = 0;
+                if (quantidadeItensPagos > 0)
+                {
+                    avgPrice = valorTotalItens / quantidadeItensPagos;
+                }
+
+                lblValorMedioOnlyPagos.Text = string
+                    .Concat($"[{descricaoConta}] - ", "Valor Médio: ", avgPrice.ToString("C"));
             }
-
-            string descricaoConta = dgvExcluirDetalhes
-                .Rows[dgvExcluirDetalhes
-                .Rows.GetFirstRow(DataGridViewElementStates.Selected)]
-                .Cells[3].Value?.ToString() ?? string.Empty;
-
-            decimal avgPrice = 0;
-            if (quantidadeItensPagos > 0)
+            catch (Exception ex)
             {
-                avgPrice = valorTotalItens / quantidadeItensPagos;
-            }
 
-            lblValorMedioOnlyPagos.Text = string
-                .Concat($"[{descricaoConta}] - ", "Valor Médio: ", avgPrice.ToString("C"));
+            }
         }
 
         private void PreencherlblTotaisRegistrosEValores()
@@ -106,18 +130,41 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         {
             LastSearch.Clear();
 
-            var resultSearch = await BillToPayServices.SearchBillToPay(PostSearchBillToPayViewModel);
+            IList<DgvVisualizarContaPagarDataSource> dgvVisualizarContaPagarDataSources = new List<DgvVisualizarContaPagarDataSource>();
+            IList<DgvVisualizarContaReceberDataSource> dgvVisualizarContaReceberDataSources = new List<DgvVisualizarContaReceberDataSource>();
 
-            var dataSource = MapSearchResultToDataSource(resultSearch);
+            if (EH_CONTA_PAGAR)
+            {
+                SearchBillToPayOutput contaPagar = new();
 
-            LastSearch.Add(DateTime.Now.ToString(), dataSource);
+                contaPagar = await BillToPayServices.SearchBillToPay(PostSearchBillToPayViewModel);
 
-            IList<DgvVisualizarContaPagarDataSource> all = OrderingRule(dataSource);
+                dgvVisualizarContaPagarDataSources = MapSearchResultContaPagarToDataSource(contaPagar);
 
-            PreecherDataGridViewExcluirDetalhes(all);
+                //LastSearch.Add(DateTime.Now.ToString(), (IList<object>)dgvVisualizarContaPagarDataSources);
+
+                IList<DgvVisualizarContaPagarDataSource> allPagar = OrdenacaoRegraContasPagar(dgvVisualizarContaPagarDataSources);
+
+                PreecherDataGridViewDetalhes<DgvVisualizarContaPagarDataSource>(allPagar);
+            }
+
+            if (!EH_CONTA_PAGAR)
+            {
+                SearchCashReceivableOutput contaReceber = new();
+
+                contaReceber = await CashReceivableServices.SearchCashReceivable(PostSearchCashReceivableViewModel);
+
+                dgvVisualizarContaReceberDataSources = MapSearchResultContaReceberToDataSource(contaReceber);
+
+                //LastSearch.Add(DateTime.Now.ToString(), (IList<object>)dgvVisualizarContaReceberDataSources);
+
+                IList<DgvVisualizarContaReceberDataSource> allReceber = OrdenacaoRegraContasReceber(dgvVisualizarContaReceberDataSources);
+
+                PreecherDataGridViewDetalhes<DgvVisualizarContaReceberDataSource>(allReceber, false);
+            }
         }
 
-        private static IList<DgvVisualizarContaPagarDataSource> OrderingRule(IList<DgvVisualizarContaPagarDataSource> dataSource)
+        private static IList<DgvVisualizarContaPagarDataSource> OrdenacaoRegraContasPagar(IList<DgvVisualizarContaPagarDataSource> dataSource)
         {
             ConcurrentDictionary<int, DgvVisualizarContaPagarDataSource> dictionary = new();
             int contador = 0;
@@ -168,12 +215,63 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             return all;
         }
 
-        private static bool FewRecords(IList<DgvVisualizarContaPagarDataSource> dataSource)
+        private static IList<DgvVisualizarContaReceberDataSource> OrdenacaoRegraContasReceber(IList<DgvVisualizarContaReceberDataSource> dataSource)
+        {
+            ConcurrentDictionary<int, DgvVisualizarContaReceberDataSource> dictionary = new();
+            int contador = 0;
+
+            List<DgvVisualizarContaReceberDataSource> topRecords = new();
+
+            if (!FewRecords(dataSource))
+            {
+                topRecords = dataSource
+                    .Where(x => x.HasReceived && x.DueDate < DateTime.Now)
+                    .OrderByDescending(dueDate => dueDate.DueDate)
+                    .ToList()
+                    .Take(8)
+                    .ToList();
+            }
+
+            var dataSourceOrderBy = dataSource
+            .OrderBy(hasPay => hasPay.HasReceived)
+            .ThenBy(creditCard => _listCreditCard?.Contains(creditCard.Account))
+            .ThenBy(dueDate => dueDate.DueDate)
+            .ThenByDescending(purchase => purchase.AgreementDate)
+            .ToList();
+
+            foreach (var topThree in topRecords.OrderBy(dueDate => dueDate.DueDate))
+            {
+                contador++;
+
+                dataSourceOrderBy.Remove(topThree);
+
+                dictionary.TryAdd(contador, topThree);
+            }
+
+            foreach (var item in dataSourceOrderBy)
+            {
+                contador++;
+
+                dictionary.TryAdd(contador, item);
+            }
+
+            IList<DgvVisualizarContaReceberDataSource> all
+                    = new List<DgvVisualizarContaReceberDataSource>(dictionary.Count);
+
+            foreach (var item in dictionary)
+            {
+                all.Add(item.Value);
+            }
+
+            return all;
+        }
+
+        private static bool FewRecords<T>(IList<T> dataSource)
         {
             return dataSource.Count <= 18;
         }
 
-        private void PreecherDataGridViewExcluirDetalhes(IList<DgvVisualizarContaPagarDataSource> dataSourceOrderBy)
+        private void PreecherDataGridViewDetalhes<T>(object dataSourceOrderBy, bool contaPagar = true)
         {
             dgvExcluirDetalhes.DataSource = dataSourceOrderBy;
             dgvExcluirDetalhes.Columns[0].HeaderText = "Id";
@@ -181,36 +279,42 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.Columns[1].HeaderText = "Id da tabela pai";
             dgvExcluirDetalhes.Columns[1].Visible = false;
             dgvExcluirDetalhes.Columns[2].HeaderText = "Conta";
+            dgvExcluirDetalhes.Columns[2].Visible = false;
             dgvExcluirDetalhes.Columns[3].HeaderText = "Descrição";
             dgvExcluirDetalhes.Columns[4].HeaderText = "Categoria";
-            dgvExcluirDetalhes.Columns[5].HeaderText = "R$ Restante";
+
+
+            dgvExcluirDetalhes.Columns[5].HeaderText = contaPagar ? "R$ Restante" : "R$ Valor";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[6].HeaderText = "R$ Realizado";
+            dgvExcluirDetalhes.Columns[6].HeaderText = contaPagar ? "R$ Realizado" : "R$ Valor Manipulado";
             dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvExcluirDetalhes.Columns[7].HeaderText = "R$ Total";
             dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvExcluirDetalhes.Columns[7].Visible = contaPagar;
             dgvExcluirDetalhes.Columns[8].HeaderText = "Qtd Compras";
             dgvExcluirDetalhes.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
-            dgvExcluirDetalhes.Columns[9].HeaderText = "Data de Compra";
+            dgvExcluirDetalhes.Columns[8].Visible = contaPagar;
+            dgvExcluirDetalhes.Columns[9].HeaderText = contaPagar ? "Data de Compra" : "Data do Acordo";
             dgvExcluirDetalhes.Columns[10].HeaderText = "Vencimento";
             dgvExcluirDetalhes.Columns[11].HeaderText = "Mês/Ano";
             dgvExcluirDetalhes.Columns[12].HeaderText = "Frequência";
             dgvExcluirDetalhes.Columns[13].HeaderText = "Tipo";
-            dgvExcluirDetalhes.Columns[14].HeaderText = "Data de Pagamento";
-            dgvExcluirDetalhes.Columns[15].HeaderText = "Pago?";
+            dgvExcluirDetalhes.Columns[14].HeaderText = contaPagar ? "Data de Pagamento" : "Data de Recebimento";
+            dgvExcluirDetalhes.Columns[15].HeaderText = contaPagar ? "Pago?" : "Recebido?";
+
+
             dgvExcluirDetalhes.Columns[16].HeaderText = "Mensagem";
             dgvExcluirDetalhes.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dgvExcluirDetalhes.Columns[17].HeaderText = "Data de Criação";
             dgvExcluirDetalhes.Columns[17].Visible = false;
             dgvExcluirDetalhes.Columns[18].HeaderText = "Data de Alteração";
             dgvExcluirDetalhes.Columns[18].Visible = false;
-            dgvExcluirDetalhes.Columns[19].Visible = false;
         }
 
-        private static IList<DgvVisualizarContaPagarDataSource> MapSearchResultToDataSource(SearchBillToPayOutput searchBillToPayOutput)
+        private static IList<DgvVisualizarContaPagarDataSource> MapSearchResultContaPagarToDataSource(SearchBillToPayOutput searchBillToPayOutput)
         {
             IList<DgvVisualizarContaPagarDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvVisualizarContaPagarDataSource>();
 
@@ -231,6 +335,29 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             }
 
             return dgvEfetuarPagamentoListagemDataSources;
+        }
+
+        private static IList<DgvVisualizarContaReceberDataSource> MapSearchResultContaReceberToDataSource(SearchCashReceivableOutput searchOutput)
+        {
+            IList<DgvVisualizarContaReceberDataSource> dgvVisualizarContaReceberDataSource = new List<DgvVisualizarContaReceberDataSource>();
+
+            if (searchOutput.Output == null || searchOutput.Output.Data == null)
+            {
+                return dgvVisualizarContaReceberDataSource;
+            }
+
+            var dados = searchOutput.Output.Data;
+
+            var json = JsonConvert.SerializeObject(dados);
+
+            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaReceberDataSource>>(json);
+
+            foreach (var item in conversion!)
+            {
+                dgvVisualizarContaReceberDataSource.Add(item);
+            }
+
+            return dgvVisualizarContaReceberDataSource;
         }
 
         private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -391,7 +518,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 identificador = guidId;
             }
 
-            var selected = LastSearch.FirstOrDefault().Value.FirstOrDefault(x => x.Id == identificador);
+            // Fix: Cast the object to IList<DgvVisualizarContaPagarDataSource> before using LINQ
+            var firstSearch = LastSearch.FirstOrDefault().Value;
+            IList<DgvVisualizarContaPagarDataSource>? searchList = firstSearch as IList<DgvVisualizarContaPagarDataSource>;
+            var selected = searchList?.FirstOrDefault(x => x.Id == identificador);
 
             if (selected?.Details?.Count > 0)
             {
@@ -417,73 +547,163 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             {
                 _ = Guid.TryParse(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[0].Value?.ToString(), out Guid guidId);
 
-                var firstSelectedRow = new EditBillToPayViewModel()
+                if (EH_CONTA_PAGAR)
                 {
-                    Id = guidId,
-                    IdFixedInvoice = Convert.ToInt32(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[1].Value?.ToString()),
-                    Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
-                    Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
-                    Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
-                    RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
-                    YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
-                    Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                    Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString().Replace("R$ ", "")),
-                    PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                    PayDay = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
-                    HasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
-                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
-                    AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
-                    LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
-                };
-
-                bool editInLote = false;
-
-                List<EditBillToPayViewModel> basketEdits = new();
-
-                if (dgvExcluirDetalhes.SelectedRows.Count > 1)
-                {
-                    editInLote = true;
-
-                    foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
-                    {
-                        _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid idBillToPay);
-                        _ = int.TryParse(row.Cells[1].Value.ToString(), out int registrationId);
-
-                        basketEdits.Add(new EditBillToPayViewModel()
-                        {
-                            Id = idBillToPay,
-                            IdFixedInvoice = registrationId,
-                            Name = row.Cells[3].Value?.ToString(),
-                            Account = row.Cells[2].Value?.ToString(),
-                            Frequence = row.Cells[12].Value?.ToString(),
-                            RegistrationType = row.Cells[13].Value?.ToString(),
-                            YearMonth = row.Cells[11].Value?.ToString(),
-                            Category = row.Cells[4].Value?.ToString(),
-                            Value = Convert.ToDecimal(row.Cells[7].Value?.ToString().Replace("R$ ", "")),
-                            PurchaseDate = DateServiceUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
-                            PayDay = row.Cells[14].Value?.ToString(),
-                            HasPay = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
-                            DueDate = DateServiceUtils.GetDateTimeOfString(row.Cells[10].Value?.ToString()) ?? DateTime.Now,
-                            AdditionalMessage = row.Cells[16].Value?.ToString(),
-                            LastChangeDate = DateServiceUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
-                        });
-                    }
+                    await EditarContaPagar(e, rowIndexOld, guidId);
                 }
-
-                FrmEdit frmEditInLote = new()
+                else
                 {
-                    EditBillToPayViewModel = firstSelectedRow,
-                    BasketEditBillToPayViewModel = basketEdits,
-                    Environment = Environment,
-                    EditInLote = editInLote
-                };
-
-                frmEditInLote.ShowDialog();
-
-                await CarregamentoTelaAgain();
-
-                dgvExcluirDetalhes.CurrentCell = dgvExcluirDetalhes.Rows[rowIndexOld].Cells[3];
+                    await EditarContaReceber(e, rowIndexOld, guidId);
+                }
             }
+        }
+
+        private async Task EditarContaPagar(DataGridViewCellMouseEventArgs e, int rowIndexOld, Guid guidId)
+        {
+            var firstSelectedRow = new EditBillToPayViewModel()
+            {
+                Id = guidId,
+                IdFixedInvoice = Convert.ToInt32(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[1].Value?.ToString()),
+                Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
+                Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
+                Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
+                RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
+                Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString().Replace("R$ ", "")),
+                PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                PayDay = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
+                HasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
+                DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
+                AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
+                LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+            };
+
+            bool editInLote = false;
+
+            List<EditBillToPayViewModel> basketEdits = new();
+
+            if (dgvExcluirDetalhes.SelectedRows.Count > 1)
+            {
+                editInLote = true;
+
+                foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
+                {
+                    _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid idBillToPay);
+                    _ = int.TryParse(row.Cells[1].Value.ToString(), out int registrationId);
+
+                    basketEdits.Add(new EditBillToPayViewModel()
+                    {
+                        Id = idBillToPay,
+                        IdFixedInvoice = registrationId,
+                        Name = row.Cells[3].Value?.ToString(),
+                        Account = row.Cells[2].Value?.ToString(),
+                        Frequence = row.Cells[12].Value?.ToString(),
+                        RegistrationType = row.Cells[13].Value?.ToString(),
+                        YearMonth = row.Cells[11].Value?.ToString(),
+                        Category = row.Cells[4].Value?.ToString(),
+                        Value = Convert.ToDecimal(row.Cells[7].Value?.ToString().Replace("R$ ", "")),
+                        PurchaseDate = DateServiceUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
+                        PayDay = row.Cells[14].Value?.ToString(),
+                        HasPay = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
+                        DueDate = DateServiceUtils.GetDateTimeOfString(row.Cells[10].Value?.ToString()) ?? DateTime.Now,
+                        AdditionalMessage = row.Cells[16].Value?.ToString(),
+                        LastChangeDate = DateServiceUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
+                    });
+                }
+            }
+
+            FrmEdit frmEditInLote = new()
+            {
+                EditBillToPayViewModel = firstSelectedRow,
+                BasketEditBillToPayViewModel = basketEdits,
+                Environment = Environment,
+                EditInLote = editInLote,
+                AccountType = AccountType.ContaAPagar
+            };
+
+            frmEditInLote.ShowDialog();
+
+            await CarregamentoTelaAgain();
+
+            dgvExcluirDetalhes.CurrentCell = dgvExcluirDetalhes.Rows[rowIndexOld].Cells[3];
+        }
+
+        private async Task EditarContaReceber(DataGridViewCellMouseEventArgs e, int rowIndexOld, Guid guidId)
+        {
+            var firstSelectedRow = new EditCashReceivableViewModel()
+            {
+                Id = guidId,
+                IdCashReceivableRegistration = Convert.ToInt32(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[1].Value?.ToString()),
+                Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
+                Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
+                Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
+                Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString().Replace("R$ ", "")),
+                ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
+                /*7-TotalValue*/
+                /*8-DetailsQuantity*/
+                AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
+                YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
+                RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                DateReceived = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
+                HasReceived = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
+                AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
+                LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+            };
+
+            bool editInLote = false;
+
+            List<EditCashReceivableViewModel> basketEdits = new();
+
+            if (dgvExcluirDetalhes.SelectedRows.Count > 1)
+            {
+                editInLote = true;
+
+                foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
+                {
+                    _ = Guid.TryParse(row.Cells[0].Value.ToString(), out Guid idCashReceivable);
+                    _ = int.TryParse(row.Cells[1].Value.ToString(), out int registrationId);
+
+                    basketEdits.Add(new EditCashReceivableViewModel()
+                    {
+                        Id = idCashReceivable,
+                        IdCashReceivableRegistration = registrationId,
+                        Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
+                        Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
+                        Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
+                        Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString().Replace("R$ ", "")),
+                        ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
+                        /*7-TotalValue*/
+                        /*8-DetailsQuantity*/
+                        AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                        DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
+                        YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
+                        Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
+                        RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
+                        DateReceived = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
+                        HasReceived = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
+                        AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
+                        LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+                    });
+                }
+            }
+
+            FrmEdit frmEditInLote = new()
+            {
+                EditCashReceivableViewModel = firstSelectedRow,
+                BasketEditCashReceivableViewModel = basketEdits,
+                Environment = Environment,
+                EditInLote = editInLote,
+                AccountType = AccountType.ContaAReceber
+            };
+
+            frmEditInLote.ShowDialog();
+
+            await CarregamentoTelaAgain();
+
+            dgvExcluirDetalhes.CurrentCell = dgvExcluirDetalhes.Rows[rowIndexOld].Cells[3];
         }
 
         private async void BtnAtualizar_Click(object sender, EventArgs e)
