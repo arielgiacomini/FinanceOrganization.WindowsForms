@@ -15,6 +15,8 @@ namespace App.Forms.Forms.Edição
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
         public EditCashReceivableViewModel EditCashReceivableViewModel { get; set; } = new EditCashReceivableViewModel();
         public IList<EditBillToPayViewModel> BasketEditBillToPayViewModel { get; set; } = new List<EditBillToPayViewModel>();
+        public IList<EditCashReceivableViewModel> BasketEditCashReceivableViewModel { get; set; } = new List<EditCashReceivableViewModel>();
+
 
         private readonly ConcurrentDictionary<int, object> _updateContaViewModels = new();
 

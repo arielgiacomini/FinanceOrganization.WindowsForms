@@ -88,6 +88,10 @@
             cboAnoMesContaPagar = new ComboBox();
             dgvContaPagar = new DataGridView();
             tbpListarContaReceber = new TabPage();
+            btnContaReceberExcluirLinhaSelecionada = new Button();
+            lblContaReceberValorRestanteItensSelecionados = new Label();
+            btnContaReceberExibirDetalhes = new Button();
+            lblContaReceberTotalItensSelecionados = new Label();
             label2 = new Label();
             lblValorRecebido = new Label();
             lblValorTotalContaReceber = new Label();
@@ -784,6 +788,10 @@
             // 
             // tbpListarContaReceber
             // 
+            tbpListarContaReceber.Controls.Add(btnContaReceberExcluirLinhaSelecionada);
+            tbpListarContaReceber.Controls.Add(lblContaReceberValorRestanteItensSelecionados);
+            tbpListarContaReceber.Controls.Add(btnContaReceberExibirDetalhes);
+            tbpListarContaReceber.Controls.Add(lblContaReceberTotalItensSelecionados);
             tbpListarContaReceber.Controls.Add(label2);
             tbpListarContaReceber.Controls.Add(lblValorRecebido);
             tbpListarContaReceber.Controls.Add(lblValorTotalContaReceber);
@@ -799,6 +807,57 @@
             tbpListarContaReceber.TabIndex = 4;
             tbpListarContaReceber.Text = "Contas a Receber";
             tbpListarContaReceber.UseVisualStyleBackColor = true;
+            // 
+            // btnContaReceberExcluirLinhaSelecionada
+            // 
+            btnContaReceberExcluirLinhaSelecionada.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnContaReceberExcluirLinhaSelecionada.BackColor = Color.IndianRed;
+            btnContaReceberExcluirLinhaSelecionada.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnContaReceberExcluirLinhaSelecionada.ForeColor = SystemColors.ButtonFace;
+            btnContaReceberExcluirLinhaSelecionada.Location = new Point(1029, 7);
+            btnContaReceberExcluirLinhaSelecionada.Name = "btnContaReceberExcluirLinhaSelecionada";
+            btnContaReceberExcluirLinhaSelecionada.Size = new Size(172, 38);
+            btnContaReceberExcluirLinhaSelecionada.TabIndex = 30;
+            btnContaReceberExcluirLinhaSelecionada.Text = "Excluir Registro(s)";
+            btnContaReceberExcluirLinhaSelecionada.UseVisualStyleBackColor = false;
+            // 
+            // lblContaReceberValorRestanteItensSelecionados
+            // 
+            lblContaReceberValorRestanteItensSelecionados.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblContaReceberValorRestanteItensSelecionados.AutoSize = true;
+            lblContaReceberValorRestanteItensSelecionados.Location = new Point(904, 60);
+            lblContaReceberValorRestanteItensSelecionados.Name = "lblContaReceberValorRestanteItensSelecionados";
+            lblContaReceberValorRestanteItensSelecionados.RightToLeft = RightToLeft.Yes;
+            lblContaReceberValorRestanteItensSelecionados.Size = new Size(299, 15);
+            lblContaReceberValorRestanteItensSelecionados.TabIndex = 28;
+            lblContaReceberValorRestanteItensSelecionados.Text = "Valor Restante dos 900 itens selecionados: R$ 100.400,00";
+            lblContaReceberValorRestanteItensSelecionados.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // btnContaReceberExibirDetalhes
+            // 
+            btnContaReceberExibirDetalhes.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnContaReceberExibirDetalhes.BackColor = Color.Teal;
+            btnContaReceberExibirDetalhes.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnContaReceberExibirDetalhes.ForeColor = SystemColors.ButtonFace;
+            btnContaReceberExibirDetalhes.Location = new Point(853, 6);
+            btnContaReceberExibirDetalhes.Name = "btnContaReceberExibirDetalhes";
+            btnContaReceberExibirDetalhes.Size = new Size(172, 38);
+            btnContaReceberExibirDetalhes.TabIndex = 27;
+            btnContaReceberExibirDetalhes.Text = "Exibir Detalhe(s)";
+            btnContaReceberExibirDetalhes.UseVisualStyleBackColor = false;
+            btnContaReceberExibirDetalhes.Click += BtnContaReceberExibirDetalhes_Click;
+            // 
+            // lblContaReceberTotalItensSelecionados
+            // 
+            lblContaReceberTotalItensSelecionados.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblContaReceberTotalItensSelecionados.AutoSize = true;
+            lblContaReceberTotalItensSelecionados.Location = new Point(924, 45);
+            lblContaReceberTotalItensSelecionados.Name = "lblContaReceberTotalItensSelecionados";
+            lblContaReceberTotalItensSelecionados.RightToLeft = RightToLeft.Yes;
+            lblContaReceberTotalItensSelecionados.Size = new Size(279, 15);
+            lblContaReceberTotalItensSelecionados.TabIndex = 26;
+            lblContaReceberTotalItensSelecionados.Text = "Valor Total dos 900 itens selecionados: R$ 100.400,00";
+            lblContaReceberTotalItensSelecionados.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label2
             // 
@@ -900,6 +959,7 @@
             dgvContaReceber.TabIndex = 1;
             dgvContaReceber.CellMouseDown += EditarRegistroSelecionadoContaReceber_CellMouseDown;
             dgvContaReceber.RowsAdded += DgvContaReceber_RowsAdded;
+            dgvContaReceber.SelectionChanged += DgvContaReceber_SelectionChange;
             // 
             // tbpEstudosFinanceiros
             // 
@@ -1143,5 +1203,9 @@
         private GroupBox grbAlerta;
         private RadioButton rdbCadastroContaReceber;
         private RadioButton rdbCadastroContaPagar;
+        private Button btnContaReceberExcluirLinhaSelecionada;
+        private Label lblContaReceberValorRestanteItensSelecionados;
+        private Button btnContaReceberExibirDetalhes;
+        private Label lblContaReceberTotalItensSelecionados;
     }
 }
