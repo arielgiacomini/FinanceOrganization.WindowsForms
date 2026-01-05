@@ -34,6 +34,7 @@
             tbcInitial = new TabControl();
             tbpCadastroContaPagar = new TabPage();
             grbTemplateContaPagar = new GroupBox();
+            cboBuscaTodasCategorias = new CheckBox();
             rdbCadastroContaReceber = new RadioButton();
             rdbCadastroContaPagar = new RadioButton();
             cboCadastroContaHabilitarDate = new CheckBox();
@@ -67,6 +68,10 @@
             lblCadastroContaAnoMesInicial = new Label();
             cboCadastroContaAccount = new ComboBox();
             tbpListarContaPagar = new TabPage();
+            label3 = new Label();
+            cboInitialCategory = new ComboBox();
+            lblInitialAccount = new Label();
+            cboInitialAccount = new ComboBox();
             grbAlerta = new GroupBox();
             lblQtdItensParaFinalizarCadastro = new Label();
             lblEventRepeat = new Label();
@@ -134,7 +139,7 @@
             tbcInitial.Location = new Point(0, 21);
             tbcInitial.Name = "tbcInitial";
             tbcInitial.SelectedIndex = 0;
-            tbcInitial.Size = new Size(1216, 529);
+            tbcInitial.Size = new Size(1810, 529);
             tbcInitial.TabIndex = 14;
             tbcInitial.SelectedIndexChanged += TbcInitial_SelectedIndexChanged;
             // 
@@ -144,7 +149,7 @@
             tbpCadastroContaPagar.Location = new Point(4, 24);
             tbpCadastroContaPagar.Name = "tbpCadastroContaPagar";
             tbpCadastroContaPagar.Padding = new Padding(3);
-            tbpCadastroContaPagar.Size = new Size(1208, 501);
+            tbpCadastroContaPagar.Size = new Size(1802, 501);
             tbpCadastroContaPagar.TabIndex = 0;
             tbpCadastroContaPagar.Text = "Cadastro de Contas";
             tbpCadastroContaPagar.UseVisualStyleBackColor = true;
@@ -152,6 +157,7 @@
             // grbTemplateContaPagar
             // 
             grbTemplateContaPagar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            grbTemplateContaPagar.Controls.Add(cboBuscaTodasCategorias);
             grbTemplateContaPagar.Controls.Add(rdbCadastroContaReceber);
             grbTemplateContaPagar.Controls.Add(rdbCadastroContaPagar);
             grbTemplateContaPagar.Controls.Add(cboCadastroContaHabilitarDate);
@@ -189,6 +195,19 @@
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
             grbTemplateContaPagar.Text = "Cadastro de Contas Pagar/Receber";
+            // 
+            // cboBuscaTodasCategorias
+            // 
+            cboBuscaTodasCategorias.AutoSize = true;
+            cboBuscaTodasCategorias.BackColor = Color.Transparent;
+            cboBuscaTodasCategorias.ForeColor = SystemColors.ControlText;
+            cboBuscaTodasCategorias.Location = new Point(117, 109);
+            cboBuscaTodasCategorias.Name = "cboBuscaTodasCategorias";
+            cboBuscaTodasCategorias.Size = new Size(215, 19);
+            cboBuscaTodasCategorias.TabIndex = 35;
+            cboBuscaTodasCategorias.Text = "Filtrar apenas as categorias inativas?";
+            cboBuscaTodasCategorias.UseVisualStyleBackColor = false;
+            cboBuscaTodasCategorias.CheckedChanged += CboBuscaTodasCategorias_CheckedChanged;
             // 
             // rdbCadastroContaReceber
             // 
@@ -484,7 +503,7 @@
             // lblCadastroContaTipoConta
             // 
             lblCadastroContaTipoConta.AutoSize = true;
-            lblCadastroContaTipoConta.Location = new Point(28, 126);
+            lblCadastroContaTipoConta.Location = new Point(28, 135);
             lblCadastroContaTipoConta.Name = "lblCadastroContaTipoConta";
             lblCadastroContaTipoConta.Size = new Size(42, 15);
             lblCadastroContaTipoConta.TabIndex = 4;
@@ -502,7 +521,7 @@
             // cboCadastroContaAccount
             // 
             cboCadastroContaAccount.FormattingEnabled = true;
-            cboCadastroContaAccount.Location = new Point(76, 123);
+            cboCadastroContaAccount.Location = new Point(76, 132);
             cboCadastroContaAccount.Name = "cboCadastroContaAccount";
             cboCadastroContaAccount.Size = new Size(384, 23);
             cboCadastroContaAccount.TabIndex = 5;
@@ -510,6 +529,10 @@
             // 
             // tbpListarContaPagar
             // 
+            tbpListarContaPagar.Controls.Add(label3);
+            tbpListarContaPagar.Controls.Add(cboInitialCategory);
+            tbpListarContaPagar.Controls.Add(lblInitialAccount);
+            tbpListarContaPagar.Controls.Add(cboInitialAccount);
             tbpListarContaPagar.Controls.Add(grbAlerta);
             tbpListarContaPagar.Controls.Add(lblGridViewSelectedRowsCompleted);
             tbpListarContaPagar.Controls.Add(lblGridViewSelectedRowsRemainingValue);
@@ -530,10 +553,46 @@
             tbpListarContaPagar.Controls.Add(dgvContaPagar);
             tbpListarContaPagar.Location = new Point(4, 24);
             tbpListarContaPagar.Name = "tbpListarContaPagar";
-            tbpListarContaPagar.Size = new Size(1208, 501);
+            tbpListarContaPagar.Size = new Size(1802, 501);
             tbpListarContaPagar.TabIndex = 2;
             tbpListarContaPagar.Text = "Contas a Pagar";
             tbpListarContaPagar.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(313, 12);
+            label3.Name = "label3";
+            label3.Size = new Size(61, 15);
+            label3.TabIndex = 26;
+            label3.Text = "Categoria:";
+            // 
+            // cboInitialCategory
+            // 
+            cboInitialCategory.FormattingEnabled = true;
+            cboInitialCategory.Location = new Point(380, 9);
+            cboInitialCategory.Name = "cboInitialCategory";
+            cboInitialCategory.Size = new Size(175, 23);
+            cboInitialCategory.TabIndex = 27;
+            cboInitialCategory.SelectedValueChanged += cboInitialCategory_SelectedValueChanged;
+            // 
+            // lblInitialAccount
+            // 
+            lblInitialAccount.AutoSize = true;
+            lblInitialAccount.Location = new Point(858, 11);
+            lblInitialAccount.Name = "lblInitialAccount";
+            lblInitialAccount.Size = new Size(42, 15);
+            lblInitialAccount.TabIndex = 24;
+            lblInitialAccount.Text = "Conta:";
+            // 
+            // cboInitialAccount
+            // 
+            cboInitialAccount.FormattingEnabled = true;
+            cboInitialAccount.Location = new Point(906, 8);
+            cboInitialAccount.Name = "cboInitialAccount";
+            cboInitialAccount.Size = new Size(327, 23);
+            cboInitialAccount.TabIndex = 25;
+            cboInitialAccount.SelectedValueChanged += cboInitialAccount_SelectedValueChanged;
             // 
             // grbAlerta
             // 
@@ -576,7 +635,7 @@
             // 
             lblGridViewSelectedRowsCompleted.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblGridViewSelectedRowsCompleted.AutoSize = true;
-            lblGridViewSelectedRowsCompleted.Location = new Point(899, 73);
+            lblGridViewSelectedRowsCompleted.Location = new Point(1493, 73);
             lblGridViewSelectedRowsCompleted.Name = "lblGridViewSelectedRowsCompleted";
             lblGridViewSelectedRowsCompleted.RightToLeft = RightToLeft.Yes;
             lblGridViewSelectedRowsCompleted.Size = new Size(304, 15);
@@ -588,7 +647,7 @@
             // 
             lblGridViewSelectedRowsRemainingValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblGridViewSelectedRowsRemainingValue.AutoSize = true;
-            lblGridViewSelectedRowsRemainingValue.Location = new Point(904, 58);
+            lblGridViewSelectedRowsRemainingValue.Location = new Point(1498, 58);
             lblGridViewSelectedRowsRemainingValue.Name = "lblGridViewSelectedRowsRemainingValue";
             lblGridViewSelectedRowsRemainingValue.RightToLeft = RightToLeft.Yes;
             lblGridViewSelectedRowsRemainingValue.Size = new Size(299, 15);
@@ -614,7 +673,7 @@
             btnExcluirInitial.BackColor = Color.IndianRed;
             btnExcluirInitial.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnExcluirInitial.ForeColor = SystemColors.ButtonFace;
-            btnExcluirInitial.Location = new Point(1031, 4);
+            btnExcluirInitial.Location = new Point(1625, 4);
             btnExcluirInitial.Name = "btnExcluirInitial";
             btnExcluirInitial.Size = new Size(172, 38);
             btnExcluirInitial.TabIndex = 17;
@@ -628,7 +687,7 @@
             btnExibirDetalhes.BackColor = Color.Teal;
             btnExibirDetalhes.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnExibirDetalhes.ForeColor = SystemColors.ButtonFace;
-            btnExibirDetalhes.Location = new Point(853, 4);
+            btnExibirDetalhes.Location = new Point(1447, 4);
             btnExibirDetalhes.Name = "btnExibirDetalhes";
             btnExibirDetalhes.Size = new Size(172, 38);
             btnExibirDetalhes.TabIndex = 16;
@@ -640,7 +699,7 @@
             // 
             lblEfetuarPagamentoItensSelecionadosDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblEfetuarPagamentoItensSelecionadosDataGridView.AutoSize = true;
-            lblEfetuarPagamentoItensSelecionadosDataGridView.Location = new Point(924, 43);
+            lblEfetuarPagamentoItensSelecionadosDataGridView.Location = new Point(1518, 43);
             lblEfetuarPagamentoItensSelecionadosDataGridView.Name = "lblEfetuarPagamentoItensSelecionadosDataGridView";
             lblEfetuarPagamentoItensSelecionadosDataGridView.RightToLeft = RightToLeft.Yes;
             lblEfetuarPagamentoItensSelecionadosDataGridView.Size = new Size(279, 15);
@@ -664,7 +723,7 @@
             lblGridViewCartaoCreditoFamilia.AutoSize = true;
             lblGridViewCartaoCreditoFamilia.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             lblGridViewCartaoCreditoFamilia.ForeColor = SystemColors.ActiveCaptionText;
-            lblGridViewCartaoCreditoFamilia.Location = new Point(244, 46);
+            lblGridViewCartaoCreditoFamilia.Location = new Point(244, 60);
             lblGridViewCartaoCreditoFamilia.Name = "lblGridViewCartaoCreditoFamilia";
             lblGridViewCartaoCreditoFamilia.Size = new Size(594, 45);
             lblGridViewCartaoCreditoFamilia.TabIndex = 11;
@@ -685,16 +744,16 @@
             // lblEfetuarPagamentoCategoria
             // 
             lblEfetuarPagamentoCategoria.AutoSize = true;
-            lblEfetuarPagamentoCategoria.Location = new Point(354, 11);
+            lblEfetuarPagamentoCategoria.Location = new Point(562, 12);
             lblEfetuarPagamentoCategoria.Name = "lblEfetuarPagamentoCategoria";
-            lblEfetuarPagamentoCategoria.Size = new Size(61, 15);
+            lblEfetuarPagamentoCategoria.Size = new Size(81, 15);
             lblEfetuarPagamentoCategoria.TabIndex = 7;
-            lblEfetuarPagamentoCategoria.Text = "Categoria:";
+            lblEfetuarPagamentoCategoria.Text = "SubCategoria:";
             // 
             // cboEfetuarPagamentoCategoria
             // 
             cboEfetuarPagamentoCategoria.FormattingEnabled = true;
-            cboEfetuarPagamentoCategoria.Location = new Point(421, 8);
+            cboEfetuarPagamentoCategoria.Location = new Point(649, 8);
             cboEfetuarPagamentoCategoria.Name = "cboEfetuarPagamentoCategoria";
             cboEfetuarPagamentoCategoria.Size = new Size(188, 23);
             cboEfetuarPagamentoCategoria.TabIndex = 8;
@@ -718,7 +777,7 @@
             btnPagamentoAvulso.BackColor = Color.SeaGreen;
             btnPagamentoAvulso.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnPagamentoAvulso.ForeColor = Color.White;
-            btnPagamentoAvulso.Location = new Point(657, 4);
+            btnPagamentoAvulso.Location = new Point(1251, 4);
             btnPagamentoAvulso.Name = "btnPagamentoAvulso";
             btnPagamentoAvulso.Size = new Size(190, 38);
             btnPagamentoAvulso.TabIndex = 4;
@@ -728,7 +787,7 @@
             // 
             // btnEfetuarPagamentoBuscar
             // 
-            btnEfetuarPagamentoBuscar.Location = new Point(244, 8);
+            btnEfetuarPagamentoBuscar.Location = new Point(203, 11);
             btnEfetuarPagamentoBuscar.Name = "btnEfetuarPagamentoBuscar";
             btnEfetuarPagamentoBuscar.Size = new Size(99, 23);
             btnEfetuarPagamentoBuscar.TabIndex = 3;
@@ -750,7 +809,7 @@
             cboAnoMesContaPagar.FormattingEnabled = true;
             cboAnoMesContaPagar.Location = new Point(73, 9);
             cboAnoMesContaPagar.Name = "cboAnoMesContaPagar";
-            cboAnoMesContaPagar.Size = new Size(156, 23);
+            cboAnoMesContaPagar.Size = new Size(124, 23);
             cboAnoMesContaPagar.TabIndex = 1;
             // 
             // dgvContaPagar
@@ -776,7 +835,7 @@
             dgvContaPagar.ReadOnly = true;
             dgvContaPagar.RowTemplate.Height = 25;
             dgvContaPagar.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvContaPagar.Size = new Size(1193, 348);
+            dgvContaPagar.Size = new Size(1787, 348);
             dgvContaPagar.TabIndex = 0;
             dgvContaPagar.MultiSelectChanged += DgvEfetuarPagamentoListagem_MultiSelectChanged;
             dgvContaPagar.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
@@ -803,7 +862,7 @@
             tbpListarContaReceber.Location = new Point(4, 24);
             tbpListarContaReceber.Name = "tbpListarContaReceber";
             tbpListarContaReceber.Padding = new Padding(3);
-            tbpListarContaReceber.Size = new Size(1208, 501);
+            tbpListarContaReceber.Size = new Size(1802, 501);
             tbpListarContaReceber.TabIndex = 4;
             tbpListarContaReceber.Text = "Contas a Receber";
             tbpListarContaReceber.UseVisualStyleBackColor = true;
@@ -970,7 +1029,7 @@
             tbpEstudosFinanceiros.Location = new Point(4, 24);
             tbpEstudosFinanceiros.Name = "tbpEstudosFinanceiros";
             tbpEstudosFinanceiros.Padding = new Padding(3);
-            tbpEstudosFinanceiros.Size = new Size(1208, 501);
+            tbpEstudosFinanceiros.Size = new Size(1802, 501);
             tbpEstudosFinanceiros.TabIndex = 3;
             tbpEstudosFinanceiros.Text = "Estudos Financeiros";
             tbpEstudosFinanceiros.UseVisualStyleBackColor = true;
@@ -1026,7 +1085,7 @@
             lblVersion.BackColor = Color.DarkOrange;
             lblVersion.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
             lblVersion.ForeColor = Color.DimGray;
-            lblVersion.Location = new Point(1113, 0);
+            lblVersion.Location = new Point(1707, 0);
             lblVersion.Name = "lblVersion";
             lblVersion.RightToLeft = RightToLeft.Yes;
             lblVersion.Size = new Size(103, 21);
@@ -1043,7 +1102,7 @@
             lblInfoHeader.Location = new Point(231, 0);
             lblInfoHeader.Margin = new Padding(0);
             lblInfoHeader.Name = "lblInfoHeader";
-            lblInfoHeader.Size = new Size(983, 21);
+            lblInfoHeader.Size = new Size(1577, 21);
             lblInfoHeader.TabIndex = 31;
             lblInfoHeader.Text = "Ambiente: Produção | API Url Destino: ";
             lblInfoHeader.TextAlign = ContentAlignment.MiddleCenter;
@@ -1090,7 +1149,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1219, 550);
+            ClientSize = new Size(1813, 550);
             Controls.Add(rdbAmbienteProducao);
             Controls.Add(rdbAmbienteHomologacao);
             Controls.Add(rdbAmbienteLocal);
@@ -1207,5 +1266,10 @@
         private Label lblContaReceberValorRestanteItensSelecionados;
         private Button btnContaReceberExibirDetalhes;
         private Label lblContaReceberTotalItensSelecionados;
+        private CheckBox cboBuscaTodasCategorias;
+        private Label lblInitialAccount;
+        private ComboBox cboInitialAccount;
+        private Label label3;
+        private ComboBox cboInitialCategory;
     }
 }

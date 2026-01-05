@@ -14,7 +14,14 @@ namespace App.WindowsForms.Services
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("accountType", searchCategory.AccountType?.GetDescription());
-            var result = client.GetAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/category/search").Result;
+            
+            string filterUrl = string.Empty;
+            if (searchCategory.Enable.HasValue)
+            {
+                filterUrl = "?enable=" + searchCategory.Enable.Value.ToString().ToLower();
+            }
+
+            var result = client.GetAsync(string.Concat(UrlConfig.GetFinanceOrganizationApiUrl(Environment), "/v1/category/search", filterUrl)).Result;
 
             if (!result.IsSuccessStatusCode)
             {
@@ -25,8 +32,15 @@ namespace App.WindowsForms.Services
 
             var arrayString = JsonConvert.DeserializeObject<string[]>(response);
 
-            SearchCategoryOutput searchCategoryOutput = new SearchCategoryOutput();
-            searchCategoryOutput.Categories = arrayString;
+            if (arrayString == null)
+            {
+                return new SearchCategoryOutput();
+            }
+
+            SearchCategoryOutput searchCategoryOutput = new()
+            {
+                Categories = arrayString
+            };
 
             return searchCategoryOutput;
         }

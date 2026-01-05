@@ -5,7 +5,7 @@ namespace App.WindowsForms.Forms.Excluir
     public partial class Relacionado : Form
     {
         public string? Environment { get; set; }
-        public Dictionary<string, IList<object>> LastSearch = new();
+        public Dictionary<string, object> LastSearch = new();
         public Guid Identificador;
 
         public Relacionado()
@@ -17,27 +17,45 @@ namespace App.WindowsForms.Forms.Excluir
         {
             // Fix: Remove incorrect access to 'Details' property, use the list of Details directly
             var firstList = LastSearch.FirstOrDefault().Value;
-            if (firstList == null || firstList.Count == 0)
+            if (firstList == null)
                 return;
 
-            // Filter the list for Details with matching Id
-            var lastSearch = firstList
-                .OfType<Details>() // Only consider items of type Details
+            // With this fix:
+            System.Collections.IEnumerable? enumerable = firstList as System.Collections.IEnumerable;
+            if (enumerable == null)
+                return;
+
+            if (enumerable is not IList<DgvVisualizarContaPagarDataSource> lastSearch)
+                return;
+
+            var filtered = lastSearch
                 .Where(x => x.Id == Identificador)
                 .ToList();
 
-            if (lastSearch.Count > 0)
-            {
-                lastSearch = lastSearch.OrderBy(order => order.PurchaseDate).ToList();
+            if (filtered == null)
+                return;
 
-                PreecherDataGridViewExcluirDetalhes(lastSearch);
+            if (filtered.Count > 0)
+            {
+                filtered = filtered.OrderBy(order => order.PurchaseDate).ToList();
+
+                var detailsList = new List<Details>();
+                foreach (var item in filtered)
+                {
+                    if (item.Details != null && item.Details.Count > 0)
+                    {
+                        detailsList.AddRange(item.Details);
+                    }
+                };
+
+                PreecherDataGridViewExcluirDetalhes(detailsList);
 
                 PreecherPrecoMedio();
 
                 lblInformacoesTotais.Text = string
                         .Concat("Itens Totais: ",
-                            lastSearch.Count, " - ",
-                            lastSearch.Select(x => x.Value).Sum().ToString("C"));
+                            filtered.Count, " - ",
+                            filtered.Select(x => x.Value).Sum().ToString("C"));
             }
         }
 
