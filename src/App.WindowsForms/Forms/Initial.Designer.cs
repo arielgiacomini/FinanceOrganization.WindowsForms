@@ -115,6 +115,7 @@
             rdbAmbienteLocal = new RadioButton();
             rdbAmbienteHomologacao = new RadioButton();
             rdbAmbienteProducao = new RadioButton();
+            cboCultura = new ComboBox();
             tbcInitial.SuspendLayout();
             tbpCadastroContaPagar.SuspendLayout();
             grbTemplateContaPagar.SuspendLayout();
@@ -1145,11 +1146,23 @@
             rdbAmbienteProducao.UseVisualStyleBackColor = false;
             rdbAmbienteProducao.CheckedChanged += RdbAmbienteProducao_CheckedChanged;
             // 
+            // cboCultura
+            // 
+            cboCultura.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboCultura.FormattingEnabled = true;
+            cboCultura.Location = new Point(247, -2);
+            cboCultura.Name = "cboCultura";
+            cboCultura.Size = new Size(211, 23);
+            cboCultura.TabIndex = 35;
+            cboCultura.SelectedIndexChanged += cboCultura_SelectedIndexChanged;
+            cboCultura.SelectedValueChanged += cboCultura_SelectedValueChanged_1;
+            // 
             // Initial
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1778, 550);
+            Controls.Add(cboCultura);
             Controls.Add(rdbAmbienteProducao);
             Controls.Add(rdbAmbienteHomologacao);
             Controls.Add(rdbAmbienteLocal);
@@ -1271,5 +1284,6 @@
         private ComboBox cboInitialAccount;
         private Label label3;
         private ComboBox cboInitialCategory;
+        private ComboBox cboCultura;
     }
 }
