@@ -25,7 +25,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         public SearchCashReceivableViewModel PostSearchCashReceivableViewModel { get; set; } = new SearchCashReceivableViewModel();
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
 
-        public Dictionary<string, IList<object>> LastSearch = new();
+        public Dictionary<string, object> LastSearch = new();
         public string? Environment { get; set; }
         public IList<Account>? CreditCard
         {
@@ -141,7 +141,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
                 dgvVisualizarContaPagarDataSources = MapSearchResultContaPagarToDataSource(contaPagar);
 
-                //LastSearch.Add(DateTime.Now.ToString(), (IList<object>)dgvVisualizarContaPagarDataSources);
+                LastSearch.Add(DateTime.Now.ToString(), dgvVisualizarContaPagarDataSources);
 
                 IList<DgvVisualizarContaPagarDataSource> allPagar = OrdenacaoRegraContasPagar(dgvVisualizarContaPagarDataSources);
 
@@ -156,7 +156,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
                 dgvVisualizarContaReceberDataSources = MapSearchResultContaReceberToDataSource(contaReceber);
 
-                //LastSearch.Add(DateTime.Now.ToString(), (IList<object>)dgvVisualizarContaReceberDataSources);
+                LastSearch.Add(DateTime.Now.ToString(), (IList<object>)dgvVisualizarContaReceberDataSources);
 
                 IList<DgvVisualizarContaReceberDataSource> allReceber = OrdenacaoRegraContasReceber(dgvVisualizarContaReceberDataSources);
 
@@ -571,12 +571,12 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
                 Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
                 Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString().Replace("R$ ", "")),
-                PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                PurchaseDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
                 PayDay = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
                 HasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
-                DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
+                DueDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
                 AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
-                LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+                LastChangeDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
             };
 
             bool editInLote = false;
@@ -603,12 +603,12 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                         YearMonth = row.Cells[11].Value?.ToString(),
                         Category = row.Cells[4].Value?.ToString(),
                         Value = Convert.ToDecimal(row.Cells[7].Value?.ToString().Replace("R$ ", "")),
-                        PurchaseDate = DateServiceUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
+                        PurchaseDate = DateUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
                         PayDay = row.Cells[14].Value?.ToString(),
                         HasPay = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
-                        DueDate = DateServiceUtils.GetDateTimeOfString(row.Cells[10].Value?.ToString()) ?? DateTime.Now,
+                        DueDate = DateUtils.GetDateTimeOfString(row.Cells[10].Value?.ToString()) ?? DateTime.Now,
                         AdditionalMessage = row.Cells[16].Value?.ToString(),
-                        LastChangeDate = DateServiceUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
+                        LastChangeDate = DateUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
                     });
                 }
             }
@@ -642,15 +642,15 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
                 /*7-TotalValue*/
                 /*8-DetailsQuantity*/
-                AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
+                AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                DueDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
                 YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
                 Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
                 RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
                 DateReceived = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
                 HasReceived = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
                 AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
-                LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+                LastChangeDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
             };
 
             bool editInLote = false;
@@ -677,15 +677,15 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                         ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
                         /*7-TotalValue*/
                         /*8-DetailsQuantity*/
-                        AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                        DueDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
+                        AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                        DueDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
                         YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
                         Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
                         RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
                         DateReceived = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
                         HasReceived = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
                         AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
-                        LastChangeDate = DateServiceUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+                        LastChangeDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
                     });
                 }
             }

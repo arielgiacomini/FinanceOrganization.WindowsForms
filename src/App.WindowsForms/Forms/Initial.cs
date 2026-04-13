@@ -33,13 +33,12 @@ namespace App.Forms.Forms
         private const string TAB_PAGE_VISUALIZAR_CONTA_PAGAR = "tbpEfetuarPagamento";
         private const string TAB_PAGE_ESTUDO_FINANCEIRO = "tbpEstudosFinanceiros";
         private const string DESCRICAO_GROUP_BOX = "Cadastro de Conta a Pagar";
-        private const string EH_CARTAO_CREDITO_NAIRA = "Cartão de Crédito Nubank Naíra: ";
         private readonly ConcurrentDictionary<int, object> _cadastroContaViewModels = new();
         private IList<DgvVisualizarContaPagarDataSource> _dgvEfetuarPagamentoListagemDataSource = new List<DgvVisualizarContaPagarDataSource>();
         private IList<DgvVisualizarEstudoFinanceiroDataSource> _dgvVisuarEstudoFinanceiroDataSource = new List<DgvVisualizarEstudoFinanceiroDataSource>();
         private IList<DgvVisualizarContaReceberDataSource> _dgvVisualizarContaReceberDataSource = new List<DgvVisualizarContaReceberDataSource>();
-        public IHost _host;
-        public int _eventRepeat = 0;
+        private IHost _host;
+        private int _eventRepeat = 0;
 
         public static int CurrentIndex { get; set; } = 0;
         public decimal ValorContaPagarDigitadoTextBox { get; set; } = 0;
@@ -78,8 +77,8 @@ namespace App.Forms.Forms
             lblInfoHeader.Text = AdjusteInfoHeader();
             PreencherLabelDataCriacao();
             await PreencherComboBoxCadastroContaAccount();
-            await PreencherComboBoxCadastroContaCategoriaAsync();
-            PreencherComboBoxAnoMes();
+            await PreencherComboBoxContaPagarCategoriaAsync();
+            await PreencherComboBoxAnoMes();
             PreencherComboBoxEstudoFinanceiroQuantideMeses();
             RegraCamposAnoMes();
             CampoValor();
@@ -229,7 +228,7 @@ namespace App.Forms.Forms
                 createBillToPay.FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null;
                 createBillToPay.Category = cboCadastroContaCategory.Text;
                 createBillToPay.Value = Convert.ToDecimal(txtCadastroContaValue.Text.Replace("R$ ", ""));
-                createBillToPay.PurchaseDate = cboCadastroContaHabilitarDate.Checked ? DateServiceUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null;
+                createBillToPay.PurchaseDate = cboCadastroContaHabilitarDate.Checked ? DateUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null;
                 createBillToPay.BestPayDay = Convert.ToInt32(cboCadastroContaBestDay.Text);
                 createBillToPay.AdditionalMessage = rtbCadastroContaMensagemAdicional.Text;
                 createBillToPay.CreationDate = DateTime.Now;
@@ -264,7 +263,7 @@ namespace App.Forms.Forms
                     FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null,
                     Category = cboCadastroContaCategory.Text,
                     Value = Convert.ToDecimal(txtCadastroContaValue.Text.Replace("R$ ", "")),
-                    AgreementDate = cboCadastroContaHabilitarDate.Checked ? DateServiceUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null,
+                    AgreementDate = cboCadastroContaHabilitarDate.Checked ? DateUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null,
                     BestReceivingDay = Convert.ToInt32(cboCadastroContaBestDay.Text),
                     AdditionalMessage = rtbCadastroContaMensagemAdicional.Text,
                     CreationDate = DateTime.Now,
@@ -481,55 +480,92 @@ namespace App.Forms.Forms
             lblCadastroContaDataCriacao.Text = string.Concat(texto, DateTime.Now);
         }
 
-        private async Task PreencherComboBoxCadastroContaCategoriaAsync(string tabPageName = null, string categorySelected = null)
+        private async Task PreencherComboBoxContaPagarCategoriaAsync(string tabPageName = null, string categorySelected = null)
         {
             cboCadastroContaCategory.Items.Clear();
             cboEfetuarPagamentoCategoria.Items.Clear();
             CategoryServices.Environment = Environment;
-            var resultSearch = await CategoryServices.SearchCategories(new SearchCategoryViewModel());
+            var resultSearch = await CategoryServices
+                .SearchCategories(new SearchCategoryViewModel()
+                {
+                    AccountType = AccountType.ContaAPagar,
+                    Enable = cboBuscaTodasCategorias.Checked ? false : true
+                });
 
+            Dictionary<int, string> subCategoriasContaPagar = new() { };
             Dictionary<int, string> categoriasContaPagar = new() { };
 
-            int cont = 0;
+            int contSubCategory = 0;
+            int contCategory = 0;
 
             if (resultSearch.Categories != null)
             {
-                foreach (var item in resultSearch.Categories)
+                var categories = resultSearch.Categories?.ToList()?.Select(x => x.Split(":")[0]).Distinct().ToArray();
+
+                foreach (var category in categories)
                 {
-                    if (cont == 0)
+                    if (contCategory == 0)
                     {
-                        categoriasContaPagar.Add(cont, "Nenhum");
-                        cont++;
-                        categoriasContaPagar.Add(cont, item);
+                        categoriasContaPagar.Add(contCategory, "Nenhum");
+                        contCategory++;
+                        categoriasContaPagar.Add(contCategory, category);
                     }
                     else
                     {
-                        categoriasContaPagar.Add(cont, item);
+                        categoriasContaPagar.Add(contCategory, category);
+                    }
+                    contCategory++;
+                }
+
+                foreach (var item in resultSearch.Categories)
+                {
+                    if (contSubCategory == 0)
+                    {
+                        subCategoriasContaPagar.Add(contSubCategory, "Nenhum");
+                        contSubCategory++;
+                        subCategoriasContaPagar.Add(contSubCategory, item);
+                    }
+                    else
+                    {
+                        subCategoriasContaPagar.Add(contSubCategory, item);
                     }
 
-                    cont++;
+                    contSubCategory++;
                 }
             }
             else
             {
-                categoriasContaPagar.Add(cont, "Nenhum");
+                subCategoriasContaPagar.Add(contSubCategory, "Nenhum");
+                categoriasContaPagar.Add(contCategory, "Nenhum");
             }
+
+            var subCategoriasContaPagarOrderBy = subCategoriasContaPagar
+                .OrderBy(x => x.Value)
+                .Where(x => x.Key != 0)
+                .ToList();
 
             var categoriasContaPagarOrderBy = categoriasContaPagar
                 .OrderBy(x => x.Value)
                 .Where(x => x.Key != 0)
                 .ToList();
 
-            var first = categoriasContaPagar.FirstOrDefault(x => x.Key == 0);
+            var first = subCategoriasContaPagar.FirstOrDefault(x => x.Key == 0);
 
             cboCadastroContaCategory.Items.Add(first.Value);
             cboEfetuarPagamentoCategoria.Items.Add(first.Value);
 
-            foreach (var item in categoriasContaPagarOrderBy)
+            foreach (var item in subCategoriasContaPagarOrderBy)
             {
                 cboCadastroContaCategory.Items.Add(item.Value);
                 cboEfetuarPagamentoCategoria.Items.Add(item.Value);
             }
+
+            foreach (var item in categoriasContaPagarOrderBy)
+            {
+                cboInitialCategory.Items.Add(item.Value);
+            }
+
+            cboInitialCategory.SelectedItem = "Nenhum";
 
             if (categorySelected == null)
             {
@@ -538,7 +574,7 @@ namespace App.Forms.Forms
             }
             else
             {
-                var theChoise = categoriasContaPagarOrderBy
+                var theChoise = subCategoriasContaPagarOrderBy
                     .FirstOrDefault(x => x.Value == categorySelected);
 
                 if (theChoise.Value.Length > 0)
@@ -548,7 +584,7 @@ namespace App.Forms.Forms
                 }
                 else
                 {
-                    var dado = categoriasContaPagarOrderBy
+                    var dado = subCategoriasContaPagarOrderBy
                         .FirstOrDefault().Value;
 
                     cboCadastroContaCategory.SelectedItem = dado;
@@ -567,6 +603,8 @@ namespace App.Forms.Forms
                 _accountRepository.AddOnMemory(account);
             }
 
+            cboInitialAccount.Items.Add("Nenhum");
+
             foreach (var item in _accountRepository._accounts.Values.OrderBy((x) => x.Name))
             {
                 string name = item.Name;
@@ -578,12 +616,14 @@ namespace App.Forms.Forms
                 if (item.Enable)
                 {
                     cboCadastroContaAccount.Items.Add(name);
+                    cboInitialAccount.Items.Add(name);
                 }
             }
 
             if (accountSelected == null)
             {
                 cboCadastroContaAccount.SelectedItem = _accountRepository._accounts[0];
+                cboInitialAccount.SelectedItem = "Nenhum";
             }
             else
             {
@@ -600,38 +640,25 @@ namespace App.Forms.Forms
             }
         }
 
-        private void PreencherComboBoxAnoMes()
+        private async Task PreencherComboBoxAnoMes()
         {
-            var yearMonths = DateServiceUtils.GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter();
-            var yearMonthsArray = yearMonths.Values.ToArray();
+            DateServices.Environment = Environment;
+            var serviceDate = await DateServices.SearchMonthYears(new SearchDateYearMonthViewModel() { StartYear = 2020, EndYear = 2030 });
+
+            string[]? yearMonthsArray;
+
+            yearMonthsArray = serviceDate?.MonthYears;
 
             cboCadastroContaInititalMonthYear.Items.AddRange(yearMonthsArray);
             cboAnoMesContaPagar.Items.AddRange(yearMonthsArray);
             cboMesAnoContaReceber.Items.AddRange(yearMonthsArray);
+            cboCadastroContaFinallyMonthYear.Items.AddRange(yearMonthsArray);
 
-            var dateTimeNow = DateTime.Now;
-            DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
-            _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
+            string currentYearMonth = DateUtils.GetYearMonthPortugueseByDateTime(DateTime.Now);
 
             cboCadastroContaInititalMonthYear.SelectedItem = currentYearMonth;
             cboAnoMesContaPagar.SelectedItem = currentYearMonth;
             cboMesAnoContaReceber.SelectedItem = currentYearMonth;
-
-            PreencherComboBoxcboContaPagarAnoMesFinal();
-        }
-
-        private void PreencherComboBoxcboContaPagarAnoMesFinal()
-        {
-            var yearMonths = DateServiceUtils.GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter();
-
-            var yearMonthsArray = yearMonths.Values.ToArray();
-
-            cboCadastroContaFinallyMonthYear.Items.AddRange(yearMonthsArray);
-
-            var dateTimeNow = DateTime.Now;
-            DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
-            _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
-
             cboCadastroContaFinallyMonthYear.SelectedItem = currentYearMonth;
         }
 
@@ -804,7 +831,7 @@ namespace App.Forms.Forms
             cboCadastroContaCategory.Items.Clear();
             cboCadastroContaAccount.Items.Clear();
             PreencherComboBoxCadastroContaAccount(tabPageName, account).GetAwaiter().GetResult();
-            PreencherComboBoxCadastroContaCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
+            PreencherComboBoxContaPagarCategoriaAsync(tabPageName, category).GetAwaiter().GetResult();
         }
 
         private async void BtnEfetuarPagamentoBuscar_Click(object sender, EventArgs e)
@@ -813,10 +840,15 @@ namespace App.Forms.Forms
             await CarregaContasApagar();
         }
 
-        public async Task CarregaContasApagar()
+        public async Task CarregaContasApagar(bool notSelectedItem = true)
         {
             _dgvEfetuarPagamentoListagemDataSource.Clear();
-            cboEfetuarPagamentoCategoria.SelectedItem = "Nenhum";
+
+            if (notSelectedItem)
+            {
+                cboEfetuarPagamentoCategoria.SelectedItem = "Nenhum";
+                cboInitialAccount.SelectedItem = "Nenhum";
+            }
 
             SearchBillToPayViewModel search = new()
             {
@@ -980,7 +1012,7 @@ namespace App.Forms.Forms
             #region TOTAL GERAL
 
             var quantidadeTotal = dataSourceOrderBy.Count();
-            var valorTotal = Convert.ToDecimal(dataSourceOrderBy.Sum(x => x.TotalValue));
+            var valorTotal = Convert.ToDecimal(dataSourceOrderBy.Sum(x => x.Value));
             PreencheLabels(quantidadeTotal, valorTotal, lblContaPagarGridViewTotais, "Total: ");
 
             #endregion TOTAL GERAL
@@ -991,7 +1023,7 @@ namespace App.Forms.Forms
             var valorTotalPago = Convert
                 .ToDecimal(dataSourceOrderBy
                 .Where(pay => pay.HasPay)
-                .Sum(x => x.TotalValue));
+                .Sum(x => x.Value));
             PreencheLabels(quantidadeTotalPago, valorTotalPago, lblContaPagarGridViewTotalPago, "Pago: ");
 
             #endregion TOTAL PAGO
@@ -1172,7 +1204,7 @@ namespace App.Forms.Forms
             FrmPagamento frmPagamento = new()
             {
                 Environment = Environment,
-                AnoMes = DateServiceUtils.GetYearMonthPortugueseByDateTime(DateTime.Now.AddMonths(-1))
+                AnoMes = DateUtils.GetYearMonthPortugueseByDateTime(DateTime.Now.AddMonths(-1))
             };
 
             frmPagamento.ShowDialog();
@@ -1182,6 +1214,8 @@ namespace App.Forms.Forms
         {
             if (cboEfetuarPagamentoCategoria.Text != "Nenhum")
             {
+                await CarregaContasApagar(false);
+
                 var filterByCategory = _dgvEfetuarPagamentoListagemDataSource
                     .Where(x => x.Category == cboEfetuarPagamentoCategoria.Text)
                     .ToList();
@@ -1229,8 +1263,8 @@ namespace App.Forms.Forms
                     Name = dgvContaPagar.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                     Category = dgvContaPagar.Rows[e.RowIndex].Cells[4].Value?.ToString(),
                     Value = Convert.ToDecimal(dgvContaPagar.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
-                    PurchaseDate = DateServiceUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
+                    PurchaseDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                    DueDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
                     YearMonth = dgvContaPagar.Rows[e.RowIndex].Cells[11].Value?.ToString(),
                     Frequence = dgvContaPagar.Rows[e.RowIndex].Cells[12].Value?.ToString(),
                     RegistrationType = dgvContaPagar.Rows[e.RowIndex].Cells[13].Value?.ToString(),
@@ -1444,7 +1478,7 @@ namespace App.Forms.Forms
             }
         }
 
-        private void CboNaoEnviarMesAnoFinal_CheckedChanged(object sender, EventArgs e)
+        private async void CboNaoEnviarMesAnoFinal_CheckedChanged(object sender, EventArgs e)
         {
             if (cboNaoEnviarMesAnoFinal.Checked)
             {
@@ -1469,7 +1503,7 @@ namespace App.Forms.Forms
             else
             {
                 cboCadastroContaFinallyMonthYear.Enabled = true;
-                PreencherComboBoxcboContaPagarAnoMesFinal();
+                await PreencherComboBoxAnoMes();
             }
         }
 
@@ -1632,7 +1666,7 @@ namespace App.Forms.Forms
 
         private void DtpContaPagarDataCompra_ValueChanged(object sender, EventArgs e)
         {
-            var dayChoise = DateServiceUtils.GetDateTimeOfString(dtpCadastroContaDate.Text);
+            var dayChoise = DateUtils.GetDateTimeOfString(dtpCadastroContaDate.Text);
 
             if (dayChoise.HasValue)
             {
@@ -1773,7 +1807,12 @@ namespace App.Forms.Forms
             cboEfetuarPagamentoCategoria.Items.Clear();
 
             CategoryServices.Environment = Environment;
-            var resultSearch = await CategoryServices.SearchCategories(new SearchCategoryViewModel() { AccountType = AccountType.ContaAReceber });
+            var resultSearch = await CategoryServices
+                .SearchCategories(new SearchCategoryViewModel()
+                {
+                    AccountType = AccountType.ContaAReceber,
+                    Enable = !cboBuscaTodasCategorias.Checked
+                });
 
             Dictionary<int, string> categoriasContaPagar = new() { };
 
@@ -1866,8 +1905,8 @@ namespace App.Forms.Forms
                     ManipulatedValue = Convert.ToDecimal(dgvContaReceber.Rows[e.RowIndex].Cells[6].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
                     /*Cells[7] - TotalValue*/
                     /*Cells[8] - DetailsQuantity*/
-                    AgreementDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                    DueDate = DateServiceUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
+                    AgreementDate = DateUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[9].Value?.ToString()),
+                    DueDate = DateUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
                     YearMonth = dgvContaReceber.Rows[e.RowIndex].Cells[11].Value?.ToString(),
                     Frequence = dgvContaReceber.Rows[e.RowIndex].Cells[12].Value?.ToString(),
                     RegistrationType = dgvContaReceber.Rows[e.RowIndex].Cells[13].Value?.ToString(),
@@ -1959,6 +1998,114 @@ namespace App.Forms.Forms
 
             lblContaReceberValorRestanteItensSelecionados.Text = string
                 .Concat("Valor Manipulado dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorManipuladoItensSelecionados.ToString("C"));
+        }
+
+        private void CboBuscaTodasCategorias_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cboBuscaTodasCategorias.Checked)
+            {
+                if (rdbCadastroContaPagar.Checked)
+                {
+                    PreencherComboBoxContaPagarCategoriaAsync();
+                }
+                else
+                {
+                    PreencherComboBoxContaReceberCategoriaAsync();
+                }
+            }
+            else
+            {
+                if (rdbCadastroContaPagar.Checked)
+                {
+                    PreencherComboBoxContaPagarCategoriaAsync();
+                }
+                else
+                {
+                    PreencherComboBoxContaReceberCategoriaAsync();
+                }
+            }
+        }
+
+        private async void cboInitialAccount_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cboInitialAccount.Text != "Nenhum")
+            {
+                await CarregaContasApagar(false);
+
+                var filterByAccount = _dgvEfetuarPagamentoListagemDataSource
+                    .Where(x => x.Account == cboInitialAccount.Text.Split(" - ")[0])
+                    .ToList();
+
+                PreencheDataSourceContaPagar(filterByAccount);
+            }
+            else
+            {
+                await CarregaContasApagar();
+            }
+        }
+
+        private async void cboInitialCategory_SelectedValueChanged(object sender, EventArgs e)
+        {
+            cboEfetuarPagamentoCategoria.Items.Clear();
+            cboEfetuarPagamentoCategoria.Items.Add("Nenhum");
+            cboEfetuarPagamentoCategoria.SelectedItem = "Nenhum";
+
+            if (cboInitialCategory.Text != "Nenhum")
+            {
+                cboEfetuarPagamentoCategoria.Items.Clear();
+                CategoryServices.Environment = Environment;
+                var resultSearch = await CategoryServices
+                    .SearchCategories(new SearchCategoryViewModel()
+                    {
+                        AccountType = AccountType.ContaAPagar,
+                        Enable = cboBuscaTodasCategorias.Checked ? false : true
+                    });
+
+                Dictionary<int, string> subCategoriasContaPagar = new() { };
+
+                int contSubCategory = 0;
+
+                if (resultSearch.Categories != null)
+                {
+                    foreach (var item in resultSearch.Categories)
+                    {
+                        if (item.StartsWith(cboInitialCategory.Text))
+                        {
+                            if (contSubCategory == 0)
+                            {
+                                subCategoriasContaPagar.Add(contSubCategory, "Nenhum");
+                                contSubCategory++;
+                                subCategoriasContaPagar.Add(contSubCategory, item);
+                            }
+                            else
+                            {
+                                subCategoriasContaPagar.Add(contSubCategory, item);
+                            }
+
+                            contSubCategory++;
+                        }
+                    }
+                }
+                else
+                {
+                    subCategoriasContaPagar.Add(contSubCategory, "Nenhum");
+                }
+
+                var subCategoriasContaPagarOrderBy = subCategoriasContaPagar
+                    .OrderBy(x => x.Value)
+                    .Where(x => x.Key != 0)
+                    .ToList();
+
+                var first = subCategoriasContaPagar.FirstOrDefault(x => x.Key == 0);
+
+                cboEfetuarPagamentoCategoria.Items.Add(first.Value);
+
+                foreach (var item in subCategoriasContaPagarOrderBy)
+                {
+                    cboCadastroContaCategory.Items.Add(item.Value);
+                    cboEfetuarPagamentoCategoria.Items.Add(item.Value);
+                }
+            }
         }
     }
 }

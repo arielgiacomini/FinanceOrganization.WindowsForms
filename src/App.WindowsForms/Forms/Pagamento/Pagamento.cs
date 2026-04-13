@@ -2,6 +2,8 @@
 using App.Forms.Services.Output;
 using App.Forms.ViewModel;
 using App.WindowsForms.Repository;
+using App.WindowsForms.Services;
+using App.WindowsForms.ViewModel;
 using Domain.Utils;
 
 namespace App.Forms.Forms.Pay
@@ -27,15 +29,18 @@ namespace App.Forms.Forms.Pay
             InitializeComponent();
         }
 
-        private void PreencherComboBoxAnoMes(string selectedItem = null)
+        private async Task PreencherComboBoxAnoMes(string selectedItem = null)
         {
-            var yearMonths = DateServiceUtils.GetListYearMonthsByThreeMonthsBeforeAndTwentyFourAfter();
+            DateServices.Environment = Environment;
+            var serviceDate = await DateServices.SearchMonthYears(new SearchDateYearMonthViewModel() { StartYear = 2020, EndYear = 2030 });
 
-            cboPagamentoMesAno.Items.AddRange(yearMonths.Values.ToArray());
+            string[]? yearMonthsArray;
 
-            var dateTimeNow = DateTime.Now;
-            DateTime actual = new(dateTimeNow.Year, dateTimeNow.Month, 1);
-            _ = yearMonths.TryGetValue(actual, out string? currentYearMonth);
+            yearMonthsArray = serviceDate?.MonthYears;
+
+            cboPagamentoMesAno.Items.AddRange(yearMonthsArray);
+
+            string currentYearMonth = DateUtils.GetYearMonthPortugueseByDateTime(DateTime.Now);
 
             cboPagamentoMesAno.SelectedItem = currentYearMonth;
 
@@ -73,9 +78,9 @@ namespace App.Forms.Forms.Pay
             }
         }
 
-        private void FrmPagamento_Load(object sender, EventArgs e)
+        private async void FrmPagamento_Load(object sender, EventArgs e)
         {
-            PreencherComboBoxAnoMes(AnoMes);
+            await PreencherComboBoxAnoMes(AnoMes);
             PreencherComboBoxContaPagarTipoConta(Conta);
             RegraApresentarInfoPreenchidas();
             txtPagamentoData.Text = DateTime.Now.ToString("dd/MM/yyyy");
@@ -155,7 +160,7 @@ namespace App.Forms.Forms.Pay
                 return;
             }
 
-            if (output!.Output!.Status == OutputStatus.Success)
+            if (output?.Output?.Status == OutputStatus.Success)
             {
                 MessageBox.Show($"{output!.Output!.Message}", "Pagamento realizado com sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -202,10 +207,15 @@ namespace App.Forms.Forms.Pay
                 MessageBox.Show(mensagem, "Erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            var message = output.Output.Message;
+            var message = output?.Output?.Message;
             if (!string.IsNullOrEmpty(message))
             {
                 MessageBox.Show(message, "Erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (output?.Output == null)
+            {
+                MessageBox.Show("Houve alguma falha ao efetuar a requisição na API de Pagamentos.", "Erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
