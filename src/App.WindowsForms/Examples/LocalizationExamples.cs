@@ -66,20 +66,6 @@ namespace App.Forms.Examples
         }
 
         // ============================================================
-        // EXEMPLO 4: Usar LocalizationResources para mensagens
-        // ============================================================
-        public static void Example4_UseLocalizationResources()
-        {
-            LocalizationResources.SetCulture("pt-BR");
-            Console.WriteLine($"PT-BR: {LocalizationResources.AlertMessages.NoItemsToFinalize}");
-            // "Nenhum item para finalizar cadastro."
-
-            LocalizationResources.SetCulture("es-ES");
-            Console.WriteLine($"ES-ES: {LocalizationResources.AlertMessages.NoItemsToFinalize}");
-            // "Ningún artículo para finalizar el registro."
-        }
-
-        // ============================================================
         // EXEMPLO 5: Aplicar em formulário Windows Forms
         // ============================================================
         public static void Example5_ApplyToWinFormsControls(System.Windows.Forms.Form form)

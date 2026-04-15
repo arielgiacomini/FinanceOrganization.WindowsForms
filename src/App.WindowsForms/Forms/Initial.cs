@@ -1430,13 +1430,13 @@ namespace App.Forms.Forms
                 valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
             }
 
-            lblEfetuarPagamentoItensSelecionadosDataGridView.Text = string
+            lblValorTotalItensSelecionadoGrid.Text = string
                 .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
 
-            lblGridViewSelectedRowsRemainingValue.Text = string
+            lblValorRestanteDosItensSelecionadosNoGrid.Text = string
                 .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
 
-            lblGridViewSelectedRowsCompleted.Text = string.
+            lblValorRealizadoItensSelecionadosGrid.Text = string.
                 Concat("Valor realizado dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRealizadoItensSelecionados.ToString("C"));
         }
 
@@ -2123,6 +2123,9 @@ namespace App.Forms.Forms
         /// </summary>
         private void RefreshUIAfterCultureChange()
         {
+            // Atualiza os textos hardcoded da UI com as traduções
+            UpdateUITexts();
+
             // Atualiza o rótulo de data de criação com o novo formato de data
             PreencherLabelDataCriacao();
 
@@ -2144,6 +2147,158 @@ namespace App.Forms.Forms
             {
                 PreecherDataGridViewEstudoFinanceiro(_dgvVisuarEstudoFinanceiroDataSource);
             }
+        }
+
+        /// <summary>
+        /// Atualiza todos os textos da UI com a cultura selecionada
+        /// </summary>
+        private void UpdateUITexts()
+        {
+            string culture = StringDecimalUtils.CurrentCulture;
+
+            // RadioButtons de ambiente
+            rdbAmbienteLocal.Text = GetTranslation("Local", culture);
+            rdbAmbienteHomologacao.Text = GetTranslation("Homologação", culture);
+            rdbAmbienteProducao.Text = GetTranslation("Produção", culture);
+
+            // Abas (Tab Pages)
+            if (tbcInitial.TabPages.Count > 0)
+            {
+                tbcInitial.TabPages[0].Text = GetTranslation("Cadastro de Conta a Pagar", culture);
+                if (tbcInitial.TabPages.Count > 1)
+                    tbcInitial.TabPages[1].Text = GetTranslation("Efectuar Pagamento", culture);
+                if (tbcInitial.TabPages.Count > 2)
+                    tbcInitial.TabPages[2].Text = GetTranslation("Conta a Receber", culture);
+                if (tbcInitial.TabPages.Count > 3)
+                    tbcInitial.TabPages[3].Text = GetTranslation("Estudos Financeiros", culture);
+            }
+
+            // GroupBox de Cadastro
+            grbTemplateContaPagar.Text = GetTranslation("Cadastro de Conta a Pagar", culture);
+            grbCadastroContaHistorico.Text = GetTranslation("Histórico de Cadastros", culture);
+            grbAlerta.Text = GetTranslation("Alerta", culture);
+
+            // Labels do formulário
+            lblCadastroContaDataCompra.Text = GetTranslation("Data de Compra: ", culture);
+            lblCadastroContaBestDay.Text = GetTranslation("Melhor Dia de Pagamento: ", culture);
+            lblCadastroContaDataCriacao.Text = GetTranslation("Data de Criação: ", culture);
+
+            // Checkboxes
+            cboCadastroContaHabilitarDate.Text = GetTranslation("Habilitar Data da Compra?", culture);
+            cboNaoEnviarMesAnoFinal.Text = GetTranslation("Não enviar Mês/Ano Final?", culture);
+            ckbCadastroContaConsideraMesmoMes.Text = GetTranslation("Considerar mesmo Mês/Ano?", culture);
+            cboBuscaTodasCategorias.Text = GetTranslation("Buscar todas as categorias?", culture);
+        }
+
+        /// <summary>
+        /// Traduz um texto da interface conforme a cultura selecionada
+        /// </summary>
+        private string GetTranslation(string textPT, string culture)
+        {
+            return culture switch
+            {
+                "es-ES" => TranslateToSpanish(textPT),
+                "en-US" => TranslateToEnglish(textPT),
+                "de-DE" => TranslateToGerman(textPT),
+                "fr-FR" => TranslateToFrench(textPT),
+                _ => textPT // Default to Portuguese
+            };
+        }
+
+        private string TranslateToSpanish(string textPT)
+        {
+            return textPT switch
+            {
+                "Local" => "Local",
+                "Homologação" => "Puesta en escena",
+                "Produção" => "Producción",
+                "Cadastro de Conta a Pagar" => "Registro de Factura a Pagar",
+                "Efectuar Pagamento" => "Efectuar Pago",
+                "Conta a Receber" => "Cuenta por Cobrar",
+                "Estudos Financeiros" => "Estudios Financieros",
+                "Histórico de Cadastros" => "Historial de Registros",
+                "Alerta" => "Alerta",
+                "Data de Compra: " => "Fecha de Compra: ",
+                "Melhor Dia de Pagamento: " => "Mejor Día de Pago: ",
+                "Data de Criação: " => "Fecha de Creación: ",
+                "Habilitar Data da Compra?" => "¿Habilitar Fecha de Compra?",
+                "Não enviar Mês/Ano Final?" => "¿No enviar Mes/Año Final?",
+                "Considerar mesmo Mês/Ano?" => "¿Considerar el mismo Mes/Año?",
+                "Buscar todas as categorias?" => "¿Buscar todas las categorías?",
+                _ => textPT
+            };
+        }
+
+        private string TranslateToEnglish(string textPT)
+        {
+            return textPT switch
+            {
+                "Local" => "Local",
+                "Homologação" => "Staging",
+                "Produção" => "Production",
+                "Cadastro de Conta a Pagar" => "Bill To Pay Registration",
+                "Efectuar Pagamento" => "Perform Payment",
+                "Conta a Receber" => "Receivable Account",
+                "Estudos Financeiros" => "Financial Studies",
+                "Histórico de Cadastros" => "Registration History",
+                "Alerta" => "Alert",
+                "Data de Compra: " => "Purchase Date: ",
+                "Melhor Dia de Pagamento: " => "Best Payment Day: ",
+                "Data de Criação: " => "Creation Date: ",
+                "Habilitar Data da Compra?" => "Enable Purchase Date?",
+                "Não enviar Mês/Ano Final?" => "Do Not Send Final Month/Year?",
+                "Considerar mesmo Mês/Ano?" => "Consider Same Month/Year?",
+                "Buscar todas as categorias?" => "Search All Categories?",
+                _ => textPT
+            };
+        }
+
+        private string TranslateToGerman(string textPT)
+        {
+            return textPT switch
+            {
+                "Local" => "Lokal",
+                "Homologação" => "Staging",
+                "Produção" => "Produktion",
+                "Cadastro de Conta a Pagar" => "Rechnungsregistrierung",
+                "Efectuar Pagamento" => "Zahlung durchführen",
+                "Conta a Receber" => "Forderungskonto",
+                "Estudos Financeiros" => "Finanzielle Studien",
+                "Histórico de Cadastros" => "Registrierungsverlauf",
+                "Alerta" => "Warnung",
+                "Data de Compra: " => "Kaufdatum: ",
+                "Melhor Dia de Pagamento: " => "Bester Zahlungstag: ",
+                "Data de Criação: " => "Erstellungsdatum: ",
+                "Habilitar Data da Compra?" => "Kaufdatum aktivieren?",
+                "Não enviar Mês/Ano Final?" => "Finalen Monat/Jahr nicht senden?",
+                "Considerar mesmo Mês/Ano?" => "Denselben Monat/Jahresraum berücksichtigen?",
+                "Buscar todas as categorias?" => "Alle Kategorien durchsuchen?",
+                _ => textPT
+            };
+        }
+
+        private string TranslateToFrench(string textPT)
+        {
+            return textPT switch
+            {
+                "Local" => "Local",
+                "Homologação" => "Intermédiaire",
+                "Produção" => "Production",
+                "Cadastro de Conta a Pagar" => "Enregistrement de Facture à Payer",
+                "Efectuar Pagamento" => "Effectuer le Paiement",
+                "Conta a Receber" => "Compte Débiteur",
+                "Estudos Financeiros" => "Études Financières",
+                "Histórico de Cadastros" => "Historique d'Enregistrement",
+                "Alerta" => "Alerte",
+                "Data de Compra: " => "Date d'Achat: ",
+                "Melhor Dia de Pagamento: " => "Meilleur Jour de Paiement: ",
+                "Data de Criação: " => "Date de Création: ",
+                "Habilitar Data da Compra?" => "Activer la Date d'Achat?",
+                "Não enviar Mês/Ano Final?" => "Ne pas envoyer le Mois/Année final?",
+                "Considerar mesmo Mês/Ano?" => "Considérer le même Mois/Année?",
+                "Buscar todas as categorias?" => "Rechercher toutes les catégories?",
+                _ => textPT
+            };
         }
 
         private void cboCultura_SelectedIndexChanged(object sender, EventArgs e)

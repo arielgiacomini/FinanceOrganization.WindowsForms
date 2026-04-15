@@ -68,6 +68,9 @@
             lblCadastroContaAnoMesInicial = new Label();
             cboCadastroContaAccount = new ComboBox();
             tbpListarContaPagar = new TabPage();
+            lblValorRestanteDosItensSelecionadosNoGrid = new Label();
+            lblValorRealizadoItensSelecionadosGrid = new Label();
+            lblValorTotalItensSelecionadoGrid = new Label();
             label3 = new Label();
             cboInitialCategory = new ComboBox();
             btnExcluirInitial = new Button();
@@ -140,7 +143,7 @@
             tbcInitial.Location = new Point(0, 21);
             tbcInitial.Name = "tbcInitial";
             tbcInitial.SelectedIndex = 0;
-            tbcInitial.Size = new Size(1775, 529);
+            tbcInitial.Size = new Size(1775, 566);
             tbcInitial.TabIndex = 14;
             tbcInitial.SelectedIndexChanged += TbcInitial_SelectedIndexChanged;
             // 
@@ -150,7 +153,7 @@
             tbpCadastroContaPagar.Location = new Point(4, 24);
             tbpCadastroContaPagar.Name = "tbpCadastroContaPagar";
             tbpCadastroContaPagar.Padding = new Padding(3);
-            tbpCadastroContaPagar.Size = new Size(1767, 501);
+            tbpCadastroContaPagar.Size = new Size(1767, 538);
             tbpCadastroContaPagar.TabIndex = 0;
             tbpCadastroContaPagar.Text = "Cadastro de Contas";
             tbpCadastroContaPagar.UseVisualStyleBackColor = true;
@@ -192,7 +195,7 @@
             grbTemplateContaPagar.Controls.Add(cboCadastroContaAccount);
             grbTemplateContaPagar.Location = new Point(16, 6);
             grbTemplateContaPagar.Name = "grbTemplateContaPagar";
-            grbTemplateContaPagar.Size = new Size(1275, 487);
+            grbTemplateContaPagar.Size = new Size(1275, 524);
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
             grbTemplateContaPagar.Text = "Cadastro de Contas Pagar/Receber";
@@ -282,7 +285,7 @@
             dgvCadastroConta.Name = "dgvCadastroConta";
             dgvCadastroConta.RowTemplate.Height = 25;
             dgvCadastroConta.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCadastroConta.Size = new Size(1221, 200);
+            dgvCadastroConta.Size = new Size(1221, 237);
             dgvCadastroConta.TabIndex = 15;
             dgvCadastroConta.RowsAdded += DgvCadastroContaPagar_RowsAdded;
             dgvCadastroConta.SelectionChanged += DgvContaPagar_SelectionChanged;
@@ -293,7 +296,7 @@
             grbCadastroContaHistorico.Controls.Add(lblTotalValueGridView);
             grbCadastroContaHistorico.Location = new Point(8, 240);
             grbCadastroContaHistorico.Name = "grbCadastroContaHistorico";
-            grbCadastroContaHistorico.Size = new Size(1249, 241);
+            grbCadastroContaHistorico.Size = new Size(1249, 278);
             grbCadastroContaHistorico.TabIndex = 28;
             grbCadastroContaHistorico.TabStop = false;
             grbCadastroContaHistorico.Text = "Últimos cadastros realizados...";
@@ -530,6 +533,9 @@
             // 
             // tbpListarContaPagar
             // 
+            tbpListarContaPagar.Controls.Add(lblValorRestanteDosItensSelecionadosNoGrid);
+            tbpListarContaPagar.Controls.Add(lblValorRealizadoItensSelecionadosGrid);
+            tbpListarContaPagar.Controls.Add(lblValorTotalItensSelecionadoGrid);
             tbpListarContaPagar.Controls.Add(label3);
             tbpListarContaPagar.Controls.Add(cboInitialCategory);
             tbpListarContaPagar.Controls.Add(btnExcluirInitial);
@@ -554,10 +560,40 @@
             tbpListarContaPagar.Controls.Add(dgvContaPagar);
             tbpListarContaPagar.Location = new Point(4, 24);
             tbpListarContaPagar.Name = "tbpListarContaPagar";
-            tbpListarContaPagar.Size = new Size(1767, 501);
+            tbpListarContaPagar.Size = new Size(1767, 538);
             tbpListarContaPagar.TabIndex = 2;
             tbpListarContaPagar.Text = "Contas a Pagar";
             tbpListarContaPagar.UseVisualStyleBackColor = true;
+            // 
+            // lblValorRestanteDosItensSelecionadosNoGrid
+            // 
+            lblValorRestanteDosItensSelecionadosNoGrid.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblValorRestanteDosItensSelecionadosNoGrid.Location = new Point(1443, 126);
+            lblValorRestanteDosItensSelecionadosNoGrid.Name = "lblValorRestanteDosItensSelecionadosNoGrid";
+            lblValorRestanteDosItensSelecionadosNoGrid.Size = new Size(299, 15);
+            lblValorRestanteDosItensSelecionadosNoGrid.TabIndex = 30;
+            lblValorRestanteDosItensSelecionadosNoGrid.Text = "Valor Restante dos 900 itens selecionados: R$ 100.400,00";
+            lblValorRestanteDosItensSelecionadosNoGrid.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lblValorRealizadoItensSelecionadosGrid
+            // 
+            lblValorRealizadoItensSelecionadosGrid.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblValorRealizadoItensSelecionadosGrid.Location = new Point(1440, 107);
+            lblValorRealizadoItensSelecionadosGrid.Name = "lblValorRealizadoItensSelecionadosGrid";
+            lblValorRealizadoItensSelecionadosGrid.Size = new Size(304, 15);
+            lblValorRealizadoItensSelecionadosGrid.TabIndex = 29;
+            lblValorRealizadoItensSelecionadosGrid.Text = "Valor Realizado dos 900 itens selecionados: R$ 100.400,00";
+            lblValorRealizadoItensSelecionadosGrid.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lblValorTotalItensSelecionadoGrid
+            // 
+            lblValorTotalItensSelecionadoGrid.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblValorTotalItensSelecionadoGrid.Location = new Point(1465, 90);
+            lblValorTotalItensSelecionadoGrid.Name = "lblValorTotalItensSelecionadoGrid";
+            lblValorTotalItensSelecionadoGrid.Size = new Size(279, 15);
+            lblValorTotalItensSelecionadoGrid.TabIndex = 28;
+            lblValorTotalItensSelecionadoGrid.Text = "Valor Total dos 900 itens selecionados: R$ 100.400,00";
+            lblValorTotalItensSelecionadoGrid.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label3
             // 
@@ -583,7 +619,7 @@
             btnExcluirInitial.BackColor = Color.IndianRed;
             btnExcluirInitial.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnExcluirInitial.ForeColor = SystemColors.ButtonFace;
-            btnExcluirInitial.Location = new Point(1054, 44);
+            btnExcluirInitial.Location = new Point(1572, 46);
             btnExcluirInitial.Name = "btnExcluirInitial";
             btnExcluirInitial.Size = new Size(172, 38);
             btnExcluirInitial.TabIndex = 17;
@@ -613,7 +649,7 @@
             // 
             grbAlerta.Controls.Add(lblQtdItensParaFinalizarCadastro);
             grbAlerta.Controls.Add(lblEventRepeat);
-            grbAlerta.Location = new Point(840, 88);
+            grbAlerta.Location = new Point(840, 91);
             grbAlerta.Name = "grbAlerta";
             grbAlerta.Size = new Size(363, 51);
             grbAlerta.TabIndex = 23;
@@ -688,7 +724,7 @@
             btnExibirDetalhes.BackColor = Color.Teal;
             btnExibirDetalhes.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnExibirDetalhes.ForeColor = SystemColors.ButtonFace;
-            btnExibirDetalhes.Location = new Point(1232, 44);
+            btnExibirDetalhes.Location = new Point(1399, 46);
             btnExibirDetalhes.Name = "btnExibirDetalhes";
             btnExibirDetalhes.Size = new Size(172, 38);
             btnExibirDetalhes.TabIndex = 16;
@@ -778,7 +814,7 @@
             btnPagamentoAvulso.BackColor = Color.SeaGreen;
             btnPagamentoAvulso.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnPagamentoAvulso.ForeColor = Color.White;
-            btnPagamentoAvulso.Location = new Point(858, 44);
+            btnPagamentoAvulso.Location = new Point(1207, 46);
             btnPagamentoAvulso.Name = "btnPagamentoAvulso";
             btnPagamentoAvulso.Size = new Size(190, 38);
             btnPagamentoAvulso.TabIndex = 4;
@@ -836,7 +872,7 @@
             dgvContaPagar.ReadOnly = true;
             dgvContaPagar.RowTemplate.Height = 25;
             dgvContaPagar.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvContaPagar.Size = new Size(1734, 348);
+            dgvContaPagar.Size = new Size(1734, 385);
             dgvContaPagar.TabIndex = 0;
             dgvContaPagar.MultiSelectChanged += DgvEfetuarPagamentoListagem_MultiSelectChanged;
             dgvContaPagar.CellDoubleClick += DgvEfetuarPagamentoListagem_CellDoubleClick;
@@ -863,7 +899,7 @@
             tbpListarContaReceber.Location = new Point(4, 24);
             tbpListarContaReceber.Name = "tbpListarContaReceber";
             tbpListarContaReceber.Padding = new Padding(3);
-            tbpListarContaReceber.Size = new Size(1767, 501);
+            tbpListarContaReceber.Size = new Size(1767, 538);
             tbpListarContaReceber.TabIndex = 4;
             tbpListarContaReceber.Text = "Contas a Receber";
             tbpListarContaReceber.UseVisualStyleBackColor = true;
@@ -874,7 +910,7 @@
             btnContaReceberExcluirLinhaSelecionada.BackColor = Color.IndianRed;
             btnContaReceberExcluirLinhaSelecionada.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnContaReceberExcluirLinhaSelecionada.ForeColor = SystemColors.ButtonFace;
-            btnContaReceberExcluirLinhaSelecionada.Location = new Point(1029, 7);
+            btnContaReceberExcluirLinhaSelecionada.Location = new Point(1589, 19);
             btnContaReceberExcluirLinhaSelecionada.Name = "btnContaReceberExcluirLinhaSelecionada";
             btnContaReceberExcluirLinhaSelecionada.Size = new Size(172, 38);
             btnContaReceberExcluirLinhaSelecionada.TabIndex = 30;
@@ -885,7 +921,7 @@
             // 
             lblContaReceberValorRestanteItensSelecionados.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblContaReceberValorRestanteItensSelecionados.AutoSize = true;
-            lblContaReceberValorRestanteItensSelecionados.Location = new Point(904, 60);
+            lblContaReceberValorRestanteItensSelecionados.Location = new Point(1462, 95);
             lblContaReceberValorRestanteItensSelecionados.Name = "lblContaReceberValorRestanteItensSelecionados";
             lblContaReceberValorRestanteItensSelecionados.RightToLeft = RightToLeft.Yes;
             lblContaReceberValorRestanteItensSelecionados.Size = new Size(299, 15);
@@ -899,7 +935,7 @@
             btnContaReceberExibirDetalhes.BackColor = Color.Teal;
             btnContaReceberExibirDetalhes.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btnContaReceberExibirDetalhes.ForeColor = SystemColors.ButtonFace;
-            btnContaReceberExibirDetalhes.Location = new Point(853, 6);
+            btnContaReceberExibirDetalhes.Location = new Point(1413, 18);
             btnContaReceberExibirDetalhes.Name = "btnContaReceberExibirDetalhes";
             btnContaReceberExibirDetalhes.Size = new Size(172, 38);
             btnContaReceberExibirDetalhes.TabIndex = 27;
@@ -911,7 +947,7 @@
             // 
             lblContaReceberTotalItensSelecionados.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblContaReceberTotalItensSelecionados.AutoSize = true;
-            lblContaReceberTotalItensSelecionados.Location = new Point(924, 45);
+            lblContaReceberTotalItensSelecionados.Location = new Point(1482, 80);
             lblContaReceberTotalItensSelecionados.Name = "lblContaReceberTotalItensSelecionados";
             lblContaReceberTotalItensSelecionados.RightToLeft = RightToLeft.Yes;
             lblContaReceberTotalItensSelecionados.Size = new Size(279, 15);
@@ -1015,7 +1051,7 @@
             dgvContaReceber.ReadOnly = true;
             dgvContaReceber.RowTemplate.Height = 25;
             dgvContaReceber.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvContaReceber.Size = new Size(1193, 382);
+            dgvContaReceber.Size = new Size(1753, 419);
             dgvContaReceber.TabIndex = 1;
             dgvContaReceber.CellMouseDown += EditarRegistroSelecionadoContaReceber_CellMouseDown;
             dgvContaReceber.RowsAdded += DgvContaReceber_RowsAdded;
@@ -1030,7 +1066,7 @@
             tbpEstudosFinanceiros.Location = new Point(4, 24);
             tbpEstudosFinanceiros.Name = "tbpEstudosFinanceiros";
             tbpEstudosFinanceiros.Padding = new Padding(3);
-            tbpEstudosFinanceiros.Size = new Size(1767, 501);
+            tbpEstudosFinanceiros.Size = new Size(1767, 538);
             tbpEstudosFinanceiros.TabIndex = 3;
             tbpEstudosFinanceiros.Text = "Estudos Financeiros";
             tbpEstudosFinanceiros.UseVisualStyleBackColor = true;
@@ -1077,7 +1113,7 @@
             dgvSearchMonthlyAverageAnalysis.ReadOnly = true;
             dgvSearchMonthlyAverageAnalysis.RowTemplate.Height = 25;
             dgvSearchMonthlyAverageAnalysis.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvSearchMonthlyAverageAnalysis.Size = new Size(908, 413);
+            dgvSearchMonthlyAverageAnalysis.Size = new Size(1755, 413);
             dgvSearchMonthlyAverageAnalysis.TabIndex = 0;
             // 
             // lblVersion
@@ -1161,7 +1197,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1778, 550);
+            ClientSize = new Size(1778, 587);
             Controls.Add(cboCultura);
             Controls.Add(rdbAmbienteProducao);
             Controls.Add(rdbAmbienteHomologacao);
@@ -1285,5 +1321,8 @@
         private Label label3;
         private ComboBox cboInitialCategory;
         private ComboBox cboCultura;
+        private Label lblValorTotalItensSelecionadoGrid;
+        private Label lblValorRestanteDosItensSelecionadosNoGrid;
+        private Label lblValorRealizadoItensSelecionadosGrid;
     }
 }

@@ -24,6 +24,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         public SearchBillToPayViewModel PostSearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
         public SearchCashReceivableViewModel PostSearchCashReceivableViewModel { get; set; } = new SearchCashReceivableViewModel();
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
+        private Dictionary<string, Stopwatch> _timesLoading = new();
 
         public Dictionary<string, object> LastSearch = new();
         public string? Environment { get; set; }
@@ -61,16 +62,22 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             await CarregamentoTelaAgain();
         }
 
-        private void PreencherTempoCarregamentoTela(Stopwatch stopWatch)
+        private void PreencherTempoCarregamentoTela(Dictionary<string, Stopwatch> stopWatchs)
         {
-            stopWatch.Stop();
+            stopWatchs?.GetValueOrDefault("Total")?.Stop();
 
-            TimeSpan ts = stopWatch.Elapsed;
+            TimeSpan ts = stopWatchs?.GetValueOrDefault("Total")?.Elapsed ?? new TimeSpan();
 
             string elapsedTime = string
                 .Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
 
-            lblRunTimeLoad.Text = string.Concat("Tempo de Carregamento dos dados desta tela: ", elapsedTime);
+            lblRunTimeLoad.Text = string
+                .Concat("Tempo total de carregamento: ", elapsedTime,
+                " - RequestHttp: ", stopWatchs?.GetValueOrDefault("stopWatchHttpRequestContaPagar")?.ElapsedMilliseconds, "ms",
+                " - MapSearchResultContaPagarToDataSource: ", stopWatchs?.GetValueOrDefault("stopWatchHttpRequestContaPagar")?.ElapsedMilliseconds, "ms",
+                " - OrdenacaoRegraContasPagar: ", stopWatchs?.GetValueOrDefault("stopWatchOrdenacaoRegraContasPagar")?.ElapsedMilliseconds, "ms",
+                " - PreecherDataGridViewDetalhes: ", stopWatchs?.GetValueOrDefault("stopWatchPreecherDataGridViewDetalhes")?.ElapsedMilliseconds, "ms"
+                );
         }
 
         private void PreecherPrecoMedio()
@@ -135,17 +142,39 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             if (EH_CONTA_PAGAR)
             {
-                SearchBillToPayOutput contaPagar = new();
+                Stopwatch stopWatchHttpRequestContaPagar = new();
+                _timesLoading.Add("stopWatchHttpRequestContaPagar", stopWatchHttpRequestContaPagar);
+                stopWatchHttpRequestContaPagar.Start();
 
-                contaPagar = await BillToPayServices.SearchBillToPay(PostSearchBillToPayViewModel);
+                var contaPagar = await BillToPayServices.SearchBillToPay(PostSearchBillToPayViewModel);
+
+                stopWatchHttpRequestContaPagar.Stop();
+
+                Stopwatch stopWatchMapSearchResultContaPagarToDataSource = new();
+                _timesLoading.Add("stopWatchMapSearchResultContaPagarToDataSource", stopWatchMapSearchResultContaPagarToDataSource);
+                stopWatchMapSearchResultContaPagarToDataSource.Start();
 
                 dgvVisualizarContaPagarDataSources = MapSearchResultContaPagarToDataSource(contaPagar);
 
+                stopWatchMapSearchResultContaPagarToDataSource.Stop();
+
                 LastSearch.Add(DateTime.Now.ToString(), dgvVisualizarContaPagarDataSources);
+
+                Stopwatch stopWatchOrdenacaoRegraContasPagar = new();
+                _timesLoading.Add("stopWatchOrdenacaoRegraContasPagar", stopWatchOrdenacaoRegraContasPagar);
+                stopWatchOrdenacaoRegraContasPagar.Start();
 
                 IList<DgvVisualizarContaPagarDataSource> allPagar = OrdenacaoRegraContasPagar(dgvVisualizarContaPagarDataSources);
 
+                stopWatchOrdenacaoRegraContasPagar.Stop();
+
+                Stopwatch stopWatchPreecherDataGridViewDetalhes = new();
+                _timesLoading.Add("stopWatchPreecherDataGridViewDetalhes", stopWatchPreecherDataGridViewDetalhes);
+                stopWatchPreecherDataGridViewDetalhes.Start();
+
                 PreecherDataGridViewDetalhes<DgvVisualizarContaPagarDataSource>(allPagar);
+
+                stopWatchPreecherDataGridViewDetalhes.Stop();
             }
 
             if (!EH_CONTA_PAGAR)
@@ -284,13 +313,13 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.Columns[4].HeaderText = "Categoria";
 
 
-            dgvExcluirDetalhes.Columns[5].HeaderText = contaPagar ? "R$ Restante" : "R$ Valor";
+            dgvExcluirDetalhes.Columns[5].HeaderText = contaPagar ? GetCurrencySymbol() + " Restante" : GetCurrencySymbol() + " Valor";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[6].HeaderText = contaPagar ? "R$ Realizado" : "R$ Valor Manipulado";
+            dgvExcluirDetalhes.Columns[6].HeaderText = contaPagar ? GetCurrencySymbol() + " Realizado" : GetCurrencySymbol() + " Valor Manipulado";
             dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[7].HeaderText = "R$ Total";
+            dgvExcluirDetalhes.Columns[7].HeaderText = GetCurrencySymbol() + " Total";
             dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvExcluirDetalhes.Columns[7].Visible = contaPagar;
@@ -405,31 +434,33 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             }
         }
 
-        private void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)
-        {
-            var columnsCount = row.Cells.Count;
-
-            for (int i = 0; i < columnsCount; i++)
-            {
-                row.Cells[i].Style.BackColor = backColor;
-                row.Cells[i].Style.ForeColor = foreColor;
-            }
-        }
-
         private void DgvExcluirDetalhes_SelectionChanged(object sender, EventArgs e)
         {
             decimal valorTotalItensSelecionados = 0;
+            decimal valorRestanteItensSelecionados = 0;
+            decimal valorRealizadoItensSelecionados = 0;
             int quantidadeTotalItensSelecionados = dgvExcluirDetalhes.SelectedRows.Count;
 
             foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
             {
-                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
+                bool isOKTotalValue = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal totalValue);
+                valorTotalItensSelecionados += isOKTotalValue ? totalValue : 0;
 
-                valorTotalItensSelecionados += isOk ? valor : 0;
+                bool isOKRemainingValue = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal remainingValue);
+                valorRestanteItensSelecionados += isOKRemainingValue ? remainingValue : 0;
+
+                bool isOKCompletedValue = decimal.TryParse(row.Cells[6].Value.ToString(), out decimal completedValue);
+                valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
             }
 
-            lblExcluirDetalhesItensSelecionadosDataGridView.Text = string
-                .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
+            lblValorTotalExibirDetalhesDataGridView.Text = string
+                .Concat("Valor Total dos: ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
+
+            lblValorRestanteExibirDetalhesDataGridView.Text = string
+                .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
+
+            lblValorRealizadoExibirDetalhesDataGridView.Text = string
+                .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
         }
 
         private async void BtnExcluir_Click(object sender, EventArgs e)
@@ -570,7 +601,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
                 YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
                 Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString().Replace("R$ ", "")),
+                Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString())),
                 PurchaseDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
                 PayDay = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
                 HasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
@@ -602,7 +633,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                         RegistrationType = row.Cells[13].Value?.ToString(),
                         YearMonth = row.Cells[11].Value?.ToString(),
                         Category = row.Cells[4].Value?.ToString(),
-                        Value = Convert.ToDecimal(row.Cells[7].Value?.ToString().Replace("R$ ", "")),
+                        Value = Convert.ToDecimal(RemoveCurrencySymbol(row.Cells[7].Value?.ToString())),
                         PurchaseDate = DateUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
                         PayDay = row.Cells[14].Value?.ToString(),
                         HasPay = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
@@ -638,8 +669,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
                 Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                 Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString().Replace("R$ ", "")),
-                ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
+                Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString())),
+                ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString())),
                 /*7-TotalValue*/
                 /*8-DetailsQuantity*/
                 AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
@@ -673,8 +704,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                         Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
                         Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                         Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                        Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString().Replace("R$ ", "")),
-                        ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
+                        Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString())),
+                        ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString())),
                         /*7-TotalValue*/
                         /*8-DetailsQuantity*/
                         AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
@@ -717,8 +748,10 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async Task CarregamentoTelaAgain()
         {
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
+            _timesLoading.Clear();
+            Stopwatch stopWatchTotal = new();
+            _timesLoading.Add("Total", stopWatchTotal);
+            stopWatchTotal.Start();
 
             await PreencherCampos();
 
@@ -726,7 +759,41 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             PreecherPrecoMedio();
 
-            PreencherTempoCarregamentoTela(stopWatch);
+            PreencherTempoCarregamentoTela(_timesLoading);
+        }
+
+        /// <summary>
+        /// Retorna o símbolo da moeda baseado na cultura atual
+        /// </summary>
+        private string GetCurrencySymbol()
+        {
+            return StringDecimalUtils.CurrentCulture switch
+            {
+                "pt-BR" => "R$",
+                "es-ES" => "€",
+                "en-US" => "$",
+                "de-DE" => "€",
+                "fr-FR" => "€",
+                _ => "R$"
+            };
+        }
+
+        /// <summary>
+        /// Remove o símbolo da moeda de uma string, independente da cultura
+        /// </summary>
+        private string RemoveCurrencySymbol(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "0";
+
+            // Remove símbolos comuns de moeda e espaços
+            return value
+                .Replace("R$", "")
+                .Replace("€", "")
+                .Replace("$", "")
+                .Replace("£", "")
+                .Replace("¥", "")
+                .Trim();
         }
     }
 }
