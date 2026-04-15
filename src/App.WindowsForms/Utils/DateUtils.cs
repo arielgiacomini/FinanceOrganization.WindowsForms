@@ -1,17 +1,124 @@
-﻿namespace Domain.Utils
+﻿using System.Globalization;
+
+namespace Domain.Utils
 {
     public static class DateUtils
     {
-        public static string GetYearMonthPortugueseByDateTime(DateTime dateTime)
+        /// <summary>
+        /// Gets the current culture for date formatting.
+        /// Defaults to pt-BR if not explicitly set.
+        /// </summary>
+        public static string CurrentCulture { get; set; } = "pt-BR";
+
+        public static string GetYearMonthPortugueseByDateTime(DateTime dateTime, string? cultureName = null)
         {
             var year = dateTime.Year;
-            var month = MonthNamePortuguese(dateTime.Month);
+            var month = GetMonthName(dateTime.Month, cultureName);
 
-            var mesAno = string.Concat(month, "/", year);
+            var mesAno = string.Concat(char.ToUpper(month[0]) + month.Substring(1), "/", year);
 
             return mesAno;
         }
 
+        /// <summary>
+        /// Gets the month name based on the specified culture.
+        /// </summary>
+        /// <param name="monthNumber">Month number (1-12)</param>
+        /// <param name="cultureName">Culture name (e.g., "pt-BR", "es-ES"). If null, uses CurrentCulture</param>
+        /// <returns>Localized month name</returns>
+        public static string GetMonthName(int monthNumber, string? cultureName = null)
+        {
+            cultureName ??= CurrentCulture;
+            var cultureInfo = new CultureInfo(cultureName);
+
+            if (monthNumber < 1 || monthNumber > 12)
+            {
+                return GetNotIdentifiedMessage(cultureName, monthNumber);
+            }
+
+            return cultureInfo.DateTimeFormat.GetMonthName(monthNumber);
+        }
+
+        /// <summary>
+        /// Gets the abbreviated month name based on the specified culture.
+        /// </summary>
+        /// <param name="monthNumber">Month number (1-12)</param>
+        /// <param name="cultureName">Culture name (e.g., "pt-BR", "es-ES"). If null, uses CurrentCulture</param>
+        /// <returns>Localized abbreviated month name</returns>
+        public static string GetAbbreviatedMonthName(int monthNumber, string? cultureName = null)
+        {
+            cultureName ??= CurrentCulture;
+            var cultureInfo = new CultureInfo(cultureName);
+
+            if (monthNumber < 1 || monthNumber > 12)
+            {
+                return GetNotIdentifiedMessage(cultureName, monthNumber);
+            }
+
+            return cultureInfo.DateTimeFormat.GetAbbreviatedMonthName(monthNumber);
+        }
+
+        /// <summary>
+        /// Formats a date string with day name based on the specified culture.
+        /// </summary>
+        /// <param name="dateTime">The date to format</param>
+        /// <param name="cultureName">Culture name (e.g., "pt-BR", "es-ES"). If null, uses CurrentCulture</param>
+        /// <returns>Formatted date string (e.g., "segunda-feira, 13 de fevereiro de 2025")</returns>
+        public static string FormatDateLong(DateTime dateTime, string? cultureName = null)
+        {
+            cultureName ??= CurrentCulture;
+            var cultureInfo = new CultureInfo(cultureName);
+
+            return dateTime.ToString("dddd, dd \\de MMMM \\de yyyy", cultureInfo);
+        }
+
+        /// <summary>
+        /// Formats a date string in short format based on the specified culture.
+        /// </summary>
+        /// <param name="dateTime">The date to format</param>
+        /// <param name="cultureName">Culture name (e.g., "pt-BR", "es-ES"). If null, uses CurrentCulture</param>
+        /// <returns>Formatted date string (e.g., "13/02/2025")</returns>
+        public static string FormatDateShort(DateTime dateTime, string? cultureName = null)
+        {
+            cultureName ??= CurrentCulture;
+            var cultureInfo = new CultureInfo(cultureName);
+
+            return dateTime.ToString("d", cultureInfo);
+        }
+
+        /// <summary>
+        /// Sets the global culture for date and month formatting.
+        /// </summary>
+        /// <param name="cultureName">Culture name (e.g., "pt-BR", "es-ES", "en-US")</param>
+        public static void SetCulture(string cultureName)
+        {
+            try
+            {
+                // Validate culture exists
+                var testCulture = new CultureInfo(cultureName);
+                CurrentCulture = cultureName;
+            }
+            catch (CultureNotFoundException)
+            {
+                throw new ArgumentException($"Culture '{cultureName}' is not supported.", nameof(cultureName));
+            }
+        }
+
+        private static string GetNotIdentifiedMessage(string cultureName, int monthNumber)
+        {
+            return cultureName switch
+            {
+                "es-ES" or "es" => $"No identificado: [{monthNumber}]",
+                "en-US" or "en" => $"Not identified: [{monthNumber}]",
+                "de-DE" or "de" => $"Nicht identifiziert: [{monthNumber}]",
+                "fr-FR" or "fr" => $"Non identifié: [{monthNumber}]",
+                _ => $"Não identificado: [{monthNumber}]" // Default to Portuguese
+            };
+        }
+
+        /// <summary>
+        /// Legacy method for backward compatibility. Gets month name in Portuguese.
+        /// </summary>
         private static string MonthNamePortuguese(int month)
         {
             var monthBrazilian = string.Empty;

@@ -5,6 +5,7 @@ using App.Forms.Forms.Edição;
 using App.Forms.Forms.Pay;
 using App.Forms.Services;
 using App.Forms.Services.Output;
+using App.Forms.UI;
 using App.Forms.ViewModel;
 using App.WindowsForms.BackgroundServices;
 using App.WindowsForms.DataSource;
@@ -39,6 +40,7 @@ namespace App.Forms.Forms
         private IList<DgvVisualizarContaReceberDataSource> _dgvVisualizarContaReceberDataSource = new List<DgvVisualizarContaReceberDataSource>();
         private IHost _host;
         private int _eventRepeat = 0;
+        private bool ehInitialization = false;
 
         public static int CurrentIndex { get; set; } = 0;
         public decimal ValorContaPagarDigitadoTextBox { get; set; } = 0;
@@ -70,6 +72,8 @@ namespace App.Forms.Forms
 
         private async void Initial_Load(object sender, EventArgs e)
         {
+            CultureSelectorHelper.InitializeCultureComboBox(cboCultura);
+            ehInitialization = true;
             rdbCadastroContaPagar.Checked = true;
             lblQtdItensParaFinalizarCadastro.Visible = false;
             lblEventRepeat.Visible = false;
@@ -227,7 +231,7 @@ namespace App.Forms.Forms
                 createBillToPay.InitialMonthYear = cboCadastroContaInititalMonthYear.Text;
                 createBillToPay.FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null;
                 createBillToPay.Category = cboCadastroContaCategory.Text;
-                createBillToPay.Value = Convert.ToDecimal(txtCadastroContaValue.Text.Replace("R$ ", ""));
+                createBillToPay.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtCadastroContaValue.Text));
                 createBillToPay.PurchaseDate = cboCadastroContaHabilitarDate.Checked ? DateUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null;
                 createBillToPay.BestPayDay = Convert.ToInt32(cboCadastroContaBestDay.Text);
                 createBillToPay.AdditionalMessage = rtbCadastroContaMensagemAdicional.Text;
@@ -262,7 +266,7 @@ namespace App.Forms.Forms
                     InitialMonthYear = cboCadastroContaInititalMonthYear.Text,
                     FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null,
                     Category = cboCadastroContaCategory.Text,
-                    Value = Convert.ToDecimal(txtCadastroContaValue.Text.Replace("R$ ", "")),
+                    Value = Convert.ToDecimal(RemoveCurrencySymbol(txtCadastroContaValue.Text)),
                     AgreementDate = cboCadastroContaHabilitarDate.Checked ? DateUtils.GetDateTimeOfString(dtpCadastroContaDate.Text) : null,
                     BestReceivingDay = Convert.ToInt32(cboCadastroContaBestDay.Text),
                     AdditionalMessage = rtbCadastroContaMensagemAdicional.Text,
@@ -917,15 +921,15 @@ namespace App.Forms.Forms
             dgvContaPagar.Columns[3].HeaderText = "Descrição";
             dgvContaPagar.Columns[4].HeaderText = "Categoria";
 
-            dgvContaPagar.Columns[5].HeaderText = "R$ Restante";
+            dgvContaPagar.Columns[5].HeaderText = GetCurrencySymbol() + " Restante";
             dgvContaPagar.Columns[5].DefaultCellStyle.Format = "C2";
             dgvContaPagar.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvContaPagar.Columns[6].HeaderText = "R$ Realizado";
+            dgvContaPagar.Columns[6].HeaderText = GetCurrencySymbol() + " Realizado";
             dgvContaPagar.Columns[6].DefaultCellStyle.Format = "C2";
             dgvContaPagar.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvContaPagar.Columns[7].HeaderText = "R$ Total";
+            dgvContaPagar.Columns[7].HeaderText = GetCurrencySymbol() + " Total";
             dgvContaPagar.Columns[7].DefaultCellStyle.Format = "C2";
             dgvContaPagar.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
@@ -966,15 +970,15 @@ namespace App.Forms.Forms
 
             dgvContaReceber.Columns[4].HeaderText = "Categoria";
 
-            dgvContaReceber.Columns[5].HeaderText = "R$ Total";
+            dgvContaReceber.Columns[5].HeaderText = GetCurrencySymbol() + " Total";
             dgvContaReceber.Columns[5].DefaultCellStyle.Format = "C2";
             dgvContaReceber.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvContaReceber.Columns[6].HeaderText = "R$ Valor Manipulado";
+            dgvContaReceber.Columns[6].HeaderText = GetCurrencySymbol() + " Valor Manipulado";
             dgvContaReceber.Columns[6].DefaultCellStyle.Format = "C2";
             dgvContaReceber.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgvContaReceber.Columns[7].HeaderText = "R$ Valor Total";
+            dgvContaReceber.Columns[7].HeaderText = GetCurrencySymbol() + " Valor Total";
             dgvContaReceber.Columns[7].DefaultCellStyle.Format = "C2";
             dgvContaReceber.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvContaReceber.Columns[7].Visible = false;
@@ -1089,7 +1093,7 @@ namespace App.Forms.Forms
                                         ": ",
                                         quantidadeRegistros,
                                         " - ",
-                                        "R$ ",
+                                        GetCurrencySymbol() + " ",
                                         string.Format("{0:#,##0.00}",
                                         totalValue));
 
@@ -1107,7 +1111,7 @@ namespace App.Forms.Forms
         private void PreencheLabels(int quantidadeTotal, decimal valorTotal, Label lbl, string prefix)
         {
             lbl.Text = string
-                            .Concat(prefix, quantidadeTotal, " - ", "R$ ", string
+                            .Concat(prefix, quantidadeTotal, " - ", GetCurrencySymbol(), " ", string
                             .Format("{0:#,##0.00}", valorTotal));
         }
 
@@ -1224,7 +1228,10 @@ namespace App.Forms.Forms
             }
             else
             {
-                await CarregaContasApagar();
+                if (!ehInitialization)
+                {
+                    await CarregaContasApagar();
+                }
             }
         }
 
@@ -1262,7 +1269,7 @@ namespace App.Forms.Forms
                     Account = dgvContaPagar.Rows[e.RowIndex].Cells[2].Value?.ToString(),
                     Name = dgvContaPagar.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                     Category = dgvContaPagar.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                    Value = Convert.ToDecimal(dgvContaPagar.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
+                    Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvContaPagar.Rows[e.RowIndex].Cells[5].Value?.ToString() ?? "0")),
                     PurchaseDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[9].Value?.ToString()),
                     DueDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
                     YearMonth = dgvContaPagar.Rows[e.RowIndex].Cells[11].Value?.ToString(),
@@ -1901,8 +1908,8 @@ namespace App.Forms.Forms
                     Account = dgvContaReceber.Rows[e.RowIndex].Cells[2].Value?.ToString(),
                     Name = dgvContaReceber.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                     Category = dgvContaReceber.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                    Value = Convert.ToDecimal(dgvContaReceber.Rows[e.RowIndex].Cells[5].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
-                    ManipulatedValue = Convert.ToDecimal(dgvContaReceber.Rows[e.RowIndex].Cells[6].Value?.ToString()?.Replace("R$ ", "") ?? "0"),
+                    Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvContaReceber.Rows[e.RowIndex].Cells[5].Value?.ToString() ?? "0")),
+                    ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(dgvContaReceber.Rows[e.RowIndex].Cells[6].Value?.ToString() ?? "0")),
                     /*Cells[7] - TotalValue*/
                     /*Cells[8] - DetailsQuantity*/
                     AgreementDate = DateUtils.GetDateTimeOfString(dgvContaReceber.Rows[e.RowIndex].Cells[9].Value?.ToString()),
@@ -2040,7 +2047,10 @@ namespace App.Forms.Forms
             }
             else
             {
-                await CarregaContasApagar();
+                if (!ehInitialization)
+                {
+                    await CarregaContasApagar();
+                }
             }
         }
 
@@ -2105,6 +2115,85 @@ namespace App.Forms.Forms
                     cboCadastroContaCategory.Items.Add(item.Value);
                     cboEfetuarPagamentoCategoria.Items.Add(item.Value);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Atualiza a UI após uma mudança de cultura
+        /// </summary>
+        private void RefreshUIAfterCultureChange()
+        {
+            // Atualiza o rótulo de data de criação com o novo formato de data
+            PreencherLabelDataCriacao();
+
+            // Atualiza os rótulos do header com o novo formato de data
+            lblInfoHeader.Text = AdjusteInfoHeader(DateTime.Now);
+
+            // Se houver dados carregados nas grid views, atualiza os valores exibidos
+            if (_dgvEfetuarPagamentoListagemDataSource.Count > 0)
+            {
+                PreencheDataSourceContaPagar(_dgvEfetuarPagamentoListagemDataSource);
+            }
+
+            if (_dgvVisualizarContaReceberDataSource.Count > 0)
+            {
+                PreencheDataSourceContaReceber(_dgvVisualizarContaReceberDataSource);
+            }
+
+            if (_dgvVisuarEstudoFinanceiroDataSource.Count > 0)
+            {
+                PreecherDataGridViewEstudoFinanceiro(_dgvVisuarEstudoFinanceiroDataSource);
+            }
+        }
+
+        private void cboCultura_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Retorna o símbolo da moeda baseado na cultura atual
+        /// </summary>
+        private string GetCurrencySymbol()
+        {
+            return StringDecimalUtils.CurrentCulture switch
+            {
+                "pt-BR" => "R$",
+                "es-ES" => "€",
+                "en-US" => "$",
+                "de-DE" => "€",
+                "fr-FR" => "€",
+                _ => "R$"
+            };
+        }
+
+        /// <summary>
+        /// Remove o símbolo da moeda de uma string, independente da cultura
+        /// </summary>
+        private string RemoveCurrencySymbol(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "0";
+
+            // Remove símbolos comuns de moeda e espaços
+            return value
+                .Replace("R$", "")
+                .Replace("€", "")
+                .Replace("$", "")
+                .Replace("£", "")
+                .Replace("¥", "")
+                .Trim();
+        }
+
+        /// <summary>
+        /// Event handler para mudança de seleção de cultura
+        /// </summary>
+        private void cboCultura_SelectedValueChanged_1(object sender, EventArgs e)
+        {
+            if (cboCultura.SelectedItem != null)
+            {
+                CultureSelectorHelper.ChangeCulture(cboCultura);
+                RefreshUIAfterCultureChange();
             }
         }
     }
