@@ -1430,13 +1430,13 @@ namespace App.Forms.Forms
                 valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
             }
 
-            lblEfetuarPagamentoItensSelecionadosDataGridView.Text = string
+            lblValorTotalItensSelecionadoGrid.Text = string
                 .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
 
-            lblGridViewSelectedRowsRemainingValue.Text = string
+            lblValorRestanteDosItensSelecionadosNoGrid.Text = string
                 .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
 
-            lblGridViewSelectedRowsCompleted.Text = string.
+            lblValorRealizadoItensSelecionadosGrid.Text = string.
                 Concat("Valor realizado dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRealizadoItensSelecionados.ToString("C"));
         }
 

@@ -46,16 +46,17 @@ namespace App.WindowsForms.Forms.Excluir
                     {
                         detailsList.AddRange(item.Details);
                     }
-                };
+                }
+                ;
 
                 PreecherDataGridViewExcluirDetalhes(detailsList);
 
                 PreecherPrecoMedio();
 
                 lblInformacoesTotais.Text = string
-                        .Concat("Itens Totais: ",
-                            filtered.Count, " - ",
-                            filtered.Select(x => x.Value).Sum().ToString("C"));
+                        .Concat("Quantidade de Registros: ",
+                            filtered.Count, " - Total: ",
+                            filtered.Sum(x => x.Value).ToString("C"));
             }
         }
 
@@ -116,9 +117,8 @@ namespace App.WindowsForms.Forms.Excluir
 
             foreach (DataGridViewRow row in dgvRegistroRelacionado.SelectedRows)
             {
-                bool isOk = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal valor);
-
-                valorTotalItensSelecionados += isOk ? valor : 0;
+                bool isOKRemainingValue = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal remainingValue);
+                valorTotalItensSelecionados += isOKRemainingValue ? remainingValue : 0;
             }
 
             decimal avgPrice = 0;
@@ -130,8 +130,8 @@ namespace App.WindowsForms.Forms.Excluir
             lblValorTotalMedioSelecionados.Text = string
                     .Concat("Valor Médio Apenas Selecionados: ", avgPrice.ToString("C"));
 
-            lblRegistrosSelecionados.Text = string
-                .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
+            lblValorRestanteRegistroRelacionadoDataGridView.Text = string
+                .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
         }
     }
 }

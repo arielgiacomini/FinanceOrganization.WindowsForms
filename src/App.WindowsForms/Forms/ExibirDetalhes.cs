@@ -24,6 +24,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         public SearchBillToPayViewModel PostSearchBillToPayViewModel { get; set; } = new SearchBillToPayViewModel();
         public SearchCashReceivableViewModel PostSearchCashReceivableViewModel { get; set; } = new SearchCashReceivableViewModel();
         public EditBillToPayViewModel EditBillToPayViewModel { get; set; } = new EditBillToPayViewModel();
+        private Dictionary<string, Stopwatch> _timesLoading = new();
 
         public Dictionary<string, object> LastSearch = new();
         public string? Environment { get; set; }
@@ -61,16 +62,22 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             await CarregamentoTelaAgain();
         }
 
-        private void PreencherTempoCarregamentoTela(Stopwatch stopWatch)
+        private void PreencherTempoCarregamentoTela(Dictionary<string, Stopwatch> stopWatchs)
         {
-            stopWatch.Stop();
+            stopWatchs?.GetValueOrDefault("Total")?.Stop();
 
-            TimeSpan ts = stopWatch.Elapsed;
+            TimeSpan ts = stopWatchs?.GetValueOrDefault("Total")?.Elapsed ?? new TimeSpan();
 
             string elapsedTime = string
                 .Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
 
-            lblRunTimeLoad.Text = string.Concat("Tempo de Carregamento dos dados desta tela: ", elapsedTime);
+            lblRunTimeLoad.Text = string
+                .Concat("Tempo total de carregamento: ", elapsedTime,
+                " - RequestHttp: ", stopWatchs?.GetValueOrDefault("stopWatchHttpRequestContaPagar")?.ElapsedMilliseconds, "ms",
+                " - MapSearchResultContaPagarToDataSource: ", stopWatchs?.GetValueOrDefault("stopWatchHttpRequestContaPagar")?.ElapsedMilliseconds, "ms",
+                " - OrdenacaoRegraContasPagar: ", stopWatchs?.GetValueOrDefault("stopWatchOrdenacaoRegraContasPagar")?.ElapsedMilliseconds, "ms",
+                " - PreecherDataGridViewDetalhes: ", stopWatchs?.GetValueOrDefault("stopWatchPreecherDataGridViewDetalhes")?.ElapsedMilliseconds, "ms"
+                );
         }
 
         private void PreecherPrecoMedio()
@@ -135,17 +142,39 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             if (EH_CONTA_PAGAR)
             {
-                SearchBillToPayOutput contaPagar = new();
+                Stopwatch stopWatchHttpRequestContaPagar = new();
+                _timesLoading.Add("stopWatchHttpRequestContaPagar", stopWatchHttpRequestContaPagar);
+                stopWatchHttpRequestContaPagar.Start();
 
-                contaPagar = await BillToPayServices.SearchBillToPay(PostSearchBillToPayViewModel);
+                var contaPagar = await BillToPayServices.SearchBillToPay(PostSearchBillToPayViewModel);
+
+                stopWatchHttpRequestContaPagar.Stop();
+
+                Stopwatch stopWatchMapSearchResultContaPagarToDataSource = new();
+                _timesLoading.Add("stopWatchMapSearchResultContaPagarToDataSource", stopWatchMapSearchResultContaPagarToDataSource);
+                stopWatchMapSearchResultContaPagarToDataSource.Start();
 
                 dgvVisualizarContaPagarDataSources = MapSearchResultContaPagarToDataSource(contaPagar);
 
+                stopWatchMapSearchResultContaPagarToDataSource.Stop();
+
                 LastSearch.Add(DateTime.Now.ToString(), dgvVisualizarContaPagarDataSources);
+
+                Stopwatch stopWatchOrdenacaoRegraContasPagar = new();
+                _timesLoading.Add("stopWatchOrdenacaoRegraContasPagar", stopWatchOrdenacaoRegraContasPagar);
+                stopWatchOrdenacaoRegraContasPagar.Start();
 
                 IList<DgvVisualizarContaPagarDataSource> allPagar = OrdenacaoRegraContasPagar(dgvVisualizarContaPagarDataSources);
 
+                stopWatchOrdenacaoRegraContasPagar.Stop();
+
+                Stopwatch stopWatchPreecherDataGridViewDetalhes = new();
+                _timesLoading.Add("stopWatchPreecherDataGridViewDetalhes", stopWatchPreecherDataGridViewDetalhes);
+                stopWatchPreecherDataGridViewDetalhes.Start();
+
                 PreecherDataGridViewDetalhes<DgvVisualizarContaPagarDataSource>(allPagar);
+
+                stopWatchPreecherDataGridViewDetalhes.Stop();
             }
 
             if (!EH_CONTA_PAGAR)
@@ -405,31 +434,33 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             }
         }
 
-        private void SetColorRows(DataGridViewRow row, Color backColor, Color foreColor)
-        {
-            var columnsCount = row.Cells.Count;
-
-            for (int i = 0; i < columnsCount; i++)
-            {
-                row.Cells[i].Style.BackColor = backColor;
-                row.Cells[i].Style.ForeColor = foreColor;
-            }
-        }
-
         private void DgvExcluirDetalhes_SelectionChanged(object sender, EventArgs e)
         {
             decimal valorTotalItensSelecionados = 0;
+            decimal valorRestanteItensSelecionados = 0;
+            decimal valorRealizadoItensSelecionados = 0;
             int quantidadeTotalItensSelecionados = dgvExcluirDetalhes.SelectedRows.Count;
 
             foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
             {
-                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
+                bool isOKTotalValue = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal totalValue);
+                valorTotalItensSelecionados += isOKTotalValue ? totalValue : 0;
 
-                valorTotalItensSelecionados += isOk ? valor : 0;
+                bool isOKRemainingValue = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal remainingValue);
+                valorRestanteItensSelecionados += isOKRemainingValue ? remainingValue : 0;
+
+                bool isOKCompletedValue = decimal.TryParse(row.Cells[6].Value.ToString(), out decimal completedValue);
+                valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
             }
 
-            lblExcluirDetalhesItensSelecionadosDataGridView.Text = string
-                .Concat("Itens selecionados: ", quantidadeTotalItensSelecionados, " - ", valorTotalItensSelecionados.ToString("C"));
+            lblValorTotalExibirDetalhesDataGridView.Text = string
+                .Concat("Valor Total dos: ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
+
+            lblValorRestanteExibirDetalhesDataGridView.Text = string
+                .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
+
+            lblValorRealizadoExibirDetalhesDataGridView.Text = string
+                .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
         }
 
         private async void BtnExcluir_Click(object sender, EventArgs e)
@@ -717,8 +748,9 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async Task CarregamentoTelaAgain()
         {
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
+            Stopwatch stopWatchTotal = new();
+            _timesLoading.Add("Total", stopWatchTotal);
+            stopWatchTotal.Start();
 
             await PreencherCampos();
 
@@ -726,7 +758,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             PreecherPrecoMedio();
 
-            PreencherTempoCarregamentoTela(stopWatch);
+            PreencherTempoCarregamentoTela(_timesLoading);
         }
     }
 }
