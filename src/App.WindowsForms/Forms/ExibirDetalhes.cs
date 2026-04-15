@@ -748,6 +748,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private async Task CarregamentoTelaAgain()
         {
+            _timesLoading.Clear();
             Stopwatch stopWatchTotal = new();
             _timesLoading.Add("Total", stopWatchTotal);
             stopWatchTotal.Start();
