@@ -369,7 +369,7 @@ namespace App.Forms.Forms.Edição
             EditBillToPayViewModel.RegistrationType = cboContaPagarTipoCadastro.Text;
             EditBillToPayViewModel.YearMonth = cboContaPagarAnoMesInicial.Text;
             EditBillToPayViewModel.Category = cboContaPagarCategory.Text;
-            EditBillToPayViewModel.Value = Convert.ToDecimal(txtContaPagarValor.Text.Replace("R$ ", ""));
+            EditBillToPayViewModel.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtContaPagarValor.Text));
             EditBillToPayViewModel.PurchaseDate = cboHabilitarDataCompraOuAcordo.Checked ? DateUtils.GetDateTimeOfString(dtpEdicaoContaDataCompraOuAcordo.Text) : null;
             EditBillToPayViewModel.PayDay = string.IsNullOrWhiteSpace(txtContaPagarDataPagamentoOuRecebimento.Text) ? null : txtContaPagarDataPagamentoOuRecebimento.Text;
             EditBillToPayViewModel.HasPay = rdbContaPagaOuRecebida_Sim.Checked;
@@ -413,7 +413,7 @@ namespace App.Forms.Forms.Edição
                 BasketEditBillToPayViewModel
                     .FirstOrDefault(f => f.Id == item.Id)!.Category = cboContaPagarCategory.Text;
                 BasketEditBillToPayViewModel
-                    .FirstOrDefault(f => f.Id == item.Id)!.Value = Convert.ToDecimal(txtContaPagarValor.Text.Replace("R$ ", ""));
+                    .FirstOrDefault(f => f.Id == item.Id)!.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtContaPagarValor.Text));
                 //BasketEditBillToPayViewModel
                 //    .FirstOrDefault(f => f.Id == item.Id)!.PurchaseDate = cboHabilitarDataCompra.Checked ? DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataCompra.Text) : null;
                 //BasketEditBillToPayViewModel
@@ -509,6 +509,24 @@ namespace App.Forms.Forms.Edição
         private void TxtValorManipulado_Enter(object sender, EventArgs e)
         {
             txtValorManipulado.Text = "";
+        }
+
+        /// <summary>
+        /// Remove o símbolo da moeda de uma string, independente da cultura
+        /// </summary>
+        private string RemoveCurrencySymbol(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "0";
+
+            // Remove símbolos comuns de moeda e espaços
+            return value
+                .Replace("R$", "")
+                .Replace("€", "")
+                .Replace("$", "")
+                .Replace("£", "")
+                .Replace("¥", "")
+                .Trim();
         }
     }
 }

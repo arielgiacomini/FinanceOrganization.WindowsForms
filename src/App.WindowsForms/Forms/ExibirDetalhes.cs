@@ -313,13 +313,13 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.Columns[4].HeaderText = "Categoria";
 
 
-            dgvExcluirDetalhes.Columns[5].HeaderText = contaPagar ? "R$ Restante" : "R$ Valor";
+            dgvExcluirDetalhes.Columns[5].HeaderText = contaPagar ? GetCurrencySymbol() + " Restante" : GetCurrencySymbol() + " Valor";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[6].HeaderText = contaPagar ? "R$ Realizado" : "R$ Valor Manipulado";
+            dgvExcluirDetalhes.Columns[6].HeaderText = contaPagar ? GetCurrencySymbol() + " Realizado" : GetCurrencySymbol() + " Valor Manipulado";
             dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[7].HeaderText = "R$ Total";
+            dgvExcluirDetalhes.Columns[7].HeaderText = GetCurrencySymbol() + " Total";
             dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Format = "C2";
             dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvExcluirDetalhes.Columns[7].Visible = contaPagar;
@@ -601,7 +601,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
                 YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
                 Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString().Replace("R$ ", "")),
+                Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[7].Value?.ToString())),
                 PurchaseDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
                 PayDay = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
                 HasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
@@ -633,7 +633,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                         RegistrationType = row.Cells[13].Value?.ToString(),
                         YearMonth = row.Cells[11].Value?.ToString(),
                         Category = row.Cells[4].Value?.ToString(),
-                        Value = Convert.ToDecimal(row.Cells[7].Value?.ToString().Replace("R$ ", "")),
+                        Value = Convert.ToDecimal(RemoveCurrencySymbol(row.Cells[7].Value?.ToString())),
                         PurchaseDate = DateUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
                         PayDay = row.Cells[14].Value?.ToString(),
                         HasPay = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
@@ -669,8 +669,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
                 Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                 Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString().Replace("R$ ", "")),
-                ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
+                Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString())),
+                ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString())),
                 /*7-TotalValue*/
                 /*8-DetailsQuantity*/
                 AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
@@ -704,8 +704,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                         Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
                         Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
                         Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                        Value = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString().Replace("R$ ", "")),
-                        ManipulatedValue = Convert.ToDecimal(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString().Replace("R$ ", "")),
+                        Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString())),
+                        ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString())),
                         /*7-TotalValue*/
                         /*8-DetailsQuantity*/
                         AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
@@ -760,6 +760,40 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             PreecherPrecoMedio();
 
             PreencherTempoCarregamentoTela(_timesLoading);
+        }
+
+        /// <summary>
+        /// Retorna o símbolo da moeda baseado na cultura atual
+        /// </summary>
+        private string GetCurrencySymbol()
+        {
+            return StringDecimalUtils.CurrentCulture switch
+            {
+                "pt-BR" => "R$",
+                "es-ES" => "€",
+                "en-US" => "$",
+                "de-DE" => "€",
+                "fr-FR" => "€",
+                _ => "R$"
+            };
+        }
+
+        /// <summary>
+        /// Remove o símbolo da moeda de uma string, independente da cultura
+        /// </summary>
+        private string RemoveCurrencySymbol(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "0";
+
+            // Remove símbolos comuns de moeda e espaços
+            return value
+                .Replace("R$", "")
+                .Replace("€", "")
+                .Replace("$", "")
+                .Replace("£", "")
+                .Replace("¥", "")
+                .Trim();
         }
     }
 }
