@@ -345,17 +345,33 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 return;
 
             var column = dgvExcluirDetalhes.Columns[columnIndex];
-            column.HeaderText = headerText;
-            column.Visible = visible;
 
-            if (!string.IsNullOrEmpty(format))
+            // Only set HeaderText if different (avoids unnecessary property setter overhead)
+            if (column.HeaderText != headerText)
             {
-                column.DefaultCellStyle.Format = format;
+                column.HeaderText = headerText;
             }
 
-            if (alignment != DataGridViewContentAlignment.NotSet)
+            // Only set Visible if different
+            if (column.Visible != visible)
             {
-                column.DefaultCellStyle.Alignment = alignment;
+                column.Visible = visible;
+            }
+
+            // Only modify DefaultCellStyle if needed
+            if (!string.IsNullOrEmpty(format) || alignment != DataGridViewContentAlignment.NotSet)
+            {
+                var style = column.DefaultCellStyle;
+
+                if (!string.IsNullOrEmpty(format) && style.Format != format)
+                {
+                    style.Format = format;
+                }
+
+                if (alignment != DataGridViewContentAlignment.NotSet && style.Alignment != alignment)
+                {
+                    style.Alignment = alignment;
+                }
             }
         }
 
