@@ -77,7 +77,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             // lblValorTotalExibirDetalhesDataGridView
             // 
             lblValorTotalExibirDetalhesDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblValorTotalExibirDetalhesDataGridView.Location = new Point(1073, 31);
+            lblValorTotalExibirDetalhesDataGridView.Location = new Point(1073, 69);
             lblValorTotalExibirDetalhesDataGridView.Name = "lblValorTotalExibirDetalhesDataGridView";
             lblValorTotalExibirDetalhesDataGridView.RightToLeft = RightToLeft.No;
             lblValorTotalExibirDetalhesDataGridView.Size = new Size(279, 15);
@@ -165,7 +165,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             // lblValorRestanteExibirDetalhesDataGridView
             // 
             lblValorRestanteExibirDetalhesDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblValorRestanteExibirDetalhesDataGridView.Location = new Point(1053, 50);
+            lblValorRestanteExibirDetalhesDataGridView.Location = new Point(1053, 31);
             lblValorRestanteExibirDetalhesDataGridView.Name = "lblValorRestanteExibirDetalhesDataGridView";
             lblValorRestanteExibirDetalhesDataGridView.Size = new Size(299, 15);
             lblValorRestanteExibirDetalhesDataGridView.TabIndex = 23;
@@ -175,7 +175,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             // lblValorRealizadoExibirDetalhesDataGridView
             // 
             lblValorRealizadoExibirDetalhesDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblValorRealizadoExibirDetalhesDataGridView.Location = new Point(1048, 69);
+            lblValorRealizadoExibirDetalhesDataGridView.Location = new Point(1048, 49);
             lblValorRealizadoExibirDetalhesDataGridView.Name = "lblValorRealizadoExibirDetalhesDataGridView";
             lblValorRealizadoExibirDetalhesDataGridView.Size = new Size(304, 15);
             lblValorRealizadoExibirDetalhesDataGridView.TabIndex = 24;

@@ -453,14 +453,14 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
             }
 
-            lblValorTotalExibirDetalhesDataGridView.Text = string
-                .Concat("Valor Total dos: ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
-
             lblValorRestanteExibirDetalhesDataGridView.Text = string
-                .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
+                .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
 
             lblValorRealizadoExibirDetalhesDataGridView.Text = string
-                .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
+                .Concat("Valor realizado dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRealizadoItensSelecionados.ToString("C"));
+
+            lblValorTotalExibirDetalhesDataGridView.Text = string
+                .Concat("Valor Total dos: ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
         }
 
         private async void BtnExcluir_Click(object sender, EventArgs e)
