@@ -84,36 +84,35 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         {
             try
             {
+                if (dgvExcluirDetalhes.SelectedRows.Count == 0)
+                    return;
+
                 decimal valorTotalItens = 0;
                 int quantidadeItensPagos = 0;
 
-                foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
+                foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
                 {
-                    bool isOkValue = decimal.TryParse(row.Cells[7]?.Value?.ToString(), out decimal valor);
-                    bool isOkPay = bool.TryParse(row.Cells[15]?.Value?.ToString(), out bool hasPay);
+                    var valorCell = row.Cells[7]?.Value;
+                    var payCell = row.Cells[15]?.Value;
 
-
-                    valorTotalItens += isOkValue && hasPay ? valor : 0;
-                    quantidadeItensPagos += isOkPay & hasPay ? 1 : 0;
+                    if (valorCell != null && decimal.TryParse(valorCell.ToString(), out decimal valor) &&
+                        payCell != null && bool.TryParse(payCell.ToString(), out bool hasPay) && hasPay)
+                    {
+                        valorTotalItens += valor;
+                        quantidadeItensPagos++;
+                    }
                 }
 
-                string descricaoConta = dgvExcluirDetalhes
-                    .Rows[dgvExcluirDetalhes
-                    .Rows.GetFirstRow(DataGridViewElementStates.Selected)]
-                    .Cells[3].Value?.ToString() ?? string.Empty;
+                var firstSelectedRow = dgvExcluirDetalhes.SelectedRows[0];
+                string descricaoConta = firstSelectedRow.Cells[3].Value?.ToString() ?? string.Empty;
 
-                decimal avgPrice = 0;
-                if (quantidadeItensPagos > 0)
-                {
-                    avgPrice = valorTotalItens / quantidadeItensPagos;
-                }
+                decimal avgPrice = quantidadeItensPagos > 0 ? valorTotalItens / quantidadeItensPagos : 0;
 
-                lblValorMedioOnlyPagos.Text = string
-                    .Concat($"[{descricaoConta}] - ", "Valor Médio: ", avgPrice.ToString("C"));
+                lblValorMedioOnlyPagos.Text = $"[{descricaoConta}] - Valor Médio: {avgPrice:C}";
             }
             catch (Exception ex)
             {
-
+                // Log exception if needed
             }
         }
 
@@ -124,13 +123,14 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             foreach (DataGridViewRow row in dgvExcluirDetalhes.Rows)
             {
-                bool isOk = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal valor);
-
-                valorTotalItens += isOk ? valor : 0;
+                var valorCell = row.Cells[7].Value;
+                if (valorCell != null && decimal.TryParse(valorCell.ToString(), out decimal valor))
+                {
+                    valorTotalItens += valor;
+                }
             }
 
-            lblTotaisRegistrosEValores.Text = string
-                .Concat("Totais de Registro(s): ", quantidadeTotalItens, " - ", valorTotalItens.ToString("C"));
+            lblTotaisRegistrosEValores.Text = $"Totais de Registro(s): {quantidadeTotalItens} - {valorTotalItens:C}";
         }
 
         private async Task PreencherCampos()
@@ -302,131 +302,154 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
         private void PreecherDataGridViewDetalhes<T>(object dataSourceOrderBy, bool contaPagar = true)
         {
-            dgvExcluirDetalhes.DataSource = dataSourceOrderBy;
-            dgvExcluirDetalhes.Columns[0].HeaderText = "Id";
-            dgvExcluirDetalhes.Columns[0].Visible = false;
-            dgvExcluirDetalhes.Columns[1].HeaderText = "Id da tabela pai";
-            dgvExcluirDetalhes.Columns[1].Visible = false;
-            dgvExcluirDetalhes.Columns[2].HeaderText = "Conta";
-            dgvExcluirDetalhes.Columns[2].Visible = false;
-            dgvExcluirDetalhes.Columns[3].HeaderText = "Descrição";
-            dgvExcluirDetalhes.Columns[4].HeaderText = "Categoria";
+            try
+            {
+                dgvExcluirDetalhes.DataSource = dataSourceOrderBy;
 
+                string currencySymbol = GetCurrencySymbol();
 
-            dgvExcluirDetalhes.Columns[5].HeaderText = contaPagar ? GetCurrencySymbol() + " Restante" : GetCurrencySymbol() + " Valor";
-            dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Format = "C2";
-            dgvExcluirDetalhes.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[6].HeaderText = contaPagar ? GetCurrencySymbol() + " Realizado" : GetCurrencySymbol() + " Valor Manipulado";
-            dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Format = "C2";
-            dgvExcluirDetalhes.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[7].HeaderText = GetCurrencySymbol() + " Total";
-            dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Format = "C2";
-            dgvExcluirDetalhes.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvExcluirDetalhes.Columns[7].Visible = contaPagar;
-            dgvExcluirDetalhes.Columns[8].HeaderText = "Qtd Compras";
-            dgvExcluirDetalhes.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
-            dgvExcluirDetalhes.Columns[8].Visible = contaPagar;
-            dgvExcluirDetalhes.Columns[9].HeaderText = contaPagar ? "Data de Compra" : "Data do Acordo";
-            dgvExcluirDetalhes.Columns[10].HeaderText = "Vencimento";
-            dgvExcluirDetalhes.Columns[11].HeaderText = "Mês/Ano";
-            dgvExcluirDetalhes.Columns[12].HeaderText = "Frequência";
-            dgvExcluirDetalhes.Columns[13].HeaderText = "Tipo";
-            dgvExcluirDetalhes.Columns[14].HeaderText = contaPagar ? "Data de Pagamento" : "Data de Recebimento";
-            dgvExcluirDetalhes.Columns[15].HeaderText = contaPagar ? "Pago?" : "Recebido?";
+                ConfigureColumn(0, "Id", false);
+                ConfigureColumn(1, "Id da tabela pai", false);
+                ConfigureColumn(2, "Conta", false);
+                ConfigureColumn(3, "Descrição");
+                ConfigureColumn(4, "Categoria");
 
+                ConfigureColumn(5, contaPagar ? $"{currencySymbol} Restante" : $"{currencySymbol} Valor", true, "C2", DataGridViewContentAlignment.MiddleRight);
+                ConfigureColumn(6, contaPagar ? $"{currencySymbol} Realizado" : $"{currencySymbol} Valor Manipulado", true, "C2", DataGridViewContentAlignment.MiddleRight);
+                ConfigureColumn(7, $"{currencySymbol} Total", contaPagar, "C2", DataGridViewContentAlignment.MiddleRight);
+                ConfigureColumn(8, "Qtd Compras", contaPagar);
+                if (dgvExcluirDetalhes.Columns[8] != null)
+                    dgvExcluirDetalhes.Columns[8].ToolTipText = "Quantidade de Compras relacionadas a este item...";
 
-            dgvExcluirDetalhes.Columns[16].HeaderText = "Mensagem";
-            dgvExcluirDetalhes.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvExcluirDetalhes.Columns[17].HeaderText = "Data de Criação";
-            dgvExcluirDetalhes.Columns[17].Visible = false;
-            dgvExcluirDetalhes.Columns[18].HeaderText = "Data de Alteração";
-            dgvExcluirDetalhes.Columns[18].Visible = false;
+                ConfigureColumn(9, contaPagar ? "Data de Compra" : "Data do Acordo");
+                ConfigureColumn(10, "Vencimento");
+                ConfigureColumn(11, "Mês/Ano");
+                ConfigureColumn(12, "Frequência");
+                ConfigureColumn(13, "Tipo");
+                ConfigureColumn(14, contaPagar ? "Data de Pagamento" : "Data de Recebimento");
+                ConfigureColumn(15, contaPagar ? "Pago?" : "Recebido?");
+
+                ConfigureColumn(16, "Mensagem", true, null, DataGridViewContentAlignment.MiddleLeft);
+                ConfigureColumn(17, "Data de Criação", false);
+                ConfigureColumn(18, "Data de Alteração", false);
+            }
+            finally
+            {
+                Collor();
+            }
+        }
+
+        private void ConfigureColumn(int columnIndex, string headerText, bool visible = true, string? format = null, DataGridViewContentAlignment alignment = DataGridViewContentAlignment.NotSet)
+        {
+            if (columnIndex >= dgvExcluirDetalhes.Columns.Count)
+                return;
+
+            var column = dgvExcluirDetalhes.Columns[columnIndex];
+
+            // Only set HeaderText if different (avoids unnecessary property setter overhead)
+            if (column.HeaderText != headerText)
+            {
+                column.HeaderText = headerText;
+            }
+
+            // Only set Visible if different
+            if (column.Visible != visible)
+            {
+                column.Visible = visible;
+            }
+
+            // Only modify DefaultCellStyle if needed
+            if (!string.IsNullOrEmpty(format) || alignment != DataGridViewContentAlignment.NotSet)
+            {
+                var style = column.DefaultCellStyle;
+
+                if (!string.IsNullOrEmpty(format) && style.Format != format)
+                {
+                    style.Format = format;
+                }
+
+                if (alignment != DataGridViewContentAlignment.NotSet && style.Alignment != alignment)
+                {
+                    style.Alignment = alignment;
+                }
+            }
         }
 
         private static IList<DgvVisualizarContaPagarDataSource> MapSearchResultContaPagarToDataSource(SearchBillToPayOutput searchBillToPayOutput)
         {
-            IList<DgvVisualizarContaPagarDataSource> dgvEfetuarPagamentoListagemDataSources = new List<DgvVisualizarContaPagarDataSource>();
-
-            if (searchBillToPayOutput.Output == null || searchBillToPayOutput.Output.Data == null)
-            {
-                return dgvEfetuarPagamentoListagemDataSources;
-            }
+            if (searchBillToPayOutput?.Output?.Data == null)
+                return new List<DgvVisualizarContaPagarDataSource>();
 
             var dados = searchBillToPayOutput.Output.Data;
 
-            var json = JsonConvert.SerializeObject(dados);
-
-            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaPagarDataSource>>(json);
-
-            foreach (var item in conversion!)
+            if (dados is IEnumerable<DgvVisualizarContaPagarDataSource> directCast)
             {
-                dgvEfetuarPagamentoListagemDataSources.Add(item);
+                return directCast.ToList();
             }
 
-            return dgvEfetuarPagamentoListagemDataSources;
+            var json = JsonConvert.SerializeObject(dados);
+            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaPagarDataSource>>(json);
+
+            return conversion ?? new List<DgvVisualizarContaPagarDataSource>();
         }
 
         private static IList<DgvVisualizarContaReceberDataSource> MapSearchResultContaReceberToDataSource(SearchCashReceivableOutput searchOutput)
         {
-            IList<DgvVisualizarContaReceberDataSource> dgvVisualizarContaReceberDataSource = new List<DgvVisualizarContaReceberDataSource>();
-
-            if (searchOutput.Output == null || searchOutput.Output.Data == null)
-            {
-                return dgvVisualizarContaReceberDataSource;
-            }
+            if (searchOutput?.Output?.Data == null)
+                return new List<DgvVisualizarContaReceberDataSource>();
 
             var dados = searchOutput.Output.Data;
 
-            var json = JsonConvert.SerializeObject(dados);
-
-            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaReceberDataSource>>(json);
-
-            foreach (var item in conversion!)
+            if (dados is IEnumerable<DgvVisualizarContaReceberDataSource> directCast)
             {
-                dgvVisualizarContaReceberDataSource.Add(item);
+                return directCast.ToList();
             }
 
-            return dgvVisualizarContaReceberDataSource;
+            var json = JsonConvert.SerializeObject(dados);
+            var conversion = JsonConvert.DeserializeObject<IList<DgvVisualizarContaReceberDataSource>>(json);
+
+            return conversion ?? new List<DgvVisualizarContaReceberDataSource>();
         }
 
         private void DgvExcluirDetalhes_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            Collor();
+            // Collor() agora é chamado apenas no final de PreecherDataGridViewDetalhes
+            // para evitar múltiplas iterações desnecessárias
         }
 
         private void Collor()
         {
+            if (dgvExcluirDetalhes.Rows.Count == 0 || _listCreditCard == null)
+                return;
+
+            var creditCardHashSet = new HashSet<string>(_listCreditCard, StringComparer.OrdinalIgnoreCase);
+            var nuBankAccounts = new HashSet<string>(_listCreditCard.Where(x => x.Contains("Nubank", StringComparison.OrdinalIgnoreCase)), StringComparer.OrdinalIgnoreCase);
+
             for (int i = 0; i < dgvExcluirDetalhes.Rows.Count; i++)
             {
-                var hasPay = Convert.ToBoolean(dgvExcluirDetalhes.Rows[i].Cells[15].Value?.ToString());
+                var payCell = dgvExcluirDetalhes.Rows[i].Cells[15].Value;
+                bool hasPay = payCell != null && bool.TryParse(payCell.ToString(), out bool paid) && paid;
 
                 if (hasPay)
                 {
                     dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkGreen;
                     dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-
                     continue;
                 }
 
-                var creditCardNotPay = (_listCreditCard?.Contains(dgvExcluirDetalhes?.Rows[i]?.Cells[2].Value?.ToString()) ?? false)
-                    && !hasPay;
+                var accountCell = dgvExcluirDetalhes.Rows[i].Cells[2].Value?.ToString();
 
-                if (creditCardNotPay)
-                {
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkOrange;
-                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-
-                    continue;
-                }
-
-                //TODO: MUDAREMOS OS REGISTROS PASSADOS, OU SEJA, O QUE ESTÁ DEFINIDO COMO CARTÃO DE CRÉDITO APENAS SERÁ FEITO UPDATE PARA CARTÃO DE CRÉDITO NUBANK
-                var nubank = _listCreditCard?.Where(x => x.Contains("Nubank")).ToList();
-                //TODO: DEFINIR CORES VIA CONFIGURAÇÃO, DEIXAR NO BANCO DE DADOS
-                if (nubank != null && nubank.Contains(dgvExcluirDetalhes?.Rows[i]?.Cells[2].Value?.ToString()))
+                if (!string.IsNullOrEmpty(accountCell) && nuBankAccounts.Contains(accountCell))
                 {
                     dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DimGray;
                     dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                    continue;
+                }
 
+                if (!string.IsNullOrEmpty(accountCell) && creditCardHashSet.Contains(accountCell))
+                {
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.BackColor = Color.DarkOrange;
+                    dgvExcluirDetalhes.Rows[i].DefaultCellStyle.ForeColor = Color.White;
                     continue;
                 }
 
@@ -443,24 +466,22 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
             foreach (DataGridViewRow row in dgvExcluirDetalhes.SelectedRows)
             {
-                bool isOKTotalValue = decimal.TryParse(row.Cells[7].Value.ToString(), out decimal totalValue);
-                valorTotalItensSelecionados += isOKTotalValue ? totalValue : 0;
+                var totalCell = row.Cells[7].Value;
+                if (totalCell != null && decimal.TryParse(totalCell.ToString(), out decimal totalValue))
+                    valorTotalItensSelecionados += totalValue;
 
-                bool isOKRemainingValue = decimal.TryParse(row.Cells[5].Value.ToString(), out decimal remainingValue);
-                valorRestanteItensSelecionados += isOKRemainingValue ? remainingValue : 0;
+                var remainingCell = row.Cells[5].Value;
+                if (remainingCell != null && decimal.TryParse(remainingCell.ToString(), out decimal remainingValue))
+                    valorRestanteItensSelecionados += remainingValue;
 
-                bool isOKCompletedValue = decimal.TryParse(row.Cells[6].Value.ToString(), out decimal completedValue);
-                valorRealizadoItensSelecionados += isOKCompletedValue ? completedValue : 0;
+                var completedCell = row.Cells[6].Value;
+                if (completedCell != null && decimal.TryParse(completedCell.ToString(), out decimal completedValue))
+                    valorRealizadoItensSelecionados += completedValue;
             }
 
-            lblValorTotalExibirDetalhesDataGridView.Text = string
-                .Concat("Valor Total dos: ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
-
-            lblValorRestanteExibirDetalhesDataGridView.Text = string
-                .Concat("Valor Total dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorTotalItensSelecionados.ToString("C"));
-
-            lblValorRealizadoExibirDetalhesDataGridView.Text = string
-                .Concat("Valor restante dos ", quantidadeTotalItensSelecionados, " itens selecionados: ", valorRestanteItensSelecionados.ToString("C"));
+            lblValorRestanteExibirDetalhesDataGridView.Text = $"Valor restante dos {quantidadeTotalItensSelecionados} itens selecionados: {valorRestanteItensSelecionados:C}";
+            lblValorRealizadoExibirDetalhesDataGridView.Text = $"Valor realizado dos {quantidadeTotalItensSelecionados} itens selecionados: {valorRealizadoItensSelecionados:C}";
+            lblValorTotalExibirDetalhesDataGridView.Text = $"Valor Total dos: {quantidadeTotalItensSelecionados} itens selecionados: {valorTotalItensSelecionados:C}";
         }
 
         private async void BtnExcluir_Click(object sender, EventArgs e)
