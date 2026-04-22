@@ -520,13 +520,27 @@ namespace App.Forms.Forms.Edição
                 return "0";
 
             // Remove símbolos comuns de moeda e espaços
-            return value
+
+            string removed = 
+            value
                 .Replace("R$", "")
                 .Replace("€", "")
                 .Replace("$", "")
                 .Replace("£", "")
                 .Replace("¥", "")
                 .Trim();
+
+            // Handle negative sign that may have a trailing space
+            removed = removed.Replace("- ", "-");
+
+            // Normalize decimal separator to current culture
+            var decimalSeparator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            if (decimalSeparator == ".")
+            {
+                removed = removed.Replace(",", ".");
+            }
+
+            return removed;
         }
     }
 }
