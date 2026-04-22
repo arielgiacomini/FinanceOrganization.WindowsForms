@@ -23,7 +23,7 @@ namespace App.Forms
         public static void Main()
         {
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.File("C:/logs/log.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
             try
