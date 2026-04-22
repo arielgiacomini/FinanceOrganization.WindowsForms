@@ -370,12 +370,12 @@ namespace App.Forms.Forms.Edição
             EditBillToPayViewModel.YearMonth = cboContaPagarAnoMesInicial.Text;
             EditBillToPayViewModel.Category = cboContaPagarCategory.Text;
             EditBillToPayViewModel.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtContaPagarValor.Text));
-            EditBillToPayViewModel.PurchaseDate = cboHabilitarDataCompraOuAcordo.Checked ? DateUtils.GetDateTimeOfString(dtpEdicaoContaDataCompraOuAcordo.Text) : null;
+            EditBillToPayViewModel.PurchaseDate = cboHabilitarDataCompraOuAcordo.Checked ? dtpEdicaoContaDataCompraOuAcordo.Value : null;
             EditBillToPayViewModel.PayDay = string.IsNullOrWhiteSpace(txtContaPagarDataPagamentoOuRecebimento.Text) ? null : txtContaPagarDataPagamentoOuRecebimento.Text;
             EditBillToPayViewModel.HasPay = rdbContaPagaOuRecebida_Sim.Checked;
-            EditBillToPayViewModel.DueDate = DateUtils.GetDateTimeOfString(dtpContaDataVencimento.Text) ?? DateTime.Now;
+            EditBillToPayViewModel.DueDate = dtpContaDataVencimento.Value.Date;
             EditBillToPayViewModel.AdditionalMessage = rtbContaPagarMensagemAdicional.Text;
-            EditBillToPayViewModel.LastChangeDate = DateUtils.GetDateTimeOfString(lblContaPagarDataCriacao.Text) ?? DateTime.Now;
+            EditBillToPayViewModel.LastChangeDate = DateTime.Now;
         }
 
         private void MapCashReceivableToViewModel()
@@ -388,12 +388,12 @@ namespace App.Forms.Forms.Edição
             EditCashReceivableViewModel.Category = cboContaPagarCategory.Text;
             EditCashReceivableViewModel.Value = Convert.ToDecimal(txtContaPagarValor.Text.Replace("R$ ", ""));
             EditCashReceivableViewModel.ManipulatedValue = Convert.ToDecimal(txtValorManipulado.Text.Replace("R$ ", ""));
-            EditCashReceivableViewModel.AgreementDate = cboHabilitarDataCompraOuAcordo.Checked ? DateUtils.GetDateTimeOfString(dtpEdicaoContaDataCompraOuAcordo.Text) : null;
+            EditCashReceivableViewModel.AgreementDate = cboHabilitarDataCompraOuAcordo.Checked ? dtpEdicaoContaDataCompraOuAcordo.Value : null;
             EditCashReceivableViewModel.DateReceived = string.IsNullOrWhiteSpace(txtContaPagarDataPagamentoOuRecebimento.Text) ? null : txtContaPagarDataPagamentoOuRecebimento.Text;
             EditCashReceivableViewModel.HasReceived = rdbContaPagaOuRecebida_Sim.Checked;
-            EditCashReceivableViewModel.DueDate = DateUtils.GetDateTimeOfString(dtpContaDataVencimento.Text) ?? DateTime.Now;
+            EditCashReceivableViewModel.DueDate = dtpContaDataVencimento.Value;
             EditCashReceivableViewModel.AdditionalMessage = rtbContaPagarMensagemAdicional.Text;
-            EditCashReceivableViewModel.LastChangeDate = DateUtils.GetDateTimeOfString(lblContaPagarDataCriacao.Text) ?? DateTime.Now;
+            EditCashReceivableViewModel.LastChangeDate = DateTime.Now;
         }
 
         private void MapFormBasketToViewModel()

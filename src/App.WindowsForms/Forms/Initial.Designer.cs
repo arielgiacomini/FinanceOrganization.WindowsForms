@@ -195,7 +195,7 @@
             grbTemplateContaPagar.Controls.Add(cboCadastroContaAccount);
             grbTemplateContaPagar.Location = new Point(16, 6);
             grbTemplateContaPagar.Name = "grbTemplateContaPagar";
-            grbTemplateContaPagar.Size = new Size(1275, 524);
+            grbTemplateContaPagar.Size = new Size(1745, 524);
             grbTemplateContaPagar.TabIndex = 15;
             grbTemplateContaPagar.TabStop = false;
             grbTemplateContaPagar.Text = "Cadastro de Contas Pagar/Receber";
@@ -285,7 +285,7 @@
             dgvCadastroConta.Name = "dgvCadastroConta";
             dgvCadastroConta.RowTemplate.Height = 25;
             dgvCadastroConta.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCadastroConta.Size = new Size(1221, 237);
+            dgvCadastroConta.Size = new Size(1691, 237);
             dgvCadastroConta.TabIndex = 15;
             dgvCadastroConta.RowsAdded += DgvCadastroContaPagar_RowsAdded;
             dgvCadastroConta.SelectionChanged += DgvContaPagar_SelectionChanged;
@@ -296,7 +296,7 @@
             grbCadastroContaHistorico.Controls.Add(lblTotalValueGridView);
             grbCadastroContaHistorico.Location = new Point(8, 240);
             grbCadastroContaHistorico.Name = "grbCadastroContaHistorico";
-            grbCadastroContaHistorico.Size = new Size(1249, 278);
+            grbCadastroContaHistorico.Size = new Size(1719, 278);
             grbCadastroContaHistorico.TabIndex = 28;
             grbCadastroContaHistorico.TabStop = false;
             grbCadastroContaHistorico.Text = "Últimos cadastros realizados...";
@@ -305,7 +305,7 @@
             // 
             lblTotalValueGridView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblTotalValueGridView.AutoSize = true;
-            lblTotalValueGridView.Location = new Point(923, 17);
+            lblTotalValueGridView.Location = new Point(1393, 17);
             lblTotalValueGridView.Name = "lblTotalValueGridView";
             lblTotalValueGridView.RightToLeft = RightToLeft.Yes;
             lblTotalValueGridView.Size = new Size(312, 15);
