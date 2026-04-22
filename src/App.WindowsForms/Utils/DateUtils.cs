@@ -179,8 +179,10 @@ namespace Domain.Utils
             }
 
             try
+            
             {
-                dateTimeResult = Convert.ToDateTime(dateTime);
+                _ = DateTime.TryParse(dateTime, out DateTime parsed);
+                dateTimeResult = parsed;
             }
             catch
             {
