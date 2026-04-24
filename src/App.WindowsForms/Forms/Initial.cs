@@ -232,7 +232,7 @@ namespace App.Forms.Forms
                 createBillToPay.FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null;
                 createBillToPay.Category = cboCadastroContaCategory.Text;
                 createBillToPay.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtCadastroContaValue.Text));
-                createBillToPay.PurchaseDate = cboCadastroContaHabilitarDate.Checked ? dtpCadastroContaDate.Value : null;
+                createBillToPay.PurchaseDate = cboCadastroContaHabilitarDate.Checked ? dtpCadastroContaDate.Value.Date : null;
                 createBillToPay.BestPayDay = Convert.ToInt32(cboCadastroContaBestDay.Text);
                 createBillToPay.AdditionalMessage = rtbCadastroContaMensagemAdicional.Text;
                 createBillToPay.CreationDate = DateTime.Now;
@@ -267,7 +267,7 @@ namespace App.Forms.Forms
                     FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null,
                     Category = cboCadastroContaCategory.Text,
                     Value = Convert.ToDecimal(RemoveCurrencySymbol(txtCadastroContaValue.Text)),
-                    AgreementDate = cboCadastroContaHabilitarDate.Checked ? dtpCadastroContaDate.Value : null,
+                    AgreementDate = cboCadastroContaHabilitarDate.Checked ? dtpCadastroContaDate.Value.Date : null,
                     BestReceivingDay = Convert.ToInt32(cboCadastroContaBestDay.Text),
                     AdditionalMessage = rtbCadastroContaMensagemAdicional.Text,
                     CreationDate = DateTime.Now,
@@ -1673,7 +1673,7 @@ namespace App.Forms.Forms
 
         private void DtpContaPagarDataCompra_ValueChanged(object sender, EventArgs e)
         {
-            var dayChoise = dtpCadastroContaDate.Value;
+            var dayChoise = dtpCadastroContaDate.Value.Date;
 
             cboCadastroContaBestDay.Text = dayChoise.Day.ToString();
         }
