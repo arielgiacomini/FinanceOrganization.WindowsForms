@@ -370,7 +370,7 @@ namespace App.Forms.Forms.Edição
             EditBillToPayViewModel.YearMonth = cboContaPagarAnoMesInicial.Text;
             EditBillToPayViewModel.Category = cboContaPagarCategory.Text;
             EditBillToPayViewModel.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtContaPagarValor.Text));
-            EditBillToPayViewModel.PurchaseDate = cboHabilitarDataCompraOuAcordo.Checked ? dtpEdicaoContaDataCompraOuAcordo.Value : null;
+            EditBillToPayViewModel.PurchaseDate = cboHabilitarDataCompraOuAcordo.Checked ? dtpEdicaoContaDataCompraOuAcordo.Value.Date : null;
             EditBillToPayViewModel.PayDay = string.IsNullOrWhiteSpace(txtContaPagarDataPagamentoOuRecebimento.Text) ? null : txtContaPagarDataPagamentoOuRecebimento.Text;
             EditBillToPayViewModel.HasPay = rdbContaPagaOuRecebida_Sim.Checked;
             EditBillToPayViewModel.DueDate = dtpContaDataVencimento.Value.Date;
@@ -388,7 +388,7 @@ namespace App.Forms.Forms.Edição
             EditCashReceivableViewModel.Category = cboContaPagarCategory.Text;
             EditCashReceivableViewModel.Value = Convert.ToDecimal(txtContaPagarValor.Text.Replace("R$ ", ""));
             EditCashReceivableViewModel.ManipulatedValue = Convert.ToDecimal(txtValorManipulado.Text.Replace("R$ ", ""));
-            EditCashReceivableViewModel.AgreementDate = cboHabilitarDataCompraOuAcordo.Checked ? dtpEdicaoContaDataCompraOuAcordo.Value : null;
+            EditCashReceivableViewModel.AgreementDate = cboHabilitarDataCompraOuAcordo.Checked ? dtpEdicaoContaDataCompraOuAcordo.Value.Date : null;
             EditCashReceivableViewModel.DateReceived = string.IsNullOrWhiteSpace(txtContaPagarDataPagamentoOuRecebimento.Text) ? null : txtContaPagarDataPagamentoOuRecebimento.Text;
             EditCashReceivableViewModel.HasReceived = rdbContaPagaOuRecebida_Sim.Checked;
             EditCashReceivableViewModel.DueDate = dtpContaDataVencimento.Value;
