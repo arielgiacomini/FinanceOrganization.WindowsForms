@@ -785,22 +785,22 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     {
                         Id = idCashReceivable,
                         IdCashReceivableRegistration = registrationId,
-                        Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
-                        Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
-                        Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                        Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString())),
-                        ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString())),
+                        Account = row.Cells[2].Value?.ToString(),
+                        Name = row.Cells[3].Value?.ToString(),
+                        Category = row.Cells[4].Value?.ToString(),
+                        Value = Convert.ToDecimal(RemoveCurrencySymbol(row.Cells[5].Value?.ToString())),
+                        ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(row.Cells[6].Value?.ToString())),
                         /*7-TotalValue*/
                         /*8-DetailsQuantity*/
-                        AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                        DueDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
-                        YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
-                        Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
-                        RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
-                        DateReceived = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
-                        HasReceived = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
-                        AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
-                        LastChangeDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+                        AgreementDate = DateUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
+                        DueDate = DateUtils.GetDateTimeOfString(row.Cells[10].Value?.ToString()) ?? DateTime.Now,
+                        YearMonth = row.Cells[11].Value?.ToString(),
+                        Frequence = row.Cells[12].Value?.ToString(),
+                        RegistrationType = row.Cells[13].Value?.ToString(),
+                        DateReceived = row.Cells[14].Value?.ToString(),
+                        HasReceived = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
+                        AdditionalMessage = row.Cells[16].Value?.ToString(),
+                        LastChangeDate = DateUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
                     });
                 }
             }
