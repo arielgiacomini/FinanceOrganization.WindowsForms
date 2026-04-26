@@ -185,7 +185,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
                 dgvVisualizarContaReceberDataSources = MapSearchResultContaReceberToDataSource(contaReceber);
 
-                LastSearch.Add(DateTime.Now.ToString(), (IList<object>)dgvVisualizarContaReceberDataSources);
+                LastSearch.Add(DateTime.Now.ToString(), dgvVisualizarContaReceberDataSources);
 
                 IList<DgvVisualizarContaReceberDataSource> allReceber = OrdenacaoRegraContasReceber(dgvVisualizarContaReceberDataSources);
 
@@ -487,8 +487,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private async void BtnExcluir_Click(object sender, EventArgs e)
         {
             var result = MessageBox
-                .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
@@ -501,14 +501,24 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     guidIds.Add(guidId);
                 }
 
-                BillToPayServices.Environment = Environment;
-                var output = await BillToPayServices.DeleteBillToPay(MapDeleteViewModel(guidIds));
+                if (EH_CONTA_PAGAR)
+                {
+                    BillToPayServices.Environment = Environment;
 
-                TratamentoOutput(output);
+                    var output = await BillToPayServices.DeleteBillToPay(MapDeleteBillToPayViewModel(guidIds));
+
+                    TratamentoOutput(output.Output, AccountType.ContaAPagar);
+                }
+                else
+                {
+                    CashReceivableServices.Environment = Environment;
+                    var output = await CashReceivableServices.DeleteCashReceivable(MapDeleteCashReceivableViewModel(guidIds));
+                    TratamentoOutput(output.Output, AccountType.ContaAReceber);
+                }
             }
         }
 
-        public static DeleteBillToPayViewModel MapDeleteViewModel(List<Guid> guidIds)
+        public static DeleteBillToPayViewModel MapDeleteBillToPayViewModel(List<Guid> guidIds)
         {
             return new DeleteBillToPayViewModel()
             {
@@ -516,6 +526,59 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 JustUnpaid = true,
                 DisableBillToPayRegistration = false
             };
+        }
+
+        public static DeleteCashReceivableViewModel MapDeleteCashReceivableViewModel(List<Guid> guidIds)
+        {
+            return new DeleteCashReceivableViewModel()
+            {
+                Id = guidIds.ToArray(),
+                OnlyNotReceivable = true,
+                DisableCashReceivableRegistration = false
+            };
+        }
+
+        private async void TratamentoOutput(object result, AccountType accountType)
+        {
+            var outputDetails = (OutputDetails)result;
+
+            if (outputDetails.Status == OutputStatus.Success)
+            {
+                MessageBox.Show(outputDetails.Message,
+                    "Exclusão de registro realizado com sucesso.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                await PreencherCampos();
+            }
+            else
+            {
+                await PreencherCampos();
+
+                var information = string.Empty;
+
+                var errors = outputDetails?.Errors;
+                var validations = outputDetails?.Validations;
+
+                if (errors != null)
+                {
+                    foreach (var error in errors)
+                    {
+                        information = string
+                            .Concat(information, error.Key, " - ", error.Value, " | ");
+                    }
+                }
+
+                if (validations != null)
+                {
+                    foreach (var validation in validations)
+                    {
+                        information = string
+                            .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                    }
+                }
+
+                MessageBox.Show(information, "Erro ao tentar deletar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private async void TratamentoOutput(DeleteBillToPayOutput result)

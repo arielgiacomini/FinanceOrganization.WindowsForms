@@ -1,4 +1,5 @@
 ﻿using App.Forms.Config;
+using App.Forms.Services.Output;
 using App.WindowsForms.Services.Output;
 using App.WindowsForms.ViewModel;
 using Newtonsoft.Json;
@@ -46,7 +47,7 @@ namespace App.WindowsForms.Services
             return JsonConvert.DeserializeObject<SearchCashReceivableOutput>(response) ?? new SearchCashReceivableOutput();
         }
 
-        public static async Task<EditCashReceivableOutput> UpdateCashReceivable(EditCashReceivableViewModel viewModel)
+        public static async Task<EditCashReceivableOutput> EditCashReceivable(EditCashReceivableViewModel viewModel)
         {
             using var client = new HttpClient();
             var content = new StringContent(JsonConvert.SerializeObject(viewModel), Encoding.UTF8, "application/json");
@@ -57,6 +58,45 @@ namespace App.WindowsForms.Services
             }
             var response = await result.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<EditCashReceivableOutput>(response) ?? new EditCashReceivableOutput();
+        }
+
+        public static async Task<EditCashReceivableOutput> EditBasketCashReceivable(IList<EditCashReceivableViewModel> viewModel)
+        {
+            using var client = new HttpClient();
+            var content = new StringContent(JsonConvert.SerializeObject(viewModel), Encoding.UTF8, "application/json");
+            var result = client.PutAsync($"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/cash-receivable/edit-basket", content).Result;
+            if (!result.IsSuccessStatusCode)
+            {
+                return new EditCashReceivableOutput();
+            }
+            var response = await result.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<EditCashReceivableOutput>(response) ?? new EditCashReceivableOutput();
+        }
+
+        public static async Task<DeleteCashReceivableOutput> DeleteCashReceivable(DeleteCashReceivableViewModel deleteCashReceivableViewModel)
+        {
+            using var client = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/cash-receivable/delete")
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(deleteCashReceivableViewModel), Encoding.UTF8, "application/json")
+            };
+
+            var result = await client.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                var output = new DeleteCashReceivableOutput();
+
+                output.Output.Status = OutputStatus.HasInternalError;
+                output.Output.Data = result.Content;
+
+                return output;
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<DeleteCashReceivableOutput>(response) ?? new DeleteCashReceivableOutput();
         }
     }
 }

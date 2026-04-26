@@ -296,7 +296,7 @@ namespace App.Forms.Forms.Edição
             {
                 if (EditInLote)
                 {
-                    MapFormBasketToViewModel();
+                    MapFormBasketContaPagarToViewModel();
 
                     BillToPayServices.Environment = Environment;
                     var result = await BillToPayServices.EditBasketBillToPay(BasketEditBillToPayViewModel);
@@ -317,13 +317,18 @@ namespace App.Forms.Forms.Edição
             {
                 if (EditInLote)
                 {
+                    MapFormBasketContaReceberToViewModel();
 
+                    CashReceivableServices.Environment = Environment;
+                    var result = await CashReceivableServices.EditBasketCashReceivable(BasketEditCashReceivableViewModel);
+
+                    TratamentoOutput(0, result.Output, AccountType);
                 }
                 else
                 {
                     MapCashReceivableToViewModel();
                     CashReceivableServices.Environment = Environment;
-                    var result = await CashReceivableServices.UpdateCashReceivable(EditCashReceivableViewModel);
+                    var result = await CashReceivableServices.EditCashReceivable(EditCashReceivableViewModel);
 
                     TratamentoOutput(0, result.Output, AccountType);
                 }
@@ -396,7 +401,7 @@ namespace App.Forms.Forms.Edição
             EditCashReceivableViewModel.LastChangeDate = DateTime.Now;
         }
 
-        private void MapFormBasketToViewModel()
+        private void MapFormBasketContaPagarToViewModel()
         {
             foreach (var item in BasketEditBillToPayViewModel)
             {
@@ -425,6 +430,41 @@ namespace App.Forms.Forms.Edição
                 //BasketEditBillToPayViewModel
                 //    .FirstOrDefault(f => f.Id == item.Id)!.AdditionalMessage = rtbContaPagarMensagemAdicional.Text;
                 BasketEditBillToPayViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.LastChangeDate = DateTime.Now;
+            }
+        }
+
+        private void MapFormBasketContaReceberToViewModel()
+        {
+            foreach (var item in BasketEditCashReceivableViewModel)
+            {
+                BasketEditCashReceivableViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Name = txtContaPagarNameDescription.Text;
+                BasketEditCashReceivableViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Account = cboContaPagarTipoConta.Text.Split(" - ")[0];
+                BasketEditCashReceivableViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Frequence = cboContaPagarFrequencia.Text;
+                BasketEditCashReceivableViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.RegistrationType = cboContaPagarTipoCadastro.Text;
+                //BasketEditCashReceivableViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.YearMonth = cboContaPagarAnoMesInicial.Text;
+                BasketEditCashReceivableViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Category = cboContaPagarCategory.Text;
+                BasketEditCashReceivableViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtContaPagarValor.Text));
+                BasketEditCashReceivableViewModel
+                    .FirstOrDefault(f => f.Id == item.Id)!.ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(txtValorManipulado.Text));
+                //BasketEditCashReceivableViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.PurchaseDate = cboHabilitarDataCompra.Checked ? DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataCompra.Text) : null;
+                //BasketEditCashReceivableViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.PayDay = string.IsNullOrWhiteSpace(txtContaPagarDataPagamento.Text) ? null : txtContaPagarDataPagamento.Text;
+                //BasketEditCashReceivableViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.HasPay = rdbPagamentoPago.Checked;
+                //BasketEditCashReceivableViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.DueDate = DateServiceUtils.GetDateTimeOfString(dtpContaPagarDataVencimento.Text) ?? DateTime.Now;
+                //BasketEditCashReceivableViewModel
+                //    .FirstOrDefault(f => f.Id == item.Id)!.AdditionalMessage = rtbContaPagarMensagemAdicional.Text;
+                BasketEditCashReceivableViewModel
                     .FirstOrDefault(f => f.Id == item.Id)!.LastChangeDate = DateTime.Now;
             }
         }
@@ -521,7 +561,7 @@ namespace App.Forms.Forms.Edição
 
             // Remove símbolos comuns de moeda e espaços
 
-            string removed = 
+            string removed =
             value
                 .Replace("R$", "")
                 .Replace("€", "")
