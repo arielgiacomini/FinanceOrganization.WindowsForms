@@ -166,5 +166,31 @@ namespace App.Forms.Services
 
             return JsonConvert.DeserializeObject<RecordsAwaitingCompleteRegistrationOutput>(response) ?? new RecordsAwaitingCompleteRegistrationOutput();
         }
+
+        public static async Task<DisableBillToPayRegistrationOutput> DisableBillToPay(DisableBillToPayViewModel disableBillToPayViewModel)
+        {
+            using var client = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/bills-to-pay/disable-registration")
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(disableBillToPayViewModel), Encoding.UTF8, "application/json")
+            };
+
+            var result = await client.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                var output = new DisableBillToPayRegistrationOutput();
+
+                output.Output.Status = OutputStatus.HasInternalError;
+                output.Output.Data = result.Content;
+
+                return output;
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<DisableBillToPayRegistrationOutput>(response) ?? new DisableBillToPayRegistrationOutput();
+        }
     }
 }

@@ -223,22 +223,24 @@ namespace App.Forms.Forms
 
                 var accountWithoutNumbers = cboCadastroContaAccount.Text.Split(" - ");
 
-                CreateBillToPayViewModel createBillToPay = new();
-                createBillToPay.Name = txtCadastroContaName.Text;
-                createBillToPay.Account = accountWithoutNumbers[0];
-                createBillToPay.Frequence = cboCadastroContaFrequence.Text;
-                createBillToPay.RegistrationType = cboCadastroContaRegistrationType.Text;
-                createBillToPay.InitialMonthYear = cboCadastroContaInititalMonthYear.Text;
-                createBillToPay.FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null;
-                createBillToPay.Category = cboCadastroContaCategory.Text;
-                createBillToPay.Value = Convert.ToDecimal(RemoveCurrencySymbol(txtCadastroContaValue.Text));
-                createBillToPay.PurchaseDate = cboCadastroContaHabilitarDate.Checked ? dtpCadastroContaDate.Value.Date : null;
-                createBillToPay.BestPayDay = Convert.ToInt32(cboCadastroContaBestDay.Text);
-                createBillToPay.AdditionalMessage = rtbCadastroContaMensagemAdicional.Text;
-                createBillToPay.CreationDate = DateTime.Now;
-                createBillToPay.LastChangeDate = null;
-                createBillToPay.Status = RegistrationStatus.AwaitRequestAPI;
-                createBillToPay.AccountType = AccountType.ContaAPagar;
+                CreateBillToPayViewModel createBillToPay = new()
+                {
+                    Name = txtCadastroContaName.Text,
+                    Account = accountWithoutNumbers[0],
+                    Frequence = cboCadastroContaFrequence.Text,
+                    RegistrationType = cboCadastroContaRegistrationType.Text,
+                    InitialMonthYear = cboCadastroContaInititalMonthYear.Text,
+                    FynallyMonthYear = !cboNaoEnviarMesAnoFinal.Checked ? cboCadastroContaFinallyMonthYear.Text : null,
+                    Category = cboCadastroContaCategory.Text,
+                    Value = Convert.ToDecimal(RemoveCurrencySymbol(txtCadastroContaValue.Text)),
+                    PurchaseDate = cboCadastroContaHabilitarDate.Checked ? dtpCadastroContaDate.Value.Date : null,
+                    BestPayDay = Convert.ToInt32(cboCadastroContaBestDay.Text),
+                    AdditionalMessage = rtbCadastroContaMensagemAdicional.Text,
+                    CreationDate = DateTime.Now,
+                    LastChangeDate = null,
+                    Status = RegistrationStatus.AwaitRequestAPI,
+                    AccountType = AccountType.ContaAPagar
+                };
 
                 _cadastroContaViewModels.TryAdd(IdDgvCadastroConta, createBillToPay);
 
@@ -949,6 +951,8 @@ namespace App.Forms.Forms
             dgvContaPagar.Columns[18].HeaderText = "Data de Alteração";
             dgvContaPagar.Columns[18].Visible = false;
             dgvContaPagar.Columns[19].Visible = false;
+
+            dgvContaPagar.ContextMenuStrip = cmsDgvContaPagarActions;
         }
 
         private void PreencheDataSourceContaReceber(IList<DgvVisualizarContaReceberDataSource> dataSourceOrderBy)
@@ -1251,43 +1255,11 @@ namespace App.Forms.Forms
 
         private void EditarRegistroSelecionado_DgvEfetuarPagamentoListagem_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
+            if (e.RowIndex >= 0 && e.Button == MouseButtons.Right)
             {
-                dgvContaPagar.Rows[e.RowIndex].Cells[0].Selected = true;
-                _ = Guid.TryParse(dgvContaPagar.Rows[e.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaPagar);
-
-                if (identificadorContaPagar == Guid.Empty)
-                {
-                    MessageBox.Show("Não encontramos o Identificador da Conta pagar conseguir editar.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                var editBillToPayViewModel = new EditBillToPayViewModel
-                {
-                    Id = identificadorContaPagar,
-                    IdFixedInvoice = Convert.ToInt32(dgvContaPagar.Rows[e.RowIndex].Cells[1].Value?.ToString()),
-                    Account = dgvContaPagar.Rows[e.RowIndex].Cells[2].Value?.ToString(),
-                    Name = dgvContaPagar.Rows[e.RowIndex].Cells[3].Value?.ToString(),
-                    Category = dgvContaPagar.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                    Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvContaPagar.Rows[e.RowIndex].Cells[5].Value?.ToString() ?? "0")),
-                    PurchaseDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                    DueDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[e.RowIndex].Cells[10].Value?.ToString())!.Value,
-                    YearMonth = dgvContaPagar.Rows[e.RowIndex].Cells[11].Value?.ToString(),
-                    Frequence = dgvContaPagar.Rows[e.RowIndex].Cells[12].Value?.ToString(),
-                    RegistrationType = dgvContaPagar.Rows[e.RowIndex].Cells[13].Value?.ToString(),
-                    PayDay = dgvContaPagar.Rows[e.RowIndex].Cells[14].Value?.ToString(),
-                    HasPay = Convert.ToBoolean(dgvContaPagar.Rows[e.RowIndex].Cells[15].Value?.ToString()),
-                    AdditionalMessage = dgvContaPagar.Rows[e.RowIndex].Cells[16].Value?.ToString(),
-                    LastChangeDate = DateTime.Now
-                };
-
-                FrmEdit frmPagamento = new()
-                {
-                    EditBillToPayViewModel = editBillToPayViewModel,
-                    Environment = Environment
-                };
-
-                frmPagamento.ShowDialog();
+                dgvContaPagar.ClearSelection();
+                dgvContaPagar.Rows[e.RowIndex].Selected = true;
+                dgvContaPagar.CurrentCell = dgvContaPagar.Rows[e.RowIndex].Cells[e.ColumnIndex];
             }
         }
 
@@ -2346,6 +2318,114 @@ namespace App.Forms.Forms
             {
                 CultureSelectorHelper.ChangeCulture(cboCultura);
                 RefreshUIAfterCultureChange();
+            }
+        }
+
+        private async void ToolDesabilitarContaPagar_Click(object sender, EventArgs e)
+        {
+            var currentCell = dgvContaPagar.CurrentCell;
+
+            if (currentCell.RowIndex >= 0)
+            {
+                dgvContaPagar.Rows[currentCell.RowIndex].Cells[0].Selected = true;
+                var descricaoRow = dgvContaPagar.Rows[currentCell.RowIndex].Cells[3].Value.ToString();
+                _ = int.TryParse(dgvContaPagar.Rows[currentCell.RowIndex].Cells[1].Value.ToString(), out int identificadorContaPagar);
+
+                if (identificadorContaPagar <= 0)
+                {
+                    MessageBox.Show("Não encontramos o Identificador da Conta pagar conseguir editar.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var result = MessageBox
+                    .Show($"Deseja Realmente deseja DESABILITAR? o registro: {descricaoRow}", $"Ambiente: [{Environment}] - E aí, tem certeza?",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    BillToPayServices.Environment = Environment;
+                    var output = await BillToPayServices.DisableBillToPay(new DisableBillToPayViewModel() { Id = identificadorContaPagar });
+
+                    var outputDetails = (OutputDetails)output.Output;
+
+                    if (outputDetails.Status == OutputStatus.Success)
+                    {
+                        MessageBox.Show(outputDetails.Message,
+                            "Registro desabilitado com sucesso.",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        var information = string.Empty;
+
+                        var errors = outputDetails?.Errors;
+                        var validations = outputDetails?.Validations;
+
+                        if (errors != null)
+                        {
+                            foreach (var error in errors)
+                            {
+                                information = string
+                                    .Concat(information, error.Key, " - ", error.Value, " | ");
+                            }
+                        }
+
+                        if (validations != null)
+                        {
+                            foreach (var validation in validations)
+                            {
+                                information = string
+                                    .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                            }
+                        }
+
+                        MessageBox.Show(information, "Erro ao tentar desabilitar registro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void ToolEditarContaPagar_Click(object sender, EventArgs e)
+        {
+            var currentCell = dgvContaPagar.CurrentCell;
+
+            if (currentCell.RowIndex >= 0)
+            {
+                dgvContaPagar.Rows[currentCell.RowIndex].Cells[0].Selected = true;
+                _ = Guid.TryParse(dgvContaPagar.Rows[currentCell.RowIndex].Cells[0].Value.ToString(), out Guid identificadorContaPagar);
+
+                if (identificadorContaPagar == Guid.Empty)
+                {
+                    MessageBox.Show("Não encontramos o Identificador da Conta pagar conseguir editar.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var editBillToPayViewModel = new EditBillToPayViewModel
+                {
+                    Id = identificadorContaPagar,
+                    IdFixedInvoice = Convert.ToInt32(dgvContaPagar.Rows[currentCell.RowIndex].Cells[1].Value?.ToString()),
+                    Account = dgvContaPagar.Rows[currentCell.RowIndex].Cells[2].Value?.ToString(),
+                    Name = dgvContaPagar.Rows[currentCell.RowIndex].Cells[3].Value?.ToString(),
+                    Category = dgvContaPagar.Rows[currentCell.RowIndex].Cells[4].Value?.ToString(),
+                    Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvContaPagar.Rows[currentCell.RowIndex].Cells[5].Value?.ToString() ?? "0")),
+                    PurchaseDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[currentCell.RowIndex].Cells[9].Value?.ToString()),
+                    DueDate = DateUtils.GetDateTimeOfString(dgvContaPagar.Rows[currentCell.RowIndex].Cells[10].Value?.ToString())!.Value,
+                    YearMonth = dgvContaPagar.Rows[currentCell.RowIndex].Cells[11].Value?.ToString(),
+                    Frequence = dgvContaPagar.Rows[currentCell.RowIndex].Cells[12].Value?.ToString(),
+                    RegistrationType = dgvContaPagar.Rows[currentCell.RowIndex].Cells[13].Value?.ToString(),
+                    PayDay = dgvContaPagar.Rows[currentCell.RowIndex].Cells[14].Value?.ToString(),
+                    HasPay = Convert.ToBoolean(dgvContaPagar.Rows[currentCell.RowIndex].Cells[15].Value?.ToString()),
+                    AdditionalMessage = dgvContaPagar.Rows[currentCell.RowIndex].Cells[16].Value?.ToString(),
+                    LastChangeDate = DateTime.Now
+                };
+
+                FrmEdit frmPagamento = new()
+                {
+                    EditBillToPayViewModel = editBillToPayViewModel,
+                    Environment = Environment
+                };
+
+                frmPagamento.ShowDialog();
             }
         }
     }

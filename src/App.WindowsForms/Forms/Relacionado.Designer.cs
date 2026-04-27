@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Relacionado));
             dgvRegistroRelacionado = new DataGridView();
@@ -35,7 +36,11 @@
             lblValorMedioTotalLista = new Label();
             lblValorTotalMedioSelecionados = new Label();
             lblValorRestanteRegistroRelacionadoDataGridView = new Label();
+            cmsDgvRegistroRelacionadoActions = new ContextMenuStrip(components);
+            ToolEditarRegistro = new ToolStripMenuItem();
+            ToolDesabilitarRegistro = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dgvRegistroRelacionado).BeginInit();
+            cmsDgvRegistroRelacionadoActions.SuspendLayout();
             SuspendLayout();
             // 
             // dgvRegistroRelacionado
@@ -56,12 +61,12 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             dgvRegistroRelacionado.DefaultCellStyle = dataGridViewCellStyle1;
             dgvRegistroRelacionado.EditMode = DataGridViewEditMode.EditProgrammatically;
-            dgvRegistroRelacionado.Location = new Point(12, 51);
+            dgvRegistroRelacionado.Location = new Point(12, 55);
             dgvRegistroRelacionado.Name = "dgvRegistroRelacionado";
             dgvRegistroRelacionado.ReadOnly = true;
             dgvRegistroRelacionado.RowTemplate.Height = 25;
             dgvRegistroRelacionado.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvRegistroRelacionado.Size = new Size(1257, 397);
+            dgvRegistroRelacionado.Size = new Size(1257, 393);
             dgvRegistroRelacionado.TabIndex = 1;
             dgvRegistroRelacionado.SelectionChanged += DgvRegistroRelacionado_SelectionChanged;
             // 
@@ -115,6 +120,26 @@
             lblValorRestanteRegistroRelacionadoDataGridView.Text = "Valor Total dos 900 itens selecionados: R$ 100.400,00";
             lblValorRestanteRegistroRelacionadoDataGridView.TextAlign = ContentAlignment.MiddleRight;
             // 
+            // cmsDgvRegistroRelacionadoActions
+            // 
+            cmsDgvRegistroRelacionadoActions.Items.AddRange(new ToolStripItem[] { ToolEditarRegistro, ToolDesabilitarRegistro });
+            cmsDgvRegistroRelacionadoActions.Name = "cmsDgvRegistroRelacionadoActions";
+            cmsDgvRegistroRelacionadoActions.Size = new Size(176, 48);
+            // 
+            // ToolEditarRegistro
+            // 
+            ToolEditarRegistro.Name = "ToolEditarRegistro";
+            ToolEditarRegistro.Size = new Size(175, 22);
+            ToolEditarRegistro.Text = "Editar Registro";
+            ToolEditarRegistro.Click += ToolEditarRegistro_Click;
+            // 
+            // ToolDesabilitarRegistro
+            // 
+            ToolDesabilitarRegistro.Name = "ToolDesabilitarRegistro";
+            ToolDesabilitarRegistro.Size = new Size(175, 22);
+            ToolDesabilitarRegistro.Text = "Desabilitar Registro";
+            ToolDesabilitarRegistro.Click += ToolDesabilitarRegistro_Click;
+            // 
             // Relacionado
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -131,6 +156,7 @@
             Text = "Detalhes - Registros Relacionados";
             Load += FrmRegistroRelacionado_Load;
             ((System.ComponentModel.ISupportInitialize)dgvRegistroRelacionado).EndInit();
+            cmsDgvRegistroRelacionadoActions.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -142,5 +168,8 @@
         private Label lblValorMedioTotalLista;
         private Label lblValorTotalMedioSelecionados;
         private Label lblValorRestanteRegistroRelacionadoDataGridView;
+        private ContextMenuStrip cmsDgvRegistroRelacionadoActions;
+        private ToolStripMenuItem ToolEditarRegistro;
+        private ToolStripMenuItem ToolDesabilitarRegistro;
     }
 }

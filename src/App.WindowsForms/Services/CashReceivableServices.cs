@@ -98,5 +98,31 @@ namespace App.WindowsForms.Services
 
             return JsonConvert.DeserializeObject<DeleteCashReceivableOutput>(response) ?? new DeleteCashReceivableOutput();
         }
+
+        public static async Task<DisableCashReceivableOutput> DisableCashReceivable(DisableCashReceivableViewModel disableCashReceivableViewModel)
+        {
+            using var client = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{UrlConfig.GetFinanceOrganizationApiUrl(Environment)}/v1/cash-receivable/disable-registration")
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(disableCashReceivableViewModel), Encoding.UTF8, "application/json")
+            };
+
+            var result = await client.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                var output = new DisableCashReceivableOutput();
+
+                output.Output.Status = OutputStatus.HasInternalError;
+                output.Output.Data = result.Content;
+
+                return output;
+            }
+
+            var response = await result.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<DisableCashReceivableOutput>(response) ?? new DisableCashReceivableOutput();
+        }
     }
 }

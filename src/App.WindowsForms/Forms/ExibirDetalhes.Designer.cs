@@ -30,7 +30,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmExibirDetalhes));
             dgvExcluirDetalhes = new DataGridView();
             lblValorTotalExibirDetalhesDataGridView = new Label();
@@ -42,7 +43,11 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             btnAtualizar = new Button();
             lblValorRestanteExibirDetalhesDataGridView = new Label();
             lblValorRealizadoExibirDetalhesDataGridView = new Label();
+            cmsDgvExcluirDetalhesActions = new ContextMenuStrip(components);
+            toolEditarRegistro = new ToolStripMenuItem();
+            toolDesabilitarRegistro = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).BeginInit();
+            cmsDgvExcluirDetalhesActions.SuspendLayout();
             SuspendLayout();
             // 
             // dgvExcluirDetalhes
@@ -54,14 +59,14 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             dgvExcluirDetalhes.BackgroundColor = SystemColors.AppWorkspace;
             dgvExcluirDetalhes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = SystemColors.Window;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
-            dgvExcluirDetalhes.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = SystemColors.Window;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvExcluirDetalhes.DefaultCellStyle = dataGridViewCellStyle3;
             dgvExcluirDetalhes.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvExcluirDetalhes.Location = new Point(12, 87);
             dgvExcluirDetalhes.Name = "dgvExcluirDetalhes";
@@ -70,7 +75,6 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvExcluirDetalhes.Size = new Size(1340, 474);
             dgvExcluirDetalhes.TabIndex = 0;
-            dgvExcluirDetalhes.CellMouseDown += EditarRegistroSelecionado_dgvExcluirDetalhes_CellMouseDown;
             dgvExcluirDetalhes.RowsAdded += DgvExcluirDetalhes_RowsAdded;
             dgvExcluirDetalhes.SelectionChanged += DgvExcluirDetalhes_SelectionChanged;
             // 
@@ -182,6 +186,26 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             lblValorRealizadoExibirDetalhesDataGridView.Text = "Valor Realizado dos 900 itens selecionados: R$ 100.400,00";
             lblValorRealizadoExibirDetalhesDataGridView.TextAlign = ContentAlignment.MiddleRight;
             // 
+            // cmsDgvExcluirDetalhesActions
+            // 
+            cmsDgvExcluirDetalhesActions.Items.AddRange(new ToolStripItem[] { toolEditarRegistro, toolDesabilitarRegistro });
+            cmsDgvExcluirDetalhesActions.Name = "cmsDgvExcluirDetalhesActions";
+            cmsDgvExcluirDetalhesActions.Size = new Size(181, 70);
+            // 
+            // toolEditarRegistro
+            // 
+            toolEditarRegistro.Name = "toolEditarRegistro";
+            toolEditarRegistro.Size = new Size(180, 22);
+            toolEditarRegistro.Text = "Editar Registro";
+            toolEditarRegistro.Click += ToolEditarRegistro_Click;
+            // 
+            // toolDesabilitarRegistro
+            // 
+            toolDesabilitarRegistro.Name = "toolDesabilitarRegistro";
+            toolDesabilitarRegistro.Size = new Size(180, 22);
+            toolDesabilitarRegistro.Text = "Desabilitar Registro";
+            toolDesabilitarRegistro.Click += ToolDesabilitarRegistro_Click;
+            // 
             // FrmExibirDetalhes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -203,6 +227,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             Text = "Lista todos os itens relacionados a conta selecionada";
             Load += FrmExcluirDetalhes_Load;
             ((System.ComponentModel.ISupportInitialize)dgvExcluirDetalhes).EndInit();
+            cmsDgvExcluirDetalhesActions.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -219,5 +244,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private Button btnAtualizar;
         private Label lblValorRestanteExibirDetalhesDataGridView;
         private Label lblValorRealizadoExibirDetalhesDataGridView;
+        private ContextMenuStrip cmsDgvExcluirDetalhesActions;
+        private ToolStripMenuItem toolEditarRegistro;
+        private ToolStripMenuItem toolDesabilitarRegistro;
     }
 }

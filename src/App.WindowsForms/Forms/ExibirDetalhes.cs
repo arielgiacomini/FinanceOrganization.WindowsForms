@@ -306,6 +306,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             {
                 dgvExcluirDetalhes.DataSource = dataSourceOrderBy;
 
+                dgvExcluirDetalhes.ContextMenuStrip = cmsDgvExcluirDetalhesActions;
+
                 string currencySymbol = GetCurrencySymbol();
 
                 ConfigureColumn(0, "Id", false);
@@ -581,47 +583,6 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             }
         }
 
-        private async void TratamentoOutput(DeleteBillToPayOutput result)
-        {
-            if (result.Output?.Status == OutputStatus.Success)
-            {
-                MessageBox.Show(result.Output.Message,
-                    "Exclusão de registro realizado com sucesso.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                await PreencherCampos();
-            }
-            else
-            {
-                await PreencherCampos();
-
-                var information = string.Empty;
-
-                var errors = result.Output?.Errors;
-                var validations = result.Output?.Validations;
-
-                if (errors != null)
-                {
-                    foreach (var error in errors)
-                    {
-                        information = string
-                            .Concat(information, error.Key, " - ", error.Value, " | ");
-                    }
-                }
-
-                if (validations != null)
-                {
-                    foreach (var validation in validations)
-                    {
-                        information = string
-                            .Concat(information, validation.Key, " - ", validation.Value, " | ");
-                    }
-                }
-
-                MessageBox.Show(information, "Erro ao tentar cadastrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void BtnShowDetails_Click(object sender, EventArgs e)
         {
             Guid identificador = Guid.NewGuid();
@@ -644,7 +605,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 {
                     Environment = Environment,
                     LastSearch = LastSearch,
-                    Identificador = identificador
+                    Identificador = identificador,
+                    EH_CONTA_PAGAR = EH_CONTA_PAGAR
                 };
 
                 frmRegistroRelacionado.ShowDialog();
@@ -655,25 +617,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             }
         }
 
-        private async void EditarRegistroSelecionado_dgvExcluirDetalhes_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            var rowIndexOld = e.RowIndex;
-            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
-            {
-                _ = Guid.TryParse(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[0].Value?.ToString(), out Guid guidId);
-
-                if (EH_CONTA_PAGAR)
-                {
-                    await EditarContaPagar(e, rowIndexOld, guidId);
-                }
-                else
-                {
-                    await EditarContaReceber(e, rowIndexOld, guidId);
-                }
-            }
-        }
-
-        private async Task EditarContaPagar(DataGridViewCellMouseEventArgs e, int rowIndexOld, Guid guidId)
+        private async Task EditarContaPagar(DataGridViewCell e, int rowIndexOld, Guid guidId)
         {
             var firstSelectedRow = new EditBillToPayViewModel()
             {
@@ -744,7 +688,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
             dgvExcluirDetalhes.CurrentCell = dgvExcluirDetalhes.Rows[rowIndexOld].Cells[3];
         }
 
-        private async Task EditarContaReceber(DataGridViewCellMouseEventArgs e, int rowIndexOld, Guid guidId)
+        private async Task EditarContaReceber(DataGridViewCell e, int rowIndexOld, Guid guidId)
         {
             var firstSelectedRow = new EditCashReceivableViewModel()
             {
@@ -878,6 +822,99 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 .Replace("£", "")
                 .Replace("¥", "")
                 .Trim();
+        }
+
+        private async void ToolEditarRegistro_Click(object sender, EventArgs e)
+        {
+            var currentCell = dgvExcluirDetalhes.CurrentCell;
+            var rowIndexOld = currentCell.RowIndex;
+
+            if (currentCell.RowIndex >= 0)
+            {
+                _ = Guid.TryParse(dgvExcluirDetalhes.Rows[currentCell.RowIndex].Cells[0].Value?.ToString(), out Guid guidId);
+
+                if (EH_CONTA_PAGAR)
+                {
+                    await EditarContaPagar(currentCell, rowIndexOld, guidId);
+                }
+                else
+                {
+                    await EditarContaReceber(currentCell, rowIndexOld, guidId);
+                }
+            }
+        }
+
+        private async void ToolDesabilitarRegistro_Click(object sender, EventArgs e)
+        {
+            var currentCell = dgvExcluirDetalhes.CurrentCell;
+
+            if (currentCell.RowIndex >= 0)
+            {
+                dgvExcluirDetalhes.Rows[currentCell.RowIndex].Cells[0].Selected = true;
+                var descricaoRow = dgvExcluirDetalhes.Rows[currentCell.RowIndex].Cells[3].Value.ToString();
+                _ = int.TryParse(dgvExcluirDetalhes.Rows[currentCell.RowIndex].Cells[1].Value.ToString(), out int identificadorContaReceber);
+                if (identificadorContaReceber <= 0)
+                {
+                    MessageBox.Show("Não encontramos o Identificador da Conta Receber conseguir editar.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var result = MessageBox
+                    .Show($"Deseja Realmente deseja DESABILITAR? o registro: {descricaoRow}", $"Ambiente: [{Environment}] - E aí, tem certeza?",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    OutputDetails output;
+
+                    if (EH_CONTA_PAGAR)
+                    {
+                        BillToPayServices.Environment = Environment;
+                        var resultHttp = await BillToPayServices.DisableBillToPay(new DisableBillToPayViewModel() { Id = identificadorContaReceber });
+                        output = resultHttp.Output;
+                    }
+                    else
+                    {
+                        CashReceivableServices.Environment = Environment;
+                        var resultHttp = await CashReceivableServices.DisableCashReceivable(new DisableCashReceivableViewModel() { Id = identificadorContaReceber });
+                        output = resultHttp.Output;
+                    }
+
+                    if (output.Status == OutputStatus.Success)
+                    {
+                        MessageBox.Show(output.Message,
+                            "Registro desabilitado com sucesso.",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        var information = string.Empty;
+
+                        var errors = output?.Errors;
+                        var validations = output?.Validations;
+
+                        if (errors != null)
+                        {
+                            foreach (var error in errors)
+                            {
+                                information = string
+                                    .Concat(information, error.Key, " - ", error.Value, " | ");
+                            }
+                        }
+
+                        if (validations != null)
+                        {
+                            foreach (var validation in validations)
+                            {
+                                information = string
+                                    .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                            }
+                        }
+
+                        MessageBox.Show(information, "Erro ao tentar desabilitar registro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
     }
 }
