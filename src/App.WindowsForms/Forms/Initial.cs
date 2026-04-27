@@ -2163,7 +2163,7 @@ namespace App.Forms.Forms
             {
                 tbcInitial.TabPages[0].Text = GetTranslation("Cadastro de Conta a Pagar", culture);
                 if (tbcInitial.TabPages.Count > 1)
-                    tbcInitial.TabPages[1].Text = GetTranslation("Efectuar Pagamento", culture);
+                    tbcInitial.TabPages[1].Text = GetTranslation("Efetuar Pagamento", culture);
                 if (tbcInitial.TabPages.Count > 2)
                     tbcInitial.TabPages[2].Text = GetTranslation("Conta a Receber", culture);
                 if (tbcInitial.TabPages.Count > 3)

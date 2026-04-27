@@ -185,7 +185,7 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
 
                 dgvVisualizarContaReceberDataSources = MapSearchResultContaReceberToDataSource(contaReceber);
 
-                LastSearch.Add(DateTime.Now.ToString(), (IList<object>)dgvVisualizarContaReceberDataSources);
+                LastSearch.Add(DateTime.Now.ToString(), dgvVisualizarContaReceberDataSources);
 
                 IList<DgvVisualizarContaReceberDataSource> allReceber = OrdenacaoRegraContasReceber(dgvVisualizarContaReceberDataSources);
 
@@ -487,8 +487,8 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
         private async void BtnExcluir_Click(object sender, EventArgs e)
         {
             var result = MessageBox
-                .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            .Show("Realmente deseja excluir os registros selecionados?", "Excluir?",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
@@ -501,14 +501,24 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     guidIds.Add(guidId);
                 }
 
-                BillToPayServices.Environment = Environment;
-                var output = await BillToPayServices.DeleteBillToPay(MapDeleteViewModel(guidIds));
+                if (EH_CONTA_PAGAR)
+                {
+                    BillToPayServices.Environment = Environment;
 
-                TratamentoOutput(output);
+                    var output = await BillToPayServices.DeleteBillToPay(MapDeleteBillToPayViewModel(guidIds));
+
+                    TratamentoOutput(output.Output, AccountType.ContaAPagar);
+                }
+                else
+                {
+                    CashReceivableServices.Environment = Environment;
+                    var output = await CashReceivableServices.DeleteCashReceivable(MapDeleteCashReceivableViewModel(guidIds));
+                    TratamentoOutput(output.Output, AccountType.ContaAReceber);
+                }
             }
         }
 
-        public static DeleteBillToPayViewModel MapDeleteViewModel(List<Guid> guidIds)
+        public static DeleteBillToPayViewModel MapDeleteBillToPayViewModel(List<Guid> guidIds)
         {
             return new DeleteBillToPayViewModel()
             {
@@ -516,6 +526,59 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                 JustUnpaid = true,
                 DisableBillToPayRegistration = false
             };
+        }
+
+        public static DeleteCashReceivableViewModel MapDeleteCashReceivableViewModel(List<Guid> guidIds)
+        {
+            return new DeleteCashReceivableViewModel()
+            {
+                Id = guidIds.ToArray(),
+                OnlyNotReceivable = true,
+                DisableCashReceivableRegistration = false
+            };
+        }
+
+        private async void TratamentoOutput(object result, AccountType accountType)
+        {
+            var outputDetails = (OutputDetails)result;
+
+            if (outputDetails.Status == OutputStatus.Success)
+            {
+                MessageBox.Show(outputDetails.Message,
+                    "Exclusão de registro realizado com sucesso.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                await PreencherCampos();
+            }
+            else
+            {
+                await PreencherCampos();
+
+                var information = string.Empty;
+
+                var errors = outputDetails?.Errors;
+                var validations = outputDetails?.Validations;
+
+                if (errors != null)
+                {
+                    foreach (var error in errors)
+                    {
+                        information = string
+                            .Concat(information, error.Key, " - ", error.Value, " | ");
+                    }
+                }
+
+                if (validations != null)
+                {
+                    foreach (var validation in validations)
+                    {
+                        information = string
+                            .Concat(information, validation.Key, " - ", validation.Value, " | ");
+                    }
+                }
+
+                MessageBox.Show(information, "Erro ao tentar deletar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private async void TratamentoOutput(DeleteBillToPayOutput result)
@@ -722,22 +785,22 @@ namespace App.WindowsForms.Forms.ExcluirDetalhes
                     {
                         Id = idCashReceivable,
                         IdCashReceivableRegistration = registrationId,
-                        Account = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[2].Value?.ToString(),
-                        Name = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[3].Value?.ToString(),
-                        Category = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[4].Value?.ToString(),
-                        Value = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[5].Value?.ToString())),
-                        ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[6].Value?.ToString())),
+                        Account = row.Cells[2].Value?.ToString(),
+                        Name = row.Cells[3].Value?.ToString(),
+                        Category = row.Cells[4].Value?.ToString(),
+                        Value = Convert.ToDecimal(RemoveCurrencySymbol(row.Cells[5].Value?.ToString())),
+                        ManipulatedValue = Convert.ToDecimal(RemoveCurrencySymbol(row.Cells[6].Value?.ToString())),
                         /*7-TotalValue*/
                         /*8-DetailsQuantity*/
-                        AgreementDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[9].Value?.ToString()),
-                        DueDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[10].Value?.ToString()) ?? DateTime.Now,
-                        YearMonth = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[11].Value?.ToString(),
-                        Frequence = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[12].Value?.ToString(),
-                        RegistrationType = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[13].Value?.ToString(),
-                        DateReceived = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[14].Value?.ToString(),
-                        HasReceived = Convert.ToBoolean(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[15].Value?.ToString()),
-                        AdditionalMessage = dgvExcluirDetalhes.Rows[e.RowIndex].Cells[16].Value?.ToString(),
-                        LastChangeDate = DateUtils.GetDateTimeOfString(dgvExcluirDetalhes.Rows[e.RowIndex].Cells[18].Value?.ToString()) ?? DateTime.Now
+                        AgreementDate = DateUtils.GetDateTimeOfString(row.Cells[9].Value?.ToString()),
+                        DueDate = DateUtils.GetDateTimeOfString(row.Cells[10].Value?.ToString()) ?? DateTime.Now,
+                        YearMonth = row.Cells[11].Value?.ToString(),
+                        Frequence = row.Cells[12].Value?.ToString(),
+                        RegistrationType = row.Cells[13].Value?.ToString(),
+                        DateReceived = row.Cells[14].Value?.ToString(),
+                        HasReceived = Convert.ToBoolean(row.Cells[15].Value?.ToString()),
+                        AdditionalMessage = row.Cells[16].Value?.ToString(),
+                        LastChangeDate = DateUtils.GetDateTimeOfString(row.Cells[18].Value?.ToString()) ?? DateTime.Now
                     });
                 }
             }
