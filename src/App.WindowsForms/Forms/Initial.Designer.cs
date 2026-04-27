@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Initial));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             tbcInitial = new TabControl();
             tbpCadastroContaPagar = new TabPage();
             grbTemplateContaPagar = new GroupBox();
@@ -119,6 +120,9 @@
             rdbAmbienteHomologacao = new RadioButton();
             rdbAmbienteProducao = new RadioButton();
             cboCultura = new ComboBox();
+            cmsDgvContaPagarActions = new ContextMenuStrip(components);
+            ToolDesabilitarContaPagar = new ToolStripMenuItem();
+            ToolEditarContaPagar = new ToolStripMenuItem();
             tbcInitial.SuspendLayout();
             tbpCadastroContaPagar.SuspendLayout();
             grbTemplateContaPagar.SuspendLayout();
@@ -131,6 +135,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvContaReceber).BeginInit();
             tbpEstudosFinanceiros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSearchMonthlyAverageAnalysis).BeginInit();
+            cmsDgvContaPagarActions.SuspendLayout();
             SuspendLayout();
             // 
             // tbcInitial
@@ -858,14 +863,14 @@
             dgvContaPagar.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             dgvContaPagar.BackgroundColor = SystemColors.AppWorkspace;
             dgvContaPagar.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = SystemColors.Window;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
-            dgvContaPagar.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = SystemColors.Window;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvContaPagar.DefaultCellStyle = dataGridViewCellStyle3;
             dgvContaPagar.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvContaPagar.Location = new Point(10, 145);
             dgvContaPagar.Name = "dgvContaPagar";
@@ -1037,14 +1042,14 @@
             dgvContaReceber.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             dgvContaReceber.BackgroundColor = SystemColors.AppWorkspace;
             dgvContaReceber.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvContaReceber.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvContaReceber.DefaultCellStyle = dataGridViewCellStyle4;
             dgvContaReceber.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvContaReceber.Location = new Point(8, 113);
             dgvContaReceber.Name = "dgvContaReceber";
@@ -1193,6 +1198,26 @@
             cboCultura.SelectedIndexChanged += cboCultura_SelectedIndexChanged;
             cboCultura.SelectedValueChanged += cboCultura_SelectedValueChanged_1;
             // 
+            // cmsDgvContaPagarActions
+            // 
+            cmsDgvContaPagarActions.Items.AddRange(new ToolStripItem[] { ToolEditarContaPagar, ToolDesabilitarContaPagar });
+            cmsDgvContaPagarActions.Name = "cmsDgvContaPagarActions";
+            cmsDgvContaPagarActions.Size = new Size(181, 70);
+            // 
+            // ToolDesabilitarContaPagar
+            // 
+            ToolDesabilitarContaPagar.Name = "ToolDesabilitarContaPagar";
+            ToolDesabilitarContaPagar.Size = new Size(180, 22);
+            ToolDesabilitarContaPagar.Text = "Desabilitar Registro";
+            ToolDesabilitarContaPagar.Click += ToolDesabilitarContaPagar_Click;
+            // 
+            // ToolEditarContaPagar
+            // 
+            ToolEditarContaPagar.Name = "ToolEditarContaPagar";
+            ToolEditarContaPagar.Size = new Size(180, 22);
+            ToolEditarContaPagar.Text = "Editar Registro";
+            ToolEditarContaPagar.Click += ToolEditarContaPagar_Click;
+            // 
             // Initial
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1229,6 +1254,7 @@
             tbpEstudosFinanceiros.ResumeLayout(false);
             tbpEstudosFinanceiros.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSearchMonthlyAverageAnalysis).EndInit();
+            cmsDgvContaPagarActions.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1324,5 +1350,8 @@
         private Label lblValorTotalItensSelecionadoGrid;
         private Label lblValorRestanteDosItensSelecionadosNoGrid;
         private Label lblValorRealizadoItensSelecionadosGrid;
+        private ContextMenuStrip cmsDgvContaPagarActions;
+        private ToolStripMenuItem ToolDesabilitarContaPagar;
+        private ToolStripMenuItem ToolEditarContaPagar;
     }
 }
